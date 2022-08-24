@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Ressources\**" />
+    <EmbeddedResource Remove="Ressources\**" />
+    <None Remove="Ressources\**" />
+    <Page Remove="Ressources\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="icon_quit.png" />
+    <None Remove="Resources\icon_quit.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="icon_quit.png" />
+    <Resource Include="Resources\icon_quit.png" />
+  </ItemGroup>
+
+</Project>

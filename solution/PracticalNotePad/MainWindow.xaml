@@ -1,0 +1,109 @@
+﻿<Window x:Class="PracticalNotePad.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PracticalNotePad"
+        mc:Ignorable="d"
+        AllowsTransparency="True" WindowStyle="None"
+        Title="Transparent Notpad" Height="448" Width="800" Background="#00000000" WindowStartupLocation="CenterScreen" MinHeight="345" MinWidth="315" IsTabStop="False" PreviewMouseWheel="Window_PreviewMouseWheel" ResizeMode="CanResizeWithGrip">
+    <Window.Resources>
+        <!-- This style is used for buttons, to remove the WPF default 'animated' mouse over effect -->
+        <Style x:Key="UpRightButtonStyle" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" 
+                        BorderThickness="1"
+                        Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="Black" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Border x:Name="brd_main" CornerRadius="0,0,30,30" BorderThickness="0" Padding="4"  Background="#4CFFFFFF" ClipToBounds="True">
+        <Grid Background="Transparent" Opacity="1" Margin="-4,-4,-4,-4" ClipToBounds="True" >
+
+            <Grid Background="{x:Null}" ClipToBounds="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="141*"/>
+                    <ColumnDefinition Width="59*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0*"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid Background="#00000000" Grid.RowSpan="2" Grid.ColumnSpan="2">
+                    <TextBox x:Name="tbox_mainText" Margin="10,58,0,10" TextWrapping="Wrap" Text="TextBox" Background="{x:Null}" BorderBrush="#00000000" SelectionBrush="#FF6BB8FF" SelectionTextBrush="{x:Null}" FontSize="20" BorderThickness="0,0,0,0" HorizontalAlignment="Left" Width="631"/>
+                </Grid>
+
+                <Grid x:Name="panel" Background="#00000000" IsHitTestVisible="False" Grid.RowSpan="2" Grid.Column="1" Margin="93,0,0,0">
+                    <Border x:Name="panel_border" CornerRadius="0,0,30,0" BorderBrush="Black" BorderThickness="0" Background="#FFBFBFBF"></Border>
+                </Grid>
+                <Border x:Name="display_panel" CornerRadius="5" BorderBrush="Black" BorderThickness="0" Margin="86,146,0,140" Background="#FFA4A4A4" MouseDown="Border_MouseDown" MinHeight="41" Cursor="Hand" Focusable="True" Panel.ZIndex="1" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Width="14">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="10" Opacity="0.4" Direction="-89.8"/>
+                    </Border.Effect>
+                </Border>
+
+
+                <Grid Background="#FFDADADA" Grid.ColumnSpan="2" Height="32" VerticalAlignment="Top" Grid.RowSpan="2">
+                    <Border BorderBrush="#80DADADA" BorderThickness="0,0,0,1" Height="46" VerticalAlignment="Top">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="14.8"/>
+                        </Border.Effect>
+                    </Border>
+                    <Slider x:Name="slider_winOpacity" HorizontalAlignment="Left" Margin="71,0,0,0" VerticalAlignment="Center" Width="176" AllowDrop="True" Background="{x:Null}" Foreground="#FFD05B5B" BorderBrush="Black" Value="5" Maximum="255" ValueChanged="Slider_ValueChanged" ToolTip="window's opacity"/>
+                    <Label Content="Opacity" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" FontSize="15"/>
+                    <Button x:Name="btn_quit" Margin="0,5,10,5"  Background="#FFED4D4D" BorderBrush="#FF272727" Click="btn_quit_Click" Cursor="Hand" Content="X" FontSize="18" FontFamily="Tw Cen MT" FontWeight="Bold" Foreground="#FF171717" Style="{StaticResource UpRightButtonStyle}" HorizontalAlignment="Right" Width="22">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="20"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <Button x:Name="btn_minimise" Margin="0,5,37,5"  Background="#FFEDA75F" BorderBrush="#FF272727" Click="btn_minimise_Click" Cursor="Hand" Content="—" FontFamily="Tw Cen MT" Foreground="#FF171717" FontWeight="Bold" FontSize="14" Style="{StaticResource UpRightButtonStyle}" HorizontalAlignment="Right" Width="22" >
+                        <Button.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="20"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <Button x:Name="btn_top" Margin="0,5,98,5"  Background="#FF5F61ED" BorderBrush="#FF272727" Click="btn_top_Click" Cursor="Hand" Content="Top  ✓" FontFamily="Tw Cen MT" Foreground="#FF171717" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" Width="72" >
+                        <Button.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="10"/>
+                            </Style>
+                        </Button.Resources>
+                        <Button.Style>
+                            <StaticResource ResourceKey="UpRightButtonStyle"/>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="btn_fullscreen" Margin="0,5,64,5"  Background="#FF63ED5F" BorderBrush="#FF272727" Click="btn_fullscreen_Click" Cursor="Hand" Content="+" FontFamily="Tw Cen MT" Foreground="#FF171717" FontSize="18" FontWeight="Bold" HorizontalAlignment="Right" Width="22" >
+                        <Button.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="20"/>
+                            </Style>
+                        </Button.Resources>
+                        <Button.Style>
+                            <StaticResource ResourceKey="UpRightButtonStyle"/>
+                        </Button.Style>
+                    </Button>
+
+                </Grid>
+
+            </Grid>
+
+
+        </Grid>
+    </Border>
+</Window>
