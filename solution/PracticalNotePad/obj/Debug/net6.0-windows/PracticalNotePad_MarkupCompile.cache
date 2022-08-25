@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET6_0;NETCOREAPP
 D:\GitHub\Practical_Notpad\solution\PracticalNotePad\App.xaml
-11407045341
+2-570693859
 
-3-1233169557
+6-1740977646
 194-200944676
-MainWindow.xaml;
+MainWindow.xaml;OptionsWindow.xaml;
 
 False
 

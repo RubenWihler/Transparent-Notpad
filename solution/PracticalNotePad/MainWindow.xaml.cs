@@ -21,6 +21,18 @@ namespace PracticalNotePad
     /// </summary>
     public partial class MainWindow : Window
     {
+        public Color TextAreaColor
+        {
+            get
+            {
+                return text_area_color;
+            }
+            set
+            {
+                text_area_color = value;
+                SetWindowOpacity(lastWinOppacity);
+            }
+        }
 
         private Brush Brush_Transparent
         {
@@ -45,7 +57,7 @@ namespace PracticalNotePad
         }
 
 
-        private Color win_bg_color;
+        private Color text_area_color;
         private bool win_transparent = true;
         private bool canFullTransparent = true;
         private bool panel_displaying = true;
@@ -77,6 +89,8 @@ namespace PracticalNotePad
 
         private void Init()
         {
+            if (Manager.Instance == null) new Manager(this);
+
             Init_Field();
             Init_Event();
         }
@@ -86,7 +100,7 @@ namespace PracticalNotePad
         }
         private void Init_Field()
         {
-            win_bg_color = Color.FromArgb(0xff, 0xff, 0xff, 0xff);
+            //text_area_color = Color.FromArgb(0xff, 0xff, 0xff, 0xff);
             slider_winOpacity.Value = lastWinOppacity;
             SetWindowOpacity(lastWinOppacity);
         }
@@ -100,7 +114,7 @@ namespace PracticalNotePad
         }
         private void SetWindowOpacity(byte alpha)
         {
-            brd_main.Background = new SolidColorBrush(Color.FromArgb(Math.Clamp((byte)alpha, (byte)(canFullTransparent ? 0x00: 0x01), (byte)0xff), win_bg_color.R, win_bg_color.G, win_bg_color.B));
+            brd_main.Background = new SolidColorBrush(Color.FromArgb(Math.Clamp((byte)alpha, (byte)(canFullTransparent ? 0x00: 0x01), (byte)0xff), text_area_color.R, text_area_color.G, text_area_color.B));
             win_transparent = false;
         }
 
@@ -138,6 +152,14 @@ namespace PracticalNotePad
         private void OnResize()
         {
             //display_panel.Margin = new Thickness(panel.Margin.Left - 7, display_panel.Margin.Top, display_panel.Margin.Bottom, display_panel.Margin.Right);
+        }
+
+        private void OpenOptions()
+        {
+            if (!Manager.isOpened_OptionWin)
+            {
+                Manager.TryOpenWindow<OptionWindow>(Manager.OptionWin);
+            }  
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -202,6 +224,11 @@ namespace PracticalNotePad
             {
                 WindowState = WindowState.Maximized;
             }
+        }
+
+        private void btn_option_Click(object sender, RoutedEventArgs e)
+        {
+            OpenOptions();
         }
     }
 }

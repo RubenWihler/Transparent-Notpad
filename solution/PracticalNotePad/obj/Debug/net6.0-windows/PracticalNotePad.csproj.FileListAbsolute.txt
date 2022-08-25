@@ -20,3 +20,5 @@ D:\GitHub\Practical_Notpad\solution\PracticalNotePad\obj\Debug\net6.0-windows\Pr
 D:\GitHub\Practical_Notpad\solution\PracticalNotePad\obj\Debug\net6.0-windows\PracticalNotePad.genruntimeconfig.cache
 D:\GitHub\Practical_Notpad\solution\PracticalNotePad\obj\Debug\net6.0-windows\ref\PracticalNotePad.dll
 D:\GitHub\Practical_Notpad\solution\PracticalNotePad\obj\Debug\net6.0-windows\App.baml
+D:\GitHub\Practical_Notpad\solution\PracticalNotePad\obj\Debug\net6.0-windows\OptionsWindow.g.cs
+D:\GitHub\Practical_Notpad\solution\PracticalNotePad\obj\Debug\net6.0-windows\OptionsWindow.baml
