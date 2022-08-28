@@ -3,12 +3,34 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PracticalNotePad"
+        xmlns:local="clr-namespace:PracticalNotePad" 
+        xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d"
         AllowsTransparency="True" WindowStyle="None"
-        Title="Transparent Notpad" Height="448" Width="800" Background="#00000000" WindowStartupLocation="CenterScreen" MinHeight="345" MinWidth="315" IsTabStop="False" PreviewMouseWheel="Window_PreviewMouseWheel" ResizeMode="CanResizeWithGrip">
+        Icon="./Resources/Icon/icon_orange.png"
+        Title="Transparent Notpad" 
+        Height="448" Width="800" 
+        Background="#00000000" 
+        WindowStartupLocation="CenterScreen" 
+        MinHeight="385" 
+        MinWidth="315" 
+        IsTabStop="False" 
+        PreviewMouseWheel="Window_PreviewMouseWheel"
+        Drop="On_WinDrop"
+        DragOver="On_WinDrop"
+        SizeChanged="OnWinResize"
+        AllowDrop="True"
+        ResizeMode="CanResizeWithGrip" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" PreviewKeyDown="PreviewKeyDow">
     <Window.Resources>
-        <!-- This style is used for buttons, to remove the WPF default 'animated' mouse over effect -->
+        <CollectionViewSource 
+            Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}" 
+            x:Key="familyCollection">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="Source" Direction="Ascending" />
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
         <Style x:Key="UpRightButtonStyle" TargetType="Button">
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="Margin" Value="5"/>
@@ -27,42 +49,287 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="PanelButtonTextViewBox" TargetType="Viewbox">
+            <Setter Property="MaxWidth" Value="50"/>
+            <Setter Property="MaxHeight" Value="30"/>
+            <Setter Property="MinWidth" Value="10"/>
+            <Setter Property="MinHeight" Value="10"/>
+        </Style>
+        <Style x:Key="PanelTextViewBox" TargetType="Viewbox">
+            <Setter Property="MaxWidth" Value="80"/>
+            <Setter Property="MaxHeight" Value="50"/>
+            <Setter Property="MinWidth" Value="25"/>
+            <Setter Property="MinHeight" Value="25"/>
+        </Style>
+        <Style x:Key="PanelButtonText" TargetType="TextBlock">
+            <Setter Property="Tag" Value="btn_panel_text"/>
+            <Setter Property="FontFamily" Value="Poppins"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="#FF484848"/>
+        </Style>
+        <Style x:Key="PanelButtonTextIcon" TargetType="fa:ImageAwesome">
+            <Setter Property="Tag" Value="btn_panel_draw_brushIcons"/>
+            <Setter Property="Foreground" Value="#FF484848"/>
+            <Setter Property="Margin" Value="15,15,15,15"/>
+        </Style>
+        <Style x:Key="PanelButton" TargetType="Button">
+            <Setter Property="Tag" Value="btn_panel"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Margin" Value="5,7,5,7"/>
+            <Setter Property="Foreground" Value="#FF484848"/>
+            <Setter Property="Background" Value="#FFE6E6E6"/>
+            <Setter Property="BorderBrush" Value="#FF484848"/>
+            <Setter Property="MaxWidth" Value="200"/>
+            <Setter Property="MaxHeight" Value="50"/>
+            <Setter Property="MinWidth" Value="61"/>
+            <Setter Property="MinHeight" Value="23"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" BorderThickness="2" CornerRadius="4" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFaaaaaa"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="Panel_BrushButton" TargetType="Button">
+            <Setter Property="Tag" Value="btn_panel"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Margin" Value="32,7,32,7"/>
+            <Setter Property="Foreground" Value="#FF484848"/>
+            <Setter Property="Background" Value="#FFE6E6E6"/>
+            <Setter Property="BorderBrush" Value="#FF484848"/>
+            <Setter Property="MaxWidth" Value="50"/>
+            <Setter Property="MaxHeight" Value="50"/>
+            <Setter Property="MinWidth" Value="15"/>
+            <Setter Property="MinHeight" Value="15"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" BorderThickness="1" CornerRadius="4" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFaaaaaa"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="Panel_Grid"
+           TargetType="ItemsControl">
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="Panel_ComboBox" TargetType="ComboBox">
+            <Setter Property="Margin" Value="5,10,5,9.7"/>
+        </Style>
     </Window.Resources>
     <Border x:Name="brd_main" CornerRadius="0,0,30,30" BorderThickness="0" Padding="4"  Background="#4CFFFFFF" ClipToBounds="True">
-        <Grid Background="Transparent" Opacity="1" Margin="-4,-4,-4,-4" ClipToBounds="True" >
-
+        <Grid Background="Transparent" Opacity="1" Margin="-4,-4,-4,-4" ClipToBounds="True">
             <Grid Background="{x:Null}" ClipToBounds="True">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="141*"/>
-                    <ColumnDefinition Width="59*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="0*"/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
                 <Grid Background="#00000000" Grid.RowSpan="2" Grid.ColumnSpan="2">
-                    <TextBox x:Name="tbox_mainText" Margin="10,58,0,10" TextWrapping="Wrap" Text="TextBox" Background="{x:Null}" BorderBrush="#00000000" SelectionBrush="#FF6BB8FF" SelectionTextBrush="{x:Null}" FontSize="20" BorderThickness="0,0,0,0" HorizontalAlignment="Left" Width="631"/>
+                    <Border Background="#00000000" CornerRadius="0,0,30,30">
+                        <local:PaintCanvas x:Name="paint_area" Margin="0,33,0,0" Background="#00000000">
+                            
+                        </local:PaintCanvas>
+                    </Border>
+                    <TextBox x:Name="tbox_mainText" Margin="10,58,31,10" TextWrapping="Wrap" Text="TextBox" Background="{x:Null}" BorderBrush="#00000000" SelectionBrush="#FF6BB8FF" SelectionTextBrush="{x:Null}" FontSize="24" BorderThickness="0,0,0,0" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" IsTabStop="False" AcceptsTab="True" AcceptsReturn="True" />
                 </Grid>
 
-                <Grid x:Name="panel" Background="#00000000" Grid.RowSpan="2" Grid.Column="1" Margin="93,0,0,0">
-                    <Border x:Name="panel_border" CornerRadius="0,0,30,0" BorderBrush="Black" BorderThickness="0" Background="#FFBFBFBF"/>
-
-                </Grid>
-                <Border x:Name="display_panel" CornerRadius="5" BorderBrush="Black" BorderThickness="0" Margin="86,146,0,140" Background="#FFA4A4A4" MouseDown="Border_MouseDown" MinHeight="41" Cursor="Hand" Focusable="True" Panel.ZIndex="1" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Width="14">
+                <Border x:Name="display_panel" CornerRadius="5" BorderBrush="Black" BorderThickness="0" Margin="611,157,0,129" Background="#FFA4A4A4" MouseMove="Border_MouseDown" MinHeight="41" Cursor="Hand" Focusable="True" Panel.ZIndex="1" Grid.Row="1" HorizontalAlignment="Left" Width="14">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="10" Opacity="0.4" Direction="-89.8"/>
                     </Border.Effect>
                 </Border>
+                <Grid x:Name="panel" Background="#00000000" MinWidth="150" MouseLeftButtonDown="DragWindow" AllowDrop="True" Margin="618,0,0,0">
+                    <Border x:Name="panel_border" CornerRadius="0,0,30,0" BorderBrush="Black" BorderThickness="0" Background="#FFBFBFBF"/>
+                    <ItemsControl x:Name="Panel_Items_textMode" Style="{StaticResource Panel_Grid}" Margin="0,32,0,0">
+                        <Button x:Name="btn_panel_text_switchMode" Grid.Column="0" Grid.Row="0" Content="Paint" Style="{DynamicResource PanelButton}" Click="btn_switchMode_Click">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <TextBlock Style="{StaticResource PanelButtonText}">Paint</TextBlock>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
+                        <Button x:Name="btn_panel_text_option" Grid.Column="1" Grid.Row="0" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_option_Click_1">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <TextBlock Style="{StaticResource PanelButtonText}">Option</TextBlock>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
+                        
+                        <Viewbox Grid.Column="0" Grid.Row="3" Style="{StaticResource PanelTextViewBox}">
+                            <TextBlock Style="{StaticResource PanelButtonText}">Text Font:</TextBlock>
+                        </Viewbox>
+                        <ComboBox x:Name="cmbbox_Panels_FontSelector" Style="{DynamicResource Panel_ComboBox}"
+                                  Grid.Column="1" Grid.Row="3"
+                                  ItemsSource="{Binding Source={StaticResource familyCollection}}" SelectionChanged="cmbbox_Panels_FontSelector_SelectionChanged" VerticalAlignment="Center"/>
+
+                        <Viewbox Grid.Column="0" Grid.Row="4" Style="{StaticResource PanelTextViewBox}">
+                            <TextBlock Style="{StaticResource PanelButtonText}">Text Color:</TextBlock>
+                        </Viewbox>
+                        <xctk:ColorPicker 
+                                VerticalAlignment="Center" 
+                                Grid.Column="1" Grid.Row="4"
+                                SelectedColorChanged="OnTextColorChanged">
+                        </xctk:ColorPicker>
+
+                        <Button x:Name="btn_panel_text_save" Grid.Column="0" Grid.Row="8" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_TextSave_Click">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <TextBlock Style="{StaticResource PanelButtonText}">Save</TextBlock>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
+                        <Button x:Name="btn_panel_text_saveas" Grid.Column="0" Grid.Row="9" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_TextSaveAs_Click">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <TextBlock Style="{StaticResource PanelButtonText}">Save As</TextBlock>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
+
+                        <Button x:Name="btn_panel_text_openInFileExplorer" Grid.Column="1" Grid.Row="9" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_ViewInExplorerClick">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <TextBlock Style="{StaticResource PanelButtonText}">Explorer</TextBlock>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
+                        <Button x:Name="btn_panel_text_OpenTextDoc" Grid.Column="1" Grid.Row="8" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_OpenTextDoc_Click">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <TextBlock Style="{StaticResource PanelButtonText}">Open</TextBlock>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
+                    </ItemsControl>
+                    <ItemsControl x:Name="Panel_Items_drawMode" Style="{StaticResource Panel_Grid}" Margin="0,32,0,0">
+                        <Button x:Name="btn_panel_draw_switchMode" Grid.Column="0" Grid.Row="0" Content="Paint" Style="{DynamicResource PanelButton}" Click="btn_switchMode_Click">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <TextBlock Style="{StaticResource PanelButtonText}">Text</TextBlock>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
+                        <Button x:Name="btn_panel_draw_option" Grid.Column="1" Grid.Row="0" Content="Option" Style="{StaticResource PanelButton}" Click="btn_option_Click_1">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <TextBlock Style="{StaticResource PanelButtonText}">Option</TextBlock>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
+
+                        <Button x:Name="btn_panel_draw_NormalBrush" Grid.Column="0" Grid.Row="3" Content="Option" Style="{StaticResource Panel_BrushButton}" Click="OnPenButtonClick">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <fa:ImageAwesome Icon="Pencil" Style="{StaticResource PanelButtonTextIcon}"></fa:ImageAwesome>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
+                        <Button x:Name="btn_panel_draw_EraseBrush" Grid.Column="1" Grid.Row="3" Content="Option" Style="{StaticResource Panel_BrushButton}" Click="OnEraserBtn_Click">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <fa:ImageAwesome Icon="Eraser" Style="{StaticResource PanelButtonTextIcon}">
+                                        </fa:ImageAwesome>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
+                        
+
+                        <Viewbox Grid.Column="0" Grid.Row="4" Style="{StaticResource PanelTextViewBox}">
+                            <TextBlock Style="{StaticResource PanelButtonText}">Brush Size:</TextBlock>
+                        </Viewbox>
+                        <Slider x:Name="slider_brush_size"
+                                VerticalAlignment="Center" 
+                                Maximum="100" Minimum="1"
+                                Grid.Column="1" Grid.Row="4"
+                                ValueChanged="BrushSizeChanged"/>
+
+                        <Viewbox Grid.Column="0" Grid.Row="5" Style="{StaticResource PanelTextViewBox}">
+                            <TextBlock Style="{StaticResource PanelButtonText}">Brush Color:</TextBlock>
+                        </Viewbox>
+
+                        <xctk:ColorPicker 
+                                VerticalAlignment="Center" 
+                                Grid.Column="1" Grid.Row="5"
+                                SelectedColorChanged="ColorPicker_SelectedColorChanged">
+                        </xctk:ColorPicker>
+
+                        <Button x:Name="btn_panel_draw_Clear" Grid.Column="1" Grid.Row="6" Content="Option" Style="{StaticResource PanelButton}" Click="On_BtnClear_Click" Background="#FFFF7B5E">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <TextBlock Style="{StaticResource PanelButtonText}">Clear</TextBlock>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
+                    </ItemsControl>
+                </Grid>
 
 
-                <Grid x:Name="upBar" Background="#FFDADADA" Grid.ColumnSpan="2" Height="32" VerticalAlignment="Top" Grid.RowSpan="2">
+
+                <Grid x:Name="upBar" Background="#FFDADADA" Grid.ColumnSpan="2" Height="32" VerticalAlignment="Top" Grid.RowSpan="2" MouseLeftButtonDown="DragWindow">
                     <Border BorderBrush="#80DADADA" BorderThickness="0,0,0,1" Height="46" VerticalAlignment="Top">
                         <Border.Effect>
                             <DropShadowEffect BlurRadius="14.8"/>
                         </Border.Effect>
                     </Border>
-                    <Slider x:Name="slider_winOpacity" HorizontalAlignment="Left" Margin="71,0,0,0" VerticalAlignment="Center" Width="176" AllowDrop="True" Background="{x:Null}" Foreground="#FFD05B5B" BorderBrush="Black" Value="5" Maximum="255" ValueChanged="Slider_ValueChanged" ToolTip="window's opacity"/>
-                    <Label x:Name="lbl_opacity" Content="Opacity" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center" FontSize="15"/>
+                    <Slider x:Name="slider_winOpacity" HorizontalAlignment="Left" Margin="13,0,0,0" VerticalAlignment="Center" Width="176" AllowDrop="True" Background="{x:Null}" Foreground="#FFD05B5B" BorderBrush="Black" Value="5" Maximum="255" ValueChanged="Slider_ValueChanged" ToolTip="window's opacity"/>
                     <Button x:Name="btn_quit" Margin="0,5,10,5"  Background="#FFED4D4D" BorderBrush="#FF272727" Click="btn_quit_Click" Cursor="Hand" Content="X" FontSize="18" FontFamily="Tw Cen MT" FontWeight="Bold" Foreground="#FF171717" Style="{StaticResource UpRightButtonStyle}" HorizontalAlignment="Right" Width="22">
                         <Button.Resources>
                             <Style TargetType="Border">
@@ -80,7 +347,7 @@
                     <Button x:Name="btn_top" Margin="0,5,98,5"  Background="#FF5F61ED" BorderBrush="#FF272727" Click="btn_top_Click" Cursor="Hand" Content="Top  ✓" FontFamily="Tw Cen MT" Foreground="#FF171717" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" Width="72" >
                         <Button.Resources>
                             <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="10"/>
+                                <Setter Property="CornerRadius" Value="6"/>
                             </Style>
                         </Button.Resources>
                         <Button.Style>
@@ -97,10 +364,21 @@
                             <StaticResource ResourceKey="UpRightButtonStyle"/>
                         </Button.Style>
                     </Button>
+                    <Button x:Name="btn_DisplayPanel" Margin="0,5,180,5"  Background="#FFF94AAA" BorderBrush="#FF272727" Click="btn_DisplayPanel_Click" Cursor="Hand" Content="Hide Panel" FontFamily="Tw Cen MT" Foreground="#FF171717" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" Width="89" >
+                        <Button.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="CornerRadius" Value="6"/>
+                            </Style>
+                        </Button.Resources>
+                        <Button.Style>
+                            <StaticResource ResourceKey="UpRightButtonStyle"/>
+                        </Button.Style>
+                    </Button>
 
                 </Grid>
 
             </Grid>
+            <local:PaintCanvas/>
 
 
         </Grid>

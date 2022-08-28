@@ -32,6 +32,9 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="Theme_Button" TargetType="Button">
+            <Setter Property="Background" Value="#FF9C9C9C"></Setter>
+        </Style>
     </Window.Resources>
     <Border Background="#FFD8D8D8" CornerRadius="20,20,20,20" ClipToBounds="True">
         <Grid Background="#00000000" ClipToBounds="True">
@@ -46,7 +49,8 @@
             <Grid Margin="0,46,0,0">
                 <ItemsControl Style="{StaticResource GridItemsStyle}">
                     <Label Grid.Column="0" Grid.Row="0" Content="Theme :" Width="151" FontFamily="Poppins" FontSize="20" Height="37" HorizontalContentAlignment="Center"/>
-                    <ComboBox x:Name="cmbbox_Theme" Grid.Column="2" Grid.Row="0" Width="190" Height="31"/>
+                    <ComboBox x:Name="cmbbox_Theme" Grid.Column="2" Grid.Row="0" Width="190" Height="31" DataContextChanged="cmbbox_Theme_DataContextChanged" ContextMenuClosing="cmbbox_Theme_ContextMenuClosing" SelectionChanged="cmbbox_Theme_SelectionChanged">
+                    </ComboBox>
                 </ItemsControl>
                 <Button x:Name="btn_back" Content="back" Margin="196,366,197,10" Background="#FFEAEAEA" FontSize="16" Foreground="#FF2D2D2D" BorderBrush="#FF3C3C3C" BorderThickness="1,1,1,1" FontWeight="Bold" VerticalAlignment="Bottom" Click="btn_back_Click">
                     <Button.Resources>

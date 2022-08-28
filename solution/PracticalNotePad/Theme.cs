@@ -10,7 +10,9 @@ namespace PracticalNotePad
     [Serializable]
     public struct Theme
     {
-        public Theme(string color_DefaultText,
+        public Theme(
+            string tname,
+            string color_DefaultText,
             string color_UpBar,
             string color_Panel,
             string color_DisplayPanel,
@@ -29,8 +31,11 @@ namespace PracticalNotePad
             string color_General_Dark_1,
             string color_General_Dark_2,
             string color_General_Dark_3,
+            string color_Btn_Brush_Active,
+            string color_Btn_Brush_Disable,
             string font_UI_General)
         {
+            Theme_Name = tname;
             Color_DefaultText = color_DefaultText;
             Color_UpBar = color_UpBar;
             Color_Panel = color_Panel;
@@ -50,9 +55,12 @@ namespace PracticalNotePad
             Color_General_Dark_1 = color_General_Dark_1;
             Color_General_Dark_2 = color_General_Dark_2;
             Color_General_Dark_3 = color_General_Dark_3;
+            Color_Btn_Brush_Active = color_Btn_Brush_Active;
+            Color_Btn_Brush_Disable = color_Btn_Brush_Disable;
             Font_UI_General = font_UI_General;
         }
 
+        public String Theme_Name { get; set; }
         public String Color_DefaultText { get; set; }
         public String Color_UpBar { get; set; }
         public String Color_Panel { get; set; }
@@ -75,6 +83,9 @@ namespace PracticalNotePad
         public String Color_General_Dark_1 { get; set; }
         public String Color_General_Dark_2 { get; set; }
         public String Color_General_Dark_3 { get; set; }
+
+        public String Color_Btn_Brush_Active { get; set; }
+        public String Color_Btn_Brush_Disable { get; set; }
 
         public string Font_UI_General { get; set; }
     }

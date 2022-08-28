@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\Icon\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,10 +19,28 @@
     <None Remove="icon_quit.png" />
     <None Remove="Resources\icon_quit.png" />
   </ItemGroup>
+	
+  <ItemGroup>
+    <None Remove="icon_orange.png" />
+    <None Remove="Resources\Icon\icon_orange.png" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <Content Include="Resources\Icon\icon.ico" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.4.0" />
+    <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+  </ItemGroup>
 
   <ItemGroup>
     <Resource Include="icon_quit.png" />
     <Resource Include="Resources\icon_quit.png" />
   </ItemGroup>
 
+  <ItemGroup>
+	<Resource Include="Resources\Icon\icon_orange.png" />
+  </ItemGroup>
+	
 </Project>
