@@ -50,6 +50,7 @@ namespace TransparentNotePad
 
         private bool fileSaved = false;
         private string currentTextDocPath;
+        private Color panel_color;
 
         DispatcherTimer dispatcherTimer;
 
@@ -73,8 +74,18 @@ namespace TransparentNotePad
                 return null;
             }
         }
-
-
+        
+        public Color PanelColor
+        {
+            get
+            {
+                return this.panel_color;
+            }
+            set
+            {
+                this.panel_color = value;
+            }
+        }
         public Color TextAreaColor
         {
             get
@@ -171,6 +182,8 @@ namespace TransparentNotePad
                 if (args.Length != 0)
                 {
                     tbox_mainText.Text = File.ReadAllText(args[1]);
+                    currentTextDocPath = args[1];
+                    fileSaved = true;
                 }
             }
             catch (Exception) { }
@@ -244,7 +257,8 @@ namespace TransparentNotePad
             {
                 btn_DisplayPanel.Content = "Hide Panel";
                 panel.IsEnabled = true;
-                panel_border.Background = new SolidColorBrush(Color.FromArgb(0xff, 0xbf, 0xbf, 0xbf));
+                panel_border.Background = new SolidColorBrush(
+                    Color.FromArgb(0xff, PanelColor.R, PanelColor.G, PanelColor.B));
                 //panel.Margin = new Thickness(618, 0, 0, 0);
                 panel.Opacity = 100;
                 panel.IsHitTestVisible = true;
@@ -257,7 +271,9 @@ namespace TransparentNotePad
                 btn_DisplayPanel.Content = "Show Panel";
                 panel.IsEnabled = false;
                 panel.IsHitTestVisible = false;
-                panel_border.Background = new SolidColorBrush(Color.FromArgb(0, 255, 255, 255));
+                panel_border.Background = new SolidColorBrush(
+                    Color.FromArgb(0, PanelColor.R, PanelColor.G, PanelColor.B));
+                
                 //panel.Margin = new Thickness(236, 0, 0, 0);
                 panel.Opacity = 0;
                 display_panel.Opacity = 0;
@@ -282,7 +298,8 @@ namespace TransparentNotePad
         {
             if (!Manager.isOpened_OptionWin)
             {
-                Manager.TryOpenWindow<OptionWindow>(Manager.OptionWin);
+                if (Manager.TryOpenWindow<OptionWindow>(Manager.OptionWin))
+                    Manager.OptionWin.OnOpen();
             }
         }
 

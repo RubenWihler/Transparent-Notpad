@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -208,6 +208,8 @@ namespace TransparentNotePad
         {
             string path_bright = System.IO.Path.Combine(ThemesPath, "defaultTheme_Bright.xml");
             string path_dark = System.IO.Path.Combine(ThemesPath, "defaultTheme_Dark.xml");
+            string path_classic = System.IO.Path.Combine(ThemesPath, "classic_tn.xml");
+
             XmlSerializer serializer = new XmlSerializer(typeof(Theme));
 
             try
@@ -262,6 +264,31 @@ namespace TransparentNotePad
                 "FF BF BF BF",
                 "poppins");
 
+                Theme classic_tn = new(
+                "Classic Transparent Notepad",
+                "FF dd dd dd",
+                "FF 50 50 50",
+                "FF 38 38 38",
+                "FF 50 50 50",
+                "4C 40 40 40",
+                "FF ED 4D 4D",
+                "FF ED A7 5F",
+                "FF fd 7e 44",
+                "FF dd dd dd",
+                "00 00 00 00",
+                "FF 53 53 53",
+                "FF fd 7e 44",
+                "00 00 00 00",
+                "FF 94 94 94",
+                "FF B1 B1 B1",
+                "FF EA EA EA",
+                "FF 77 77 77",
+                "FF 58 58 58",
+                "FF 35 35 35",
+                "FF fd 7e 44",
+                "FF BF BF BF",
+                "poppins");
+
                 using (Stream writer = new FileStream(path_bright, FileMode.OpenOrCreate))
                 {
                     serializer.Serialize(writer, theme_bright);
@@ -269,6 +296,10 @@ namespace TransparentNotePad
                 using (Stream writer = new FileStream(path_dark, FileMode.OpenOrCreate))
                 {
                     serializer.Serialize(writer, theme_dark);
+                }
+                using (Stream writer = new FileStream(path_classic, FileMode.OpenOrCreate))
+                {
+                    serializer.Serialize(writer, classic_tn);
                 }
             }
             catch (Exception e)
@@ -379,6 +410,18 @@ namespace TransparentNotePad
                SolidColorBrush(GetColorFromThemeFileString(theme.Color_Btn_Maximise));
             MainWindow.btn_top.Background = new
                SolidColorBrush(GetColorFromThemeFileString(theme.Color_Btn_Top));
+            MainWindow.panel_border.Background = new
+               SolidColorBrush(GetColorFromThemeFileString(theme.Color_Panel));
+
+            MainWindow.PanelColor = GetColorFromThemeFileString(theme.Color_Panel);
+
+            Brush text_color_brush = new
+               SolidColorBrush(GetColorFromThemeFileString(theme.Color_Text_Panel_Btns_Text));
+
+            MainWindow.tblc_text_font.Foreground = text_color_brush;
+            MainWindow.tblc_brush_size.Foreground = text_color_brush;
+            MainWindow.tblc_text_color.Foreground = text_color_brush;
+            MainWindow.tblc_brush_color.Foreground = text_color_brush;
 
             Style button_style = new Style();
             button_style.TargetType = typeof(Button);

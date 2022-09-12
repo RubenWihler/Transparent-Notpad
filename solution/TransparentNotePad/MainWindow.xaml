@@ -65,7 +65,6 @@
             <Setter Property="Tag" Value="btn_panel_text"/>
             <Setter Property="FontFamily" Value="Poppins"/>
             <Setter Property="FontSize" Value="11"/>
-            <Setter Property="Foreground" Value="#FF484848"/>
         </Style>
         <Style x:Key="PanelButtonTextIcon" TargetType="fa:ImageAwesome">
             <Setter Property="Tag" Value="btn_panel_draw_brushIcons"/>
@@ -196,16 +195,17 @@
                         </Button>
                         
                         <Viewbox Grid.Column="0" Grid.Row="3" Style="{StaticResource PanelTextViewBox}">
-                            <TextBlock Style="{StaticResource PanelButtonText}">Text Font:</TextBlock>
+                            <TextBlock x:Name="tblc_text_font" Style="{StaticResource PanelButtonText}">Text Font:</TextBlock>
                         </Viewbox>
                         <ComboBox x:Name="cmbbox_Panels_FontSelector" Style="{DynamicResource Panel_ComboBox}"
                                   Grid.Column="1" Grid.Row="3"
                                   ItemsSource="{Binding Source={StaticResource familyCollection}}" SelectionChanged="cmbbox_Panels_FontSelector_SelectionChanged" VerticalAlignment="Center"/>
 
                         <Viewbox Grid.Column="0" Grid.Row="4" Style="{StaticResource PanelTextViewBox}">
-                            <TextBlock Style="{StaticResource PanelButtonText}">Text Color:</TextBlock>
+                            <TextBlock x:Name="tblc_text_color" Style="{StaticResource PanelButtonText}">Text Color:</TextBlock>
                         </Viewbox>
-                        <xctk:ColorPicker 
+                        <xctk:ColorPicker
+                                x:Name="colpicker_text_color"
                                 VerticalAlignment="Center" 
                                 Grid.Column="1" Grid.Row="4"
                                 SelectedColorChanged="OnTextColorChanged">
@@ -291,7 +291,7 @@
                         
 
                         <Viewbox Grid.Column="0" Grid.Row="4" Style="{StaticResource PanelTextViewBox}">
-                            <TextBlock Style="{StaticResource PanelButtonText}">Brush Size:</TextBlock>
+                            <TextBlock x:Name="tblc_brush_size" Style="{StaticResource PanelButtonText}">Brush Size:</TextBlock>
                         </Viewbox>
                         <Slider x:Name="slider_brush_size"
                                 VerticalAlignment="Center" 
@@ -300,7 +300,7 @@
                                 ValueChanged="BrushSizeChanged"/>
 
                         <Viewbox Grid.Column="0" Grid.Row="5" Style="{StaticResource PanelTextViewBox}">
-                            <TextBlock Style="{StaticResource PanelButtonText}">Brush Color:</TextBlock>
+                            <TextBlock x:Name="tblc_brush_color" Style="{StaticResource PanelButtonText}">Brush Color:</TextBlock>
                         </Viewbox>
 
                         <xctk:ColorPicker 

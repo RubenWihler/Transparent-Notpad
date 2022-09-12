@@ -42,6 +42,9 @@ namespace TransparentNotePad
         }
         private void Init_Theme()
         {
+            theme_initialized = false;
+            cmbbox_Theme.Items.Clear();
+
             if (Manager.TryGetThemeFromXMLFile(out List<Theme> tlist))
             {
                 foreach (Theme t in tlist)
@@ -49,8 +52,9 @@ namespace TransparentNotePad
                     CreateThemeButton(t);
                 }
             }
-        }
 
+            theme_initialized = true;
+        }
         private void CreateThemeButton(Theme theme)
         {
             ThemeBtn btn = new ThemeBtn();
@@ -66,8 +70,12 @@ namespace TransparentNotePad
                 cmbbox_Theme.SelectedItem = btn;
             }
                 
-
             theme_initialized = true;
+        }
+
+        public void OnOpen()
+        {
+            Init_Theme();
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
