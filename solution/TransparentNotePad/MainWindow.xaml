@@ -100,13 +100,13 @@
         <Style x:Key="Panel_BrushButton" TargetType="Button">
             <Setter Property="Tag" Value="btn_panel"/>
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="Margin" Value="32,7,32,7"/>
+            <Setter Property="Margin" Value="31,7,31,7"/>
             <Setter Property="Foreground" Value="#FF484848"/>
             <Setter Property="Background" Value="#FFE6E6E6"/>
             <Setter Property="BorderBrush" Value="#FF484848"/>
             <Setter Property="MaxWidth" Value="50"/>
             <Setter Property="MaxHeight" Value="50"/>
-            <Setter Property="MinWidth" Value="15"/>
+            <Setter Property="MinWidth" Value="12"/>
             <Setter Property="MinHeight" Value="15"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -174,7 +174,7 @@
                 </Border>
                 <Grid x:Name="panel" Background="#00000000" MinWidth="150" MouseLeftButtonDown="DragWindow" AllowDrop="True" Margin="618,0,0,0">
                     <Border x:Name="panel_border" CornerRadius="0,0,30,0" BorderBrush="Black" BorderThickness="0" Background="#FFBFBFBF"/>
-                    <ItemsControl x:Name="Panel_Items_textMode" Style="{StaticResource Panel_Grid}" Margin="0,32,0,0">
+                    <ItemsControl x:Name="Panel_Items_textMode" Style="{StaticResource Panel_Grid}" Margin="10,32,10,0">
                         <Button x:Name="btn_panel_text_switchMode" Grid.Column="0" Grid.Row="0" Content="Paint" Style="{DynamicResource PanelButton}" Click="btn_switchMode_Click">
                             <Button.ContentTemplate>
                                 <DataTemplate>
@@ -249,7 +249,7 @@
                             </Button.ContentTemplate>
                         </Button>
                     </ItemsControl>
-                    <ItemsControl x:Name="Panel_Items_drawMode" Style="{StaticResource Panel_Grid}" Margin="0,32,0,0">
+                    <ItemsControl x:Name="Panel_Items_drawMode" Style="{StaticResource Panel_Grid}" Margin="10,32,10,0">
                         <Button x:Name="btn_panel_draw_switchMode" Grid.Column="0" Grid.Row="0" Content="Paint" Style="{DynamicResource PanelButton}" Click="btn_switchMode_Click">
                             <Button.ContentTemplate>
                                 <DataTemplate>
@@ -300,20 +300,30 @@
                                 ValueChanged="BrushSizeChanged"/>
 
                         <Viewbox Grid.Column="0" Grid.Row="5" Style="{StaticResource PanelTextViewBox}">
+                            <TextBlock x:Name="tblc_eraser_size" Style="{StaticResource PanelButtonText}">Eraser Size:</TextBlock>
+                        </Viewbox>
+                        <Slider x:Name="slider_eraserSize"
+                                VerticalAlignment="Center" 
+                                Maximum="100" Minimum="1"
+                                Grid.Column="1" Grid.Row="5"
+                                ValueChanged="EraserSizeChanged" Value="28"/>
+
+                        <Viewbox Grid.Column="0" Grid.Row="6" Style="{StaticResource PanelTextViewBox}">
                             <TextBlock x:Name="tblc_brush_color" Style="{StaticResource PanelButtonText}">Brush Color:</TextBlock>
                         </Viewbox>
 
-                        <xctk:ColorPicker 
+                        <xctk:ColorPicker
+                                x:Name="cpick_brushColorPicker"
                                 VerticalAlignment="Center" 
-                                Grid.Column="1" Grid.Row="5"
+                                Grid.Column="1" Grid.Row="6"
                                 SelectedColorChanged="ColorPicker_SelectedColorChanged">
                         </xctk:ColorPicker>
 
-                        <Button x:Name="btn_panel_draw_Clear" Grid.Column="1" Grid.Row="6" Content="Option" Style="{StaticResource PanelButton}" Click="On_BtnClear_Click" Background="#FFFF7B5E">
+                        <Button x:Name="btn_panel_draw_Clear" Grid.Column="1" Grid.Row="7" Content="Option" Style="{StaticResource PanelButton}" Click="On_BtnClear_Click" Background="#FFFF7B5E">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
-                                        <TextBlock Style="{StaticResource PanelButtonText}">Clear</TextBlock>
+                                        <TextBlock Style="{StaticResource PanelButtonText}" Foreground="#FF313131">Clear</TextBlock>
                                     </Viewbox>
                                 </DataTemplate>
                             </Button.ContentTemplate>

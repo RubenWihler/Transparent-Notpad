@@ -33,7 +33,9 @@ namespace TransparentNotePad
             string color_General_Dark_3,
             string color_Btn_Brush_Active,
             string color_Btn_Brush_Disable,
-            string font_UI_General)
+            string font_UI_General,
+            string default_PaintColor,
+            string color_Btn_ShowHidePanel)
         {
             Theme_Name = tname;
             Color_DefaultText = color_DefaultText;
@@ -58,6 +60,8 @@ namespace TransparentNotePad
             Color_Btn_Brush_Active = color_Btn_Brush_Active;
             Color_Btn_Brush_Disable = color_Btn_Brush_Disable;
             Font_UI_General = font_UI_General;
+            Default_PaintColor = default_PaintColor;
+            Color_Btn_ShowHidePanel = color_Btn_ShowHidePanel;
         }
 
         public String Theme_Name { get; set; }
@@ -71,6 +75,7 @@ namespace TransparentNotePad
         public String Color_Btn_Minimise { get; set; }
         public String Color_Btn_Maximise { get; set; }
         public String Color_Btn_Top { get; set; }
+        public string Color_Btn_ShowHidePanel { get; set; }
 
         public String Color_Text_Opacity_lbl { get; set; }
         public String Color_Text_Panel_Btns_Bg { get; set; }
@@ -88,5 +93,7 @@ namespace TransparentNotePad
         public String Color_Btn_Brush_Disable { get; set; }
 
         public string Font_UI_General { get; set; }
+
+        public string Default_PaintColor { get; set; }
     }
 }

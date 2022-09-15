@@ -227,7 +227,7 @@ namespace TransparentNotePad
                 "FF 5F 61 ED",
                 "00 00 00 00",
                 "FF A4 A4 A4",
-                "00 00 00 00",
+                "FF 35 35 35",
                 "00 00 00 00",
                 "FF 94 94 94",
                 "FF B1 B1 B1",
@@ -237,7 +237,9 @@ namespace TransparentNotePad
                 "FF 35 35 35",
                 "FF 63 ED 5F",
                 "FF 5B 5B 5B",
-                "poppins");
+                "poppins",
+                "FF 31 31 31",
+                "FF F9 4A AA");
 
                 Theme theme_dark = new(
                 "default-dark",
@@ -251,8 +253,8 @@ namespace TransparentNotePad
                 "FF 63 ED 5F",
                 "FF dd dd dd",
                 "00 00 00 00",
-                "FF A4 A4 A4",
-                "00 00 00 00",
+                "FF 74 74 74",
+                "FF D2 D2 D2",
                 "00 00 00 00",
                 "FF 94 94 94",
                 "FF B1 B1 B1",
@@ -262,7 +264,9 @@ namespace TransparentNotePad
                 "FF 35 35 35",
                 "FF 63 ED 5F",
                 "FF BF BF BF",
-                "poppins");
+                "poppins",
+                "FF E5 E5 E5",
+                "FF F9 4A AA");
 
                 Theme classic_tn = new(
                 "Classic Transparent Notepad",
@@ -287,7 +291,9 @@ namespace TransparentNotePad
                 "FF 35 35 35",
                 "FF fd 7e 44",
                 "FF BF BF BF",
-                "poppins");
+                "poppins",
+                "FF fd 7e 44",
+                "FF fd 7e 44");
 
                 using (Stream writer = new FileStream(path_bright, FileMode.OpenOrCreate))
                 {
@@ -412,7 +418,11 @@ namespace TransparentNotePad
                SolidColorBrush(GetColorFromThemeFileString(theme.Color_Btn_Top));
             MainWindow.panel_border.Background = new
                SolidColorBrush(GetColorFromThemeFileString(theme.Color_Panel));
+            MainWindow.btn_DisplayPanel.Background = new
+               SolidColorBrush(GetColorFromThemeFileString(theme.Color_Btn_ShowHidePanel));
 
+            MainWindow.cpick_brushColorPicker.SelectedColor = 
+                GetColorFromThemeFileString(theme.Default_PaintColor);
             MainWindow.PanelColor = GetColorFromThemeFileString(theme.Color_Panel);
 
             Brush text_color_brush = new
@@ -420,6 +430,7 @@ namespace TransparentNotePad
 
             MainWindow.tblc_text_font.Foreground = text_color_brush;
             MainWindow.tblc_brush_size.Foreground = text_color_brush;
+            MainWindow.tblc_eraser_size.Foreground = text_color_brush;
             MainWindow.tblc_text_color.Foreground = text_color_brush;
             MainWindow.tblc_brush_color.Foreground = text_color_brush;
 

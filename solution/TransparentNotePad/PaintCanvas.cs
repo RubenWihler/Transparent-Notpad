@@ -30,24 +30,75 @@ namespace TransparentNotePad
             Eraser
         }
 
-        
         public bool CanPaint { get; set; }
-        public double Radius { get; set; }
-        public uint Elements { get; private set; }
-        
+        public double Radius
+        {
+            get
+            {
+                return radius;
+            }
+            set
+            {
+                radius = value;        
+            }
+        }
+        public double EraseRadius
+        {
+            get
+            {
+                return eraser_radius;
+            }
+            set
+            {
+                if (value < 0) value = 0;
+                
+                eraser_radius = value;
 
-        public PaintBrush SelectedBrush { get; set; }
+                if (erase_cursor_preview != null)
+                {
+                    erase_cursor_preview!.Width = eraser_radius;
+                    erase_cursor_preview!.Height = eraser_radius;
+                }
+            }
+        }
+        public uint Elements { get; private set; }
+
+
+        public PaintBrush SelectedBrush
+        {
+            get
+            {
+                return selectedBrush;
+            }
+            set
+            {
+                selectedBrush = value;
+
+                if (erase_cursor_preview != null)
+                    erase_cursor_preview!.Visibility = 
+                        selectedBrush == PaintBrush.Eraser ? Visibility.Visible : Visibility.Hidden;
+            }
+        }
         public Color CurrentColor { get; set; }
 
+        private double radius;
+        private double eraser_radius;
+        private Ellipse? erase_cursor_preview = null;
         private bool isMouseDown = false;
         private Point? currentPoint = null;
+        private PaintBrush selectedBrush;
+        private System.Windows.Point? alt_resize_basePoint;
+
+        private List<DependencyObject> foundControls = new List<DependencyObject>();
 
         //bool -> has been created
         //      true:  created
         //      false: deleted
+
         private List<Dictionary<UIElement, bool>> undo_Elements = new List<Dictionary<UIElement, bool>>();
         private List<Dictionary<UIElement, bool>> redo_Elements = new List<Dictionary<UIElement, bool>>();
         private Dictionary<UIElement, bool> dic_futureUndoElements = new Dictionary<UIElement, bool>();
+        
 
         public void PaintLine(Point pos)
         {
@@ -57,10 +108,7 @@ namespace TransparentNotePad
                 line.Stroke = brush;
                 line.StrokeThickness = Radius;
 
-                if (currentPoint == null)
-                {
-                    currentPoint = pos;
-                }
+                if (currentPoint == null) currentPoint = pos;
 
                 line.X1 = currentPoint.Value.X;
                 line.Y1 = currentPoint.Value.Y;
@@ -80,7 +128,7 @@ namespace TransparentNotePad
         public void PaintCircle(Point posistion)
         {
             Ellipse elipse = new Ellipse();
-            
+
             if (TryGetBrush(out Brush brush))
             {
                 elipse.Fill = brush;
@@ -106,7 +154,7 @@ namespace TransparentNotePad
                 {
                     this.Children.Add(item.Key);
                 }
-                
+
                 dic_for_redo.Add(item.Key, !item.Value);
             }
 
@@ -146,6 +194,7 @@ namespace TransparentNotePad
         public void Clear()
         {
             this.Children.Clear();
+            Init_ErasePreview();
         }
 
         public override void EndInit()
@@ -171,69 +220,115 @@ namespace TransparentNotePad
             this.Cursor = Cursors.Cross;
             SelectedBrush = PaintBrush.Defautl;
             CurrentColor = Color.FromArgb(0xff, 0xff, 0xff, 0xff);
+            Init_ErasePreview();
+        }
+        public void Init_ErasePreview()
+        {
+            this.erase_cursor_preview = new Ellipse();
+            this.erase_cursor_preview.Height = EraseRadius;
+            this.erase_cursor_preview.Width  = EraseRadius;
+            this.erase_cursor_preview.StrokeThickness = 2;
+            this.erase_cursor_preview.Stroke = new SolidColorBrush(Color.FromArgb(230, 200, 200, 200));
+            this.erase_cursor_preview.IsHitTestVisible = false;
+            this.erase_cursor_preview.Fill = new SolidColorBrush(Color.FromArgb(70, 200, 200, 200));
+            this.Children.Add(this.erase_cursor_preview);
+            SetZIndex(this.erase_cursor_preview, 10);
+            this.erase_cursor_preview.Visibility = Visibility.Hidden;
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
+            if (SelectedBrush == PaintBrush.Eraser)
+            {
+                if (erase_cursor_preview != null)
+                {
+                    SetTop(erase_cursor_preview, e.GetPosition(this).Y - EraseRadius / 2);
+                    SetLeft(erase_cursor_preview, e.GetPosition(this).X - EraseRadius / 2);
+                }
+            }
+
             if (isMouseDown)
             {
+                //if (alt_resize_basePoint != null) alt_resize_basePoint = null;
+
                 if (SelectedBrush == PaintBrush.Eraser)
                 {
-                    Erase( new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y));
+                    Erase(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y));
                 }
                 else
                 {
                     Draw(e.GetPosition(this).X, e.GetPosition(this).Y);
                 }
-                
+
+                //if (Keyboard.IsKeyDown(Key.LeftAlt))
+                //{
+                //    if (alt_resize_basePoint == null)
+                //    {
+                //        alt_resize_basePoint = e.GetPosition(this);
+                //    }
+                //    else
+                //    {
+                //        System.Windows.Point mpos = e.GetPosition(this);
+                //        double distance = GetDistance(alt_resize_basePoint.Value, mpos);
+                        
+                //        if (alt_resize_basePoint.Value.Y < mpos.Y)
+                //        {
+                //            if (SelectedBrush == PaintBrush.Defautl) Radius -= distance * 0.001;
+                //            else if (SelectedBrush == PaintBrush.Eraser) EraseRadius -= distance * 0.001;
+                //        }
+                //        else
+                //        {
+                //            if (SelectedBrush == PaintBrush.Defautl) Radius += distance * 0.001;
+                //            else if (SelectedBrush == PaintBrush.Eraser) EraseRadius += distance * 0.001;
+                //        }
+                //    }
+
+                //    return;
+                //}
+                //else
+                //{
+                //    if (alt_resize_basePoint != null) alt_resize_basePoint = null;
+
+                //    if (SelectedBrush == PaintBrush.Eraser)
+                //    {
+                //        Erase(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y));
+                //    }
+                //    else
+                //    {
+                //        Draw(e.GetPosition(this).X, e.GetPosition(this).Y);
+                //    }
+                //}
             }
-                
+            //else
+            //{
+            //    if (alt_resize_basePoint != null) alt_resize_basePoint = null;
+            //}
         }
         private void Draw(double x, double y)
         {
-            x -= Radius / 2;
-            y -= Radius / 2;
+            //x -= (Radius / 2);
+            //y -= (Radius / 2);
 
             //PaintCircle(new Point(Convert.ToInt32(x), Convert.ToInt32(y)));
             PaintLine(new Point(Convert.ToInt32(x), Convert.ToInt32(y)));
         }
-        //private void Erase(double x, double y)
-        //{
-        //    double divised_radius = Radius / 2;
-        //    int x_randomised = 0;
-        //    int y_randomised = 0;
 
-        //    x -= divised_radius;
-        //    y -= divised_radius;
-
-        //    int point_to_place = 100;
-        //    while (point_to_place > 0)
-        //    {
-        //        x_randomised = (int)x + random.Next((int)-divised_radius, (int)divised_radius);
-        //        y_randomised = (int)y + random.Next((int)-divised_radius, (int)divised_radius);
-        //        EraseCircle(new System.Windows.Point(x_randomised, y_randomised));
-
-        //        point_to_place--;
-        //    }
-
-        //}
-
-        private List<DependencyObject> foundControls = new List<DependencyObject>();
 
         private void Erase(System.Windows.Point point)
         {
-            var hitTestArea = new EllipseGeometry(point, Radius, Radius);
+            double divisedRadius = EraseRadius / 2;
+            var hitTestArea = new EllipseGeometry(point, divisedRadius, divisedRadius);
             foundControls.Clear();
 
-            VisualTreeHelper.HitTest( this, null,
-                new HitTestResultCallback(SelectionResult), 
+            VisualTreeHelper.HitTest(this, null,
+                new HitTestResultCallback(SelectionResult),
                 new GeometryHitTestParameters(hitTestArea));
 
             for (int i = 0; i < foundControls.Count; i++)
             {
                 try
                 {
-                    if (foundControls[i] != this)
+                    if (foundControls[i] != this && foundControls[i] != erase_cursor_preview)
                     {
                         dic_futureUndoElements.Add(foundControls[i] as UIElement, false);
                         this.Children.Remove(foundControls[i] as UIElement);
@@ -308,49 +403,11 @@ namespace TransparentNotePad
             brush = null;
             return false;
         }
-        
-    }
-}
 
-public static class RemoveChildHelper
-{
-    public static void RemoveChild(this DependencyObject parent, UIElement child)
-    {
-        var panel = parent as Panel;
-        if (panel != null)
+        private double GetDistance(System.Windows.Point p1, System.Windows.Point p2)
         {
-            panel.Children.Remove(child);
-            return;
-        }
-
-        var decorator = parent as Decorator;
-        if (decorator != null)
-        {
-            if (decorator.Child == child)
-            {
-                decorator.Child = null;
-            }
-            return;
-        }
-
-        var contentPresenter = parent as ContentPresenter;
-        if (contentPresenter != null)
-        {
-            if (contentPresenter.Content == child)
-            {
-                contentPresenter.Content = null;
-            }
-            return;
-        }
-
-        var contentControl = parent as ContentControl;
-        if (contentControl != null)
-        {
-            if (contentControl.Content == child)
-            {
-                contentControl.Content = null;
-            }
-            return;
+            return ((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y) * (p1.Y - p2.Y));
         }
     }
 }
+

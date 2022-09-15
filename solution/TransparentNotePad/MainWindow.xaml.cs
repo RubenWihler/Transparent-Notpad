@@ -246,8 +246,14 @@ namespace TransparentNotePad
         }
         private void SetWindowOpacity(byte alpha)
         {
-            brd_main.Background = new SolidColorBrush(Color.FromArgb(Math.Clamp((byte)alpha, (byte)(canFullTransparent ? 0x00 : 0x01), (byte)0xff), text_area_color.R, text_area_color.G, text_area_color.B));
+            brd_main.Background = new SolidColorBrush(Color.FromArgb(
+                Math.Clamp((byte)alpha,(byte)(canFullTransparent ? 0x00 : 0x01),(byte)0xff),
+                text_area_color.R,
+                text_area_color.G,
+                text_area_color.B));
+
             win_transparent = false;
+            lastWinOppacity = alpha;
         }
 
         private void DisplayPanel(bool value)
@@ -259,26 +265,22 @@ namespace TransparentNotePad
                 panel.IsEnabled = true;
                 panel_border.Background = new SolidColorBrush(
                     Color.FromArgb(0xff, PanelColor.R, PanelColor.G, PanelColor.B));
-                //panel.Margin = new Thickness(618, 0, 0, 0);
                 panel.Opacity = 100;
                 panel.IsHitTestVisible = true;
+                display_panel.IsHitTestVisible = true;
                 display_panel.Opacity = 100;
-                //display_panel.Margin = new Thickness(611, 126, 0, 150);
-                //display_panel.HorizontalAlignment = HorizontalAlignment.Left;
             }
             else
             {
                 btn_DisplayPanel.Content = "Show Panel";
                 panel.IsEnabled = false;
                 panel.IsHitTestVisible = false;
+                display_panel.IsHitTestVisible = false;
                 panel_border.Background = new SolidColorBrush(
                     Color.FromArgb(0, PanelColor.R, PanelColor.G, PanelColor.B));
                 
-                //panel.Margin = new Thickness(236, 0, 0, 0);
                 panel.Opacity = 0;
                 display_panel.Opacity = 0;
-                //display_panel.Margin = new Thickness(793, 126, -7, 190);
-                //display_panel.HorizontalAlignment = HorizontalAlignment.Right;
             }
 
 
@@ -316,6 +318,7 @@ namespace TransparentNotePad
                 case AppMode.Draw:
                     DisableElementsOfTextMode();
                     EnableElementsOfDrawMode();
+                    UpdateBrushButtons();
                     break;
                 default:
                     break;
@@ -407,6 +410,16 @@ namespace TransparentNotePad
             {
                 if (Keyboard.IsKeyDown(Key.LeftShift)) btn_TextSaveAs_Click(this, null);
                 else btn_TextSave_Click(this, null);
+            }
+            if (e.Key == Key.P
+                && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                btn_DisplayPanel_Click(this, null);
+            }
+            if (e.Key == Key.T
+                && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                btn_top_Click(this, null);
             }
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -651,6 +664,11 @@ namespace TransparentNotePad
             paint_area.Radius = e.NewValue;
         }
 
+        private void EraserSizeChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            paint_area.EraseRadius = e.NewValue;
+        }
+
         private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
             paint_area.CurrentColor = e.NewValue.Value;
@@ -799,5 +817,7 @@ namespace TransparentNotePad
                 fileSaved = true;
             }
         }
+
+        
     }
 }
