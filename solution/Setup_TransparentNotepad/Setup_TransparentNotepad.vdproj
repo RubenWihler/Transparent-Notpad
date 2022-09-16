@@ -15,13 +15,13 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_BFE70E3C4C174F6C90265F266216560E"
+        "MsmKey" = "8:_BEA6306CC2EF4ACDABBE7333E4F0EBA4"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_C363858788744652BC787DF732CAFEE2"
+        "MsmKey" = "8:_BFE70E3C4C174F6C90265F266216560E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -97,6 +97,20 @@
     {
         "CustomAction"
         {
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_FE47238AE2A44E259AD406E26A2B859E"
+            {
+            "Name" = "8:Éléments de publication from TransparentNotePad (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_BEA6306CC2EF4ACDABBE7333E4F0EBA4"
+            "FileType" = "3:2"
+            "InstallAction" = "3:2"
+            "Arguments" = "8:/Commit"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_E6092242_759A_4993_8181_E2EBC911B38F"
+            "InstallerClass" = "11:FALSE"
+            "CustomActionData" = "8:"
+            }
         }
         "DefaultFeature"
         {
@@ -125,9 +139,9 @@
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BFE70E3C4C174F6C90265F266216560E"
             {
             "SourcePath" = "8:..\\TransparentNotePad\\Resources\\Icon\\icon.ico"
-            "TargetName" = "8:icon.ico"
+            "TargetName" = "8:tn_icon.ico"
             "Tag" = "8:"
-            "Folder" = "8:_E0627549F41544E1B8A4606E6DFF5EC7"
+            "Folder" = "8:_72C408092D024F33AFB15B44AED3FB46"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -158,17 +172,6 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_E0627549F41544E1B8A4606E6DFF5EC7"
-                    {
-                    "Name" = "8:Icons"
-                    "AlwaysCreate" = "11:FALSE"
-                    "Condition" = "8:"
-                    "Transitive" = "11:FALSE"
-                    "Property" = "8:_0DB1FA73FBD5468AB98DC60E8C73B6D7"
-                        "Folders"
-                        {
-                        }
-                    }
                 }
             }
             "{1525181F-901A-416C-8A58-119130FE478E}:_85D3B59964164C66BC41591C75318E38"
@@ -191,17 +194,6 @@
             "Property" = "8:ProgramMenuFolder"
                 "Folders"
                 {
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_F5B2BB3A95184496A094C0A796006857"
-                    {
-                    "Name" = "8:TransparentNotepad"
-                    "AlwaysCreate" = "11:FALSE"
-                    "Condition" = "8:"
-                    "Transitive" = "11:FALSE"
-                    "Property" = "8:_CCB2E6F1261A4AACA8E8D3E4FBB6DF2C"
-                        "Folders"
-                        {
-                        }
-                    }
                 }
             }
         }
@@ -221,7 +213,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Setup_TransparentNotepad"
         "ProductCode" = "8:{93D64C33-314C-4321-A51F-B46ADA019C7F}"
-        "PackageCode" = "8:{5FDFB4AB-B9F8-4D90-B632-752327B3A282}"
+        "PackageCode" = "8:{3C139F21-1E74-43F2-B95C-22904D37D6E5}"
         "UpgradeCode" = "8:{1C61B24E-4306-4327-951B-97067E9B7FD3}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -229,10 +221,10 @@
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
         "ProductVersion" = "8:1.0.0"
-        "Manufacturer" = "8:Ruben Wihler"
+        "Manufacturer" = "8:RubenWihler"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:Setup_TransparentNotepad"
+        "Title" = "8:Transparent Notepad"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Ruben Wihler"
         "Keywords" = "8:"
@@ -341,30 +333,30 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_A347DE78DD40459AA35876C4D30D757B"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_7EA82C6231404170B761744A09AE9BE9"
             {
             "Name" = "8:Transparent Notepad"
             "Arguments" = "8:"
-            "Description" = "8:"
+            "Description" = "8:launch Transparent Notepad"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_C363858788744652BC787DF732CAFEE2"
-            "Folder" = "8:_85D3B59964164C66BC41591C75318E38"
+            "Target" = "8:_BEA6306CC2EF4ACDABBE7333E4F0EBA4"
+            "Folder" = "8:_D4877C24D3D64159884BEE567225B7CF"
             "WorkingFolder" = "8:_72C408092D024F33AFB15B44AED3FB46"
             "Icon" = "8:_BFE70E3C4C174F6C90265F266216560E"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_C57117C7E2744B71A3DDCC2B08D08A33"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_F9A3B50ECED240D2AAF4204998A18262"
             {
             "Name" = "8:Transparent Notepad"
             "Arguments" = "8:"
-            "Description" = "8:"
+            "Description" = "8:launch Transparent Notepad"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_C363858788744652BC787DF732CAFEE2"
-            "Folder" = "8:_D4877C24D3D64159884BEE567225B7CF"
+            "Target" = "8:_BEA6306CC2EF4ACDABBE7333E4F0EBA4"
+            "Folder" = "8:_85D3B59964164C66BC41591C75318E38"
             "WorkingFolder" = "8:_72C408092D024F33AFB15B44AED3FB46"
             "Icon" = "8:_BFE70E3C4C174F6C90265F266216560E"
             "Feature" = "8:"
@@ -768,9 +760,9 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C363858788744652BC787DF732CAFEE2"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_BEA6306CC2EF4ACDABBE7333E4F0EBA4"
             {
-            "SourcePath" = "8:..\\TransparentNotePad\\obj\\Release\\net6.0-windows\\TransparentNotePad.dll"
+            "SourcePath" = "8:..\\TransparentNotePad\\obj\\Release\\net6.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_72C408092D024F33AFB15B44AED3FB46"
@@ -789,7 +781,7 @@
             "IsolateTo" = "8:"
             "ProjectOutputGroupRegister" = "3:1"
             "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
+            "OutputGroupCanonicalName" = "8:PublishItems"
             "OutputProjectGuid" = "8:{2527D10D-0AC9-4AD6-842B-3FCD935AC76A}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"

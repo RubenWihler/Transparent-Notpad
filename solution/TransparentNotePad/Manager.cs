@@ -328,7 +328,8 @@ namespace TransparentNotePad
                 "Bright",
                 "poppins",
                 24,
-                Environment.GetFolderPath(Environment.SpecialFolder.Desktop));
+                Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                "no");
 
             string json = JsonSerializer.Serialize(generated_file);
             File.WriteAllText(StoredDataFilePath, json);
@@ -799,25 +800,33 @@ namespace TransparentNotePad
         public static void SetAssociationWithExtension(string Extension, string KeyName, string OpenWith, string FileDescription)
         {
             #if WINDOWS
-            try
-            {
-                RegistryKey baseKey = Registry.ClassesRoot.CreateSubKey(Extension);
-                baseKey.SetValue("", KeyName);
 
-                RegistryKey openMethod = Registry.ClassesRoot.CreateSubKey(KeyName);
-                openMethod.SetValue("", FileDescription);
-                openMethod.CreateSubKey("DefaultIcon").SetValue(@"", "\"" + OpenWith + "\",0");
-                
-                RegistryKey shell = openMethod.CreateSubKey("Shell");
-                shell.CreateSubKey("edit").CreateSubKey("command").SetValue("", "\"" + OpenWith + "\"" + " \"%1\"");
-                shell.CreateSubKey("open").CreateSubKey("command").SetValue("", "\"" + OpenWith + "\"" + " \"%1\"");
-                
-                baseKey.Close();
-                openMethod.Close();
-                shell.Close();
+            if (StoredDataFile.TntxtFileInited == "no")
+            {
+                try
+                {
+                    RegistryKey baseKey = Registry.ClassesRoot.CreateSubKey(Extension);
+                    baseKey.SetValue("", KeyName);
+
+                    RegistryKey openMethod = Registry.ClassesRoot.CreateSubKey(KeyName);
+                    openMethod.SetValue("", FileDescription);
+                    openMethod.CreateSubKey("DefaultIcon").SetValue(@"", "\"" + OpenWith + "\",0");
+
+                    RegistryKey shell = openMethod.CreateSubKey("Shell");
+                    shell.CreateSubKey("edit").CreateSubKey("command").SetValue("", "\"" + OpenWith + "\"" + " \"%1\"");
+                    shell.CreateSubKey("open").CreateSubKey("command").SetValue("", "\"" + OpenWith + "\"" + " \"%1\"");
+
+                    baseKey.Close();
+                    openMethod.Close();
+                    shell.Close();
+
+                    StoredDataFile tosave_file = StoredDataFile;
+                    tosave_file.TntxtFileInited = "ok";
+                    SaveStoredData(tosave_file);
+                    Console.WriteLine("TNTXT FILES OK!");
+                }
+                catch { }
             }
-            catch { }
-            
             #endif
         }
 

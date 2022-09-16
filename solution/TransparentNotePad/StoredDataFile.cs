@@ -14,13 +14,15 @@ namespace TransparentNotePad
             string selected_Theme,
             string font,
             double text_zoom,
-            string lastSaveDirectory)
+            string lastSaveDirectory,
+            string tntxtFileInited)
         {
             LastText_Saved = lastText_Saved;
             Selected_Theme = selected_Theme;
             Font = font;
             LastTextZoom = text_zoom;
             LastSaveDirectory = lastSaveDirectory;
+            TntxtFileInited = tntxtFileInited;
         }
 
         public string LastText_Saved { get; set; }
@@ -29,5 +31,6 @@ namespace TransparentNotePad
         public double LastTextZoom { get; set; }
 
         public string LastSaveDirectory { get; set; }
+        public string TntxtFileInited { get; set; }
     }
 }
