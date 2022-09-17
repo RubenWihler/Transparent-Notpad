@@ -554,7 +554,7 @@ namespace TransparentNotePad
         {
             return new SolidColorBrush(GetColorFromThemeFileString(hex));
         }
-        private static System.Windows.Media.Color GetColorFromThemeFileString(string hex)
+        public static System.Windows.Media.Color GetColorFromThemeFileString(string hex)
         {
             byte a, r, g, b;
             string[] parts = hex.Split(' ');

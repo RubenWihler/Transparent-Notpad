@@ -43,3 +43,5 @@ D:\GitHub\Practical_Notpad\solution\TransparentNotePad\obj\Release\net6.0-window
 D:\GitHub\Practical_Notpad\solution\TransparentNotePad\obj\Release\net6.0-windows\TransparentNotePad.pdb
 D:\GitHub\Practical_Notpad\solution\TransparentNotePad\obj\Release\net6.0-windows\TransparentNotePad.genruntimeconfig.cache
 D:\GitHub\Practical_Notpad\solution\TransparentNotePad\obj\Release\net6.0-windows\ref\TransparentNotePad.dll
+D:\GitHub\Practical_Notpad\solution\TransparentNotePad\obj\Release\net6.0-windows\Postit.g.cs
+D:\GitHub\Practical_Notpad\solution\TransparentNotePad\obj\Release\net6.0-windows\Postit.baml

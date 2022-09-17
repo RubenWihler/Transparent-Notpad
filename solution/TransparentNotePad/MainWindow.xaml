@@ -193,6 +193,15 @@
                                 </DataTemplate>
                             </Button.ContentTemplate>
                         </Button>
+                        <Button x:Name="btn_panel_text_openAsNoteWindow" Grid.Column="1" Grid.Row="1" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_note_Click_1">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <TextBlock Style="{StaticResource PanelButtonText}">New Note</TextBlock>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
                         
                         <Viewbox Grid.Column="0" Grid.Row="3" Style="{StaticResource PanelTextViewBox}">
                             <TextBlock x:Name="tblc_text_font" Style="{StaticResource PanelButtonText}">Text Font:</TextBlock>

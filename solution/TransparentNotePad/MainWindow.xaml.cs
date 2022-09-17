@@ -205,6 +205,7 @@ namespace TransparentNotePad
             Manager.SetTheme(Manager.CurrentTheme);
             Manager.SetDefaultTextZoom(data_file.LastTextZoom);
             Init_FontBox();
+
             slider_brush_size.Value = 7;
             dispatcherTimer.Tick -= RetardedCall;
             dispatcherTimer.Stop();
@@ -420,6 +421,11 @@ namespace TransparentNotePad
                 && Keyboard.IsKeyDown(Key.LeftCtrl))
             {
                 btn_top_Click(this, null);
+            }
+            if (e.Key == Key.N
+                && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                btn_note_Click_1(this, null);
             }
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -818,6 +824,10 @@ namespace TransparentNotePad
             }
         }
 
-        
+        private void btn_note_Click_1(object sender, RoutedEventArgs e)
+        {
+            Postit p = new Postit();
+            p.Show();
+        }
     }
 }
