@@ -20,6 +20,7 @@ using System.Text.Json;
 using Microsoft.Win32;
 using System.Data;
 using System.Security.Permissions;
+using System.Runtime.CompilerServices;
 
 namespace TransparentNotePad
 {
@@ -32,6 +33,8 @@ namespace TransparentNotePad
         private MainWindow mainWindow;
         
         private Theme currentTheme;
+
+        public event Action<Theme> onThemeChanged;
 
 
         #region /*---------- Proprety ----------*/
@@ -329,7 +332,9 @@ namespace TransparentNotePad
                 "poppins",
                 24,
                 Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
-                "no");
+                "no",
+                255,
+                "Cascadia Code");
 
             string json = JsonSerializer.Serialize(generated_file);
             File.WriteAllText(StoredDataFilePath, json);
@@ -488,6 +493,12 @@ namespace TransparentNotePad
                 Console.WriteLine($"Saved {theme.Theme_Name} | path: {StoredDataFilePath}");
                 Console.ResetColor();
             }
+
+            Instance.currentTheme = theme;
+            //Instance.onThemeChanged?.Invoke(theme);
+            if (Instance.onThemeChanged != null)
+                Instance.onThemeChanged.Invoke(theme);
+
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Loaded {theme.Theme_Name} !");
@@ -732,25 +743,32 @@ namespace TransparentNotePad
         {
             if (MainWindow.tbox_mainText.Text.Trim().Length > 0)
             {
-                //if (TryGetTempFiles_Text(out List<TextFile> list))
-                //{
-                //    int listCount = list.Count;
+                if (TryGetTempFiles_Text(out List<TextFile> list))
+                {
+                    while (list.Count > 30)
+                    {
+                        list.RemoveAt(list.Count);
+                    }
 
-                //    if (listCount > 30)
-                //    {
-                //        list.RemoveAt(list.Count);
-                //    }
+                    int listCount = list.Count;
 
-                //    for (int i = 0; i < listCount; i++)
-                //    {
-                //        if (list[i].Path.Contains("DEFAULTOPEN"))
-                //        {
-                //            File.Move(list[i].Path, list[i].Path.Remove(0,11));
-                //        }
-                //    }
-                //}
-                
-                string filename = $"DEFAULTOPEN_tempTextFile__{DateTime.Now.Day}_{DateTime.Now.Month}_{DateTime.Now.Hour}_{DateTime.Now.Minute}.tntxt";
+                    for (int i = 0; i < listCount; i++)
+                    {
+                        if (list[i].Path.Contains("DEFAULTOPEN"))
+                        {
+                            string old_path = list[i].Path;
+                            string file_dir = System.IO.Path.GetDirectoryName(old_path);
+                            string file_name = System.IO.Path.GetFileName(old_path);
+
+                            file_name = file_name.Remove(0, 11);
+
+                            string new_path = System.IO.Path.Combine(file_dir, file_name);
+                            File.Move(old_path, new_path);
+                        }
+                    }
+                }
+
+                string filename = $"DEFAULTOPEN_tempTextFile__{DateTime.Now.Day}_{DateTime.Now.Month}_{DateTime.Now.Hour}h_{DateTime.Now.Minute}m.tntxt";
                 string path = System.IO.Path.Combine(TempFilePath, filename);
 
                 File.WriteAllText(path, MainWindow.tbox_mainText.Text);
@@ -797,6 +815,22 @@ namespace TransparentNotePad
             Console.ResetColor();
         }
 
+        public static bool TryGetObjectFromResource<T>(Window win, string resourceName, out T? result)
+        {
+            object o = win.Resources[resourceName];
+
+            if (o != null)
+            {
+                if (o.GetType() == typeof(T))
+                {
+                    result = (T)o;
+                    return true;
+                }
+            }
+
+            result = default;
+            return false;
+        }
         public static void SetAssociationWithExtension(string Extension, string KeyName, string OpenWith, string FileDescription)
         {
             #if WINDOWS

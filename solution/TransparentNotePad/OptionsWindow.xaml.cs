@@ -76,6 +76,7 @@ namespace TransparentNotePad
         public void OnOpen()
         {
             Init_Theme();
+            Topmost = Manager.MainWindow.Topmost;
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)

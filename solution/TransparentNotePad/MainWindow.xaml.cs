@@ -245,7 +245,7 @@ namespace TransparentNotePad
 
             win_transparent = value;
         }
-        private void SetWindowOpacity(byte alpha)
+        private void SetWindowOpacity(byte alpha, bool setSliderValue = true)
         {
             brd_main.Background = new SolidColorBrush(Color.FromArgb(
                 Math.Clamp((byte)alpha,(byte)(canFullTransparent ? 0x00 : 0x01),(byte)0xff),
@@ -255,6 +255,8 @@ namespace TransparentNotePad
 
             win_transparent = false;
             lastWinOppacity = alpha;
+
+            if (setSliderValue) slider_winOpacity.Value = alpha;
         }
 
         private void DisplayPanel(bool value)
@@ -290,10 +292,10 @@ namespace TransparentNotePad
 
         private void Zoom(bool up)
         {
-            if (up) current_zoom++;
-            else current_zoom--;
+            if (up) tbox_mainText.FontSize++;
+            else tbox_mainText.FontSize--;
 
-            tbox_mainText.FontSize = current_zoom;
+            current_zoom = Convert.ToInt32(tbox_mainText.FontSize);
             Manager.StartZoomTimer();
         }
         
@@ -426,6 +428,78 @@ namespace TransparentNotePad
                 && Keyboard.IsKeyDown(Key.LeftCtrl))
             {
                 btn_note_Click_1(this, null);
+            }
+            if (e.Key == Key.Add
+                && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                byte new_value = Convert.ToByte(Math.Clamp(slider_winOpacity.Value + 10, 0, 255));
+                SetWindowOpacity(new_value, true);
+            }
+            if (e.Key == Key.Subtract
+                && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                byte new_value = Convert.ToByte(Math.Clamp(slider_winOpacity.Value - 10, 0, 255));
+                SetWindowOpacity(new_value, true);
+            }
+            if (e.Key == Key.D0
+                && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                byte new_value = 0;
+                SetWindowOpacity(new_value, true);
+            }
+            if (e.Key == Key.D1
+                && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                byte new_value = 1;
+                SetWindowOpacity(new_value, true);
+            }
+            if (e.Key == Key.D2
+                && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                byte new_value = 44;
+                SetWindowOpacity(new_value, true);
+            }
+            if (e.Key == Key.D3
+                && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                byte new_value = 60;
+                SetWindowOpacity(new_value, true);
+            }
+            if (e.Key == Key.D4
+                && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                byte new_value = 80;
+                SetWindowOpacity(new_value, true);
+            }
+            if (e.Key == Key.D5
+                && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                byte new_value = 100;
+                SetWindowOpacity(new_value, true);
+            }
+            if (e.Key == Key.D6
+                && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                byte new_value = 130;
+                SetWindowOpacity(new_value, true);
+            }
+            if (e.Key == Key.D7
+                && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                byte new_value = 160;
+                SetWindowOpacity(new_value, true);
+            }
+            if (e.Key == Key.D8
+                && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                byte new_value = 200;
+                SetWindowOpacity(new_value, true);
+            }
+            if (e.Key == Key.D9
+                && Keyboard.IsKeyDown(Key.LeftCtrl))
+            {
+                byte new_value = 0xff;
+                SetWindowOpacity(new_value, true);
             }
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -567,7 +641,7 @@ namespace TransparentNotePad
         private void Slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             byte value = Convert.ToByte(e.NewValue);
-            SetWindowOpacity(value);
+            SetWindowOpacity(value, false);
         }
         private void Border_MouseDown(object sender, MouseEventArgs e)
         {
@@ -824,7 +898,7 @@ namespace TransparentNotePad
             }
         }
 
-        private void btn_note_Click_1(object sender, RoutedEventArgs e)
+        public void btn_note_Click_1(object sender, RoutedEventArgs e)
         {
             Postit p = new Postit();
             p.Show();
