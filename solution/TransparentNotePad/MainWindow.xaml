@@ -18,12 +18,12 @@
         MinWidth="315" 
         IsTabStop="False" 
         PreviewMouseWheel="Window_PreviewMouseWheel"
-        Drop="On_WinDrop"
+        Drop="On_DropOnWindow"
         DragOver="On_WinDrop"
         SizeChanged="OnWinResize"
         AllowDrop="True"
         ResizeMode="CanResizeWithGrip" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" 
-        PreviewKeyDown="PreviewKeyDow">
+        PreviewKeyDown="PreviewKeyDow" MouseUp="Window_MouseUp">
     <Window.Resources>
         <CollectionViewSource 
             Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}" 
@@ -165,17 +165,16 @@
                             
                         </local:PaintCanvas>
                     </Border>
-                    <TextBox x:Name="tbox_mainText" Margin="10,58,31,10" TextWrapping="Wrap" Text="TextBox" Background="#00000000" BorderBrush="#00000000" SelectionBrush="#FF6BB8FF" SelectionTextBrush="{x:Null}" FontSize="24" BorderThickness="0,0,0,0" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" IsTabStop="False" AcceptsTab="True" AcceptsReturn="True" AllowDrop="True" TextChanged="tbox_mainText_TextChanged"/>
-                    <Border x:Name="BlockTextBox" IsHitTestVisible="True" Background="#01ffffff"></Border>
+                    <TextBox x:Name="tbox_mainText" Margin="10,58,10,10" TextWrapping="Wrap" Text="TextBox" Background="#00000000" BorderBrush="#00000000" SelectionBrush="#FF6BB8FF" SelectionTextBrush="{x:Null}" FontSize="24" BorderThickness="0,0,0,0" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" IsTabStop="False" AcceptsTab="True" AcceptsReturn="True" AllowDrop="True" TextChanged="tbox_mainText_TextChanged"/>
                 </Grid>
 
-                <Border x:Name="display_panel" CornerRadius="5" BorderBrush="Black" BorderThickness="0" Margin="611,157,0,129" Background="#FFA4A4A4" MouseMove="Border_MouseDown" MinHeight="41" Cursor="Hand" Focusable="True" Panel.ZIndex="1" Grid.Row="1" HorizontalAlignment="Left" Width="14" MouseDown="display_panel_MouseDown">
+                <Border x:Name="display_panel" CornerRadius="5" BorderBrush="Black" BorderThickness="0" Margin="611,157,0,129" Background="#FFA4A4A4" MouseMove="Border_MouseDown" MinHeight="41" Cursor="Hand" Focusable="True" Panel.ZIndex="1" Grid.Row="1" HorizontalAlignment="Left" Width="14" MouseDown="display_panel_MouseDown" MouseUp="display_panel_MouseUp" AllowDrop="True" Drop="On_DropOnWindow">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="10" Opacity="0.4" Direction="-89.8"/>
                     </Border.Effect>
                 </Border>
-                <Grid x:Name="panel" Background="#00000000" MinWidth="150" MouseLeftButtonDown="DragWindow" AllowDrop="True" Margin="618,0,0,0">
-                    <Border x:Name="panel_border" CornerRadius="0,0,30,0" BorderBrush="Black" BorderThickness="0" Background="#FFBFBFBF"/>
+                <Grid x:Name="panel" Background="#00000000" MinWidth="150" MouseLeftButtonDown="DragWindow" AllowDrop="True" Margin="618,0,0,0" DragLeave="panel_DragLeave">
+                    <Border x:Name="panel_border" CornerRadius="0,0,30,0" BorderBrush="Black" BorderThickness="0" Background="#FFBFBFBF" Drop="On_DropOnWindow"/>
                     <ItemsControl x:Name="Panel_Items_textMode" Style="{StaticResource Panel_Grid}" Margin="10,32,10,0">
                         <Button x:Name="btn_panel_text_switchMode" Grid.Column="0" Grid.Row="0" Content="Paint" Style="{DynamicResource PanelButton}" Click="btn_switchMode_Click">
                             <Button.ContentTemplate>

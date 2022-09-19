@@ -566,12 +566,17 @@ namespace TransparentNotePad
                 panel.Margin.Top,
                 panel.Margin.Right,
                 panel.Margin.Bottom);
+
+            tbox_mainText.Margin = new Thickness(
+                tbox_mainText.Margin.Left,
+                tbox_mainText.Margin.Top,
+                -drop_pos.X,
+                tbox_mainText.Margin.Bottom);
         }
         private void OnWinResize(object sender, SizeChangedEventArgs e)
         {
             var addedSize = Width - 800;
             
-
             if (panel.Margin.Left > 670 + addedSize)
             {
                 panel.Margin = new Thickness(
@@ -649,8 +654,8 @@ namespace TransparentNotePad
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 DragDrop.DoDragDrop(panel, panel, DragDropEffects.None);
-                BlockTextBox.IsHitTestVisible = true;
             }
+
         }
         private void btn_quit_Click(object sender, RoutedEventArgs e)
         {
@@ -908,12 +913,32 @@ namespace TransparentNotePad
 
         private void display_panel_MouseDown(object sender, MouseButtonEventArgs e)
         {
-
+            
         }
 
         private void tbox_mainText_TextChanged(object sender, TextChangedEventArgs e)
         {
 
+        }
+
+        private void display_panel_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            
+        }
+
+        private void panel_DragLeave(object sender, DragEventArgs e)
+        {
+            
+        }
+
+        private void Window_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            
+        }
+
+        private void On_DropOnWindow(object sender, DragEventArgs e)
+        {
+            On_WinDrop(sender, e);
         }
     }
 }

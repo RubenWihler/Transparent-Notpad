@@ -153,19 +153,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Admin\\.nuget\\packages\\": {}
+    "C:\\Users\\Ruben\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Admin\\Documents\\GitHub\\Transparent-Notpad\\solution\\TransparentNotePad\\TransparentNotePad.csproj",
+      "projectUniqueName": "D:\\GitHub\\Practical_Notpad\\solution\\TransparentNotePad\\TransparentNotePad.csproj",
       "projectName": "TransparentNotePad",
-      "projectPath": "C:\\Users\\Admin\\Documents\\GitHub\\Transparent-Notpad\\solution\\TransparentNotePad\\TransparentNotePad.csproj",
-      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Admin\\Documents\\GitHub\\Transparent-Notpad\\solution\\TransparentNotePad\\obj\\",
+      "projectPath": "D:\\GitHub\\Practical_Notpad\\solution\\TransparentNotePad\\TransparentNotePad.csproj",
+      "packagesPath": "C:\\Users\\Ruben\\.nuget\\packages\\",
+      "outputPath": "D:\\GitHub\\Practical_Notpad\\solution\\TransparentNotePad\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Ruben\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
