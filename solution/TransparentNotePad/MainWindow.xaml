@@ -22,7 +22,8 @@
         DragOver="On_WinDrop"
         SizeChanged="OnWinResize"
         AllowDrop="True"
-        ResizeMode="CanResizeWithGrip" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" PreviewKeyDown="PreviewKeyDow">
+        ResizeMode="CanResizeWithGrip" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" 
+        PreviewKeyDown="PreviewKeyDow">
     <Window.Resources>
         <CollectionViewSource 
             Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}" 
@@ -37,7 +38,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Name="border" BorderThickness="2" Background="{TemplateBinding Background}" BorderBrush="#404040">
+                        <Border Name="border" CornerRadius="5" BorderThickness="0" Background="{TemplateBinding Background}" BorderBrush="#404040">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
@@ -155,19 +156,20 @@
             <Setter Property="Margin" Value="5,10,5,9.7"/>
         </Style>
     </Window.Resources>
-    <Border x:Name="brd_main" CornerRadius="0,0,30,30" BorderThickness="0" Padding="4"  Background="#4CFFFFFF" ClipToBounds="True">
-        <Grid Background="Transparent" Opacity="1" Margin="-4,-4,-4,-4" ClipToBounds="True">
-            <Grid Background="{x:Null}" ClipToBounds="True">
-                <Grid Background="#00000000" Grid.RowSpan="2" Grid.ColumnSpan="2">
-                    <Border Background="#00000000" CornerRadius="0,0,30,30">
-                        <local:PaintCanvas x:Name="paint_area" Margin="0,33,0,0" Background="#00000000">
+    <Border x:Name="brd_main" CornerRadius="0,0,30,30" BorderThickness="0" Padding="4"  Background="#4CFFFFFF" ClipToBounds="True" AllowDrop="True">
+        <Grid Background="Transparent" Opacity="255" Margin="-4,-4,-4,-4" ClipToBounds="True">
+            <Grid Background="{x:Null}" ClipToBounds="True" AllowDrop="True">
+                <Grid Background="#00000000" Grid.RowSpan="2" Grid.ColumnSpan="2" AllowDrop="True">
+                    <Border Background="#00000000" CornerRadius="0,0,30,30" AllowDrop="True">
+                        <local:PaintCanvas x:Name="paint_area" Margin="0,33,0,0" Background="#00000000" AllowDrop="True">
                             
                         </local:PaintCanvas>
                     </Border>
-                    <TextBox x:Name="tbox_mainText" Margin="10,58,31,10" TextWrapping="Wrap" Text="TextBox" Background="{x:Null}" BorderBrush="#00000000" SelectionBrush="#FF6BB8FF" SelectionTextBrush="{x:Null}" FontSize="24" BorderThickness="0,0,0,0" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" IsTabStop="False" AcceptsTab="True" AcceptsReturn="True" />
+                    <TextBox x:Name="tbox_mainText" Margin="10,58,31,10" TextWrapping="Wrap" Text="TextBox" Background="#00000000" BorderBrush="#00000000" SelectionBrush="#FF6BB8FF" SelectionTextBrush="{x:Null}" FontSize="24" BorderThickness="0,0,0,0" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" IsTabStop="False" AcceptsTab="True" AcceptsReturn="True" AllowDrop="True" TextChanged="tbox_mainText_TextChanged"/>
+                    <Border x:Name="BlockTextBox" IsHitTestVisible="True" Background="#01ffffff"></Border>
                 </Grid>
 
-                <Border x:Name="display_panel" CornerRadius="5" BorderBrush="Black" BorderThickness="0" Margin="611,157,0,129" Background="#FFA4A4A4" MouseMove="Border_MouseDown" MinHeight="41" Cursor="Hand" Focusable="True" Panel.ZIndex="1" Grid.Row="1" HorizontalAlignment="Left" Width="14">
+                <Border x:Name="display_panel" CornerRadius="5" BorderBrush="Black" BorderThickness="0" Margin="611,157,0,129" Background="#FFA4A4A4" MouseMove="Border_MouseDown" MinHeight="41" Cursor="Hand" Focusable="True" Panel.ZIndex="1" Grid.Row="1" HorizontalAlignment="Left" Width="14" MouseDown="display_panel_MouseDown">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="10" Opacity="0.4" Direction="-89.8"/>
                     </Border.Effect>
@@ -376,7 +378,7 @@
                     <Button x:Name="btn_fullscreen" Margin="0,5,64,5"  Background="#FF63ED5F" BorderBrush="#FF272727" Click="btn_fullscreen_Click" Cursor="Hand" Content="+" FontFamily="Tw Cen MT" Foreground="#FF171717" FontSize="18" FontWeight="Bold" HorizontalAlignment="Right" Width="22" >
                         <Button.Resources>
                             <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="20"/>
+                                <Setter Property="CornerRadius" Value="5"/>
                             </Style>
                         </Button.Resources>
                         <Button.Style>
@@ -393,13 +395,9 @@
                             <StaticResource ResourceKey="UpRightButtonStyle"/>
                         </Button.Style>
                     </Button>
-
                 </Grid>
-
             </Grid>
             <local:PaintCanvas/>
-
-
         </Grid>
     </Border>
 </Window>

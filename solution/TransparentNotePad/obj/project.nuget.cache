@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "dv4pO1xbKNwcT5SEF//cecLcPg9CyVxoUfwtidR8HSGAISEmD7jQErejXdXmOCSPRHWiQ6RhraVcfNWG2RH0TQ==",
+  "dgSpecHash": "PKCgIg2NtQfc6zi3AixRPbp5yG3AIo++HVuvr6x6QqLRFVM7E7Jhvdo3bRA3nNFsJBJ7YGnI2Qpqr/YW/3pA4Q==",
   "success": true,
-  "projectFilePath": "D:\\GitHub\\Practical_Notpad\\solution\\TransparentNotePad\\TransparentNotePad.csproj",
+  "projectFilePath": "C:\\Users\\Admin\\Documents\\GitHub\\Transparent-Notpad\\solution\\TransparentNotePad\\TransparentNotePad.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Ruben\\.nuget\\packages\\extended.wpf.toolkit\\4.4.0\\extended.wpf.toolkit.4.4.0.nupkg.sha512",
-    "C:\\Users\\Ruben\\.nuget\\packages\\fontawesome.wpf\\4.7.0.9\\fontawesome.wpf.4.7.0.9.nupkg.sha512"
+    "C:\\Users\\Admin\\.nuget\\packages\\extended.wpf.toolkit\\4.4.0\\extended.wpf.toolkit.4.4.0.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\fontawesome.wpf\\4.7.0.9\\fontawesome.wpf.4.7.0.9.nupkg.sha512"
   ],
   "logs": [
     {

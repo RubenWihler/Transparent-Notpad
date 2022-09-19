@@ -44,6 +44,7 @@ namespace TransparentNotePad
         private CancellationTokenSource? zoomTimerToken;
         private bool crtl_pressed = false;
         private PaintCanvas.PaintBrush currentBrush;
+        private bool inDisplayMoving = false;
 
         private byte lastWinOppacity = 0x4a;
         private AppMode currentMode = AppMode.Text;
@@ -648,6 +649,7 @@ namespace TransparentNotePad
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 DragDrop.DoDragDrop(panel, panel, DragDropEffects.None);
+                BlockTextBox.IsHitTestVisible = true;
             }
         }
         private void btn_quit_Click(object sender, RoutedEventArgs e)
@@ -902,6 +904,16 @@ namespace TransparentNotePad
         {
             Postit p = new Postit();
             p.Show();
+        }
+
+        private void display_panel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void tbox_mainText_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }
