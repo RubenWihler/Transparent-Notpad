@@ -155,6 +155,22 @@
         <Style x:Key="Panel_ComboBox" TargetType="ComboBox">
             <Setter Property="Margin" Value="5,10,5,9.7"/>
         </Style>
+        <Style x:Key="Rounded Button" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" BorderThickness="0" CornerRadius="4" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFaaaaaa"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+                </Setter>
+        </Style>
     </Window.Resources>
     <Border x:Name="brd_main" CornerRadius="0,0,30,30" BorderThickness="0" Padding="4"  Background="#4CFFFFFF" ClipToBounds="True" AllowDrop="True">
         <Grid Background="Transparent" Opacity="255" Margin="-4,-4,-4,-4" ClipToBounds="True">
@@ -162,7 +178,7 @@
                 <Grid Background="#00000000" Grid.RowSpan="2" Grid.ColumnSpan="2" AllowDrop="True">
                     <Border Background="#00000000" CornerRadius="0,0,30,30" AllowDrop="True">
                         <local:PaintCanvas x:Name="paint_area" Margin="0,33,0,0" Background="#00000000" AllowDrop="True">
-                            
+
                         </local:PaintCanvas>
                     </Border>
                     <TextBox x:Name="tbox_mainText" Margin="10,58,10,10" TextWrapping="Wrap" Text="TextBox" Background="#00000000" BorderBrush="#00000000" SelectionBrush="#FF6BB8FF" SelectionTextBrush="{x:Null}" FontSize="24" BorderThickness="0,0,0,0" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" IsTabStop="False" AcceptsTab="True" AcceptsReturn="True" AllowDrop="True" TextChanged="tbox_mainText_TextChanged"/>
@@ -203,7 +219,7 @@
                                 </DataTemplate>
                             </Button.ContentTemplate>
                         </Button>
-                        
+
                         <Viewbox Grid.Column="0" Grid.Row="3" Style="{StaticResource PanelTextViewBox}">
                             <TextBlock x:Name="tblc_text_font" Style="{StaticResource PanelButtonText}">Text Font:</TextBlock>
                         </Viewbox>
@@ -298,7 +314,7 @@
                                 </DataTemplate>
                             </Button.ContentTemplate>
                         </Button>
-                        
+
 
                         <Viewbox Grid.Column="0" Grid.Row="4" Style="{StaticResource PanelTextViewBox}">
                             <TextBlock x:Name="tblc_brush_size" Style="{StaticResource PanelButtonText}">Brush Size:</TextBlock>
@@ -341,6 +357,46 @@
                     </ItemsControl>
                 </Grid>
 
+                <Border x:Name="brd_DesktopModePanel"
+                        Background="#FF444444"
+                        Width="60"
+                        Height="250"
+                        CornerRadius="10" MouseDown="brd_DesktopModePanel_MouseDown">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="197*"/>
+                            <RowDefinition Height="53*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+
+                        <Button Grid.Row="1"
+                                Margin="15,10,15,15"
+                                Background="#FFED4D4D"
+                                Style="{StaticResource Rounded Button}">
+                            <Viewbox Margin="5">
+                                <fa:ImageAwesome Icon="Close" 
+                                                 Foreground="#ff333333"/>
+                            </Viewbox>
+                        </Button>
+
+
+                    </Grid>
+                </Border>
 
 
                 <Grid x:Name="upBar" Background="#FFDADADA" Grid.ColumnSpan="2" Height="32" VerticalAlignment="Top" Grid.RowSpan="2" MouseLeftButtonDown="DragWindow">

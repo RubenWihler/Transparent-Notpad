@@ -736,7 +736,10 @@ namespace TransparentNotePad
 
         public static void QuitApp()
         {
-            SaveCurrentTextInTemp();
+            if (MainWindow.FileSaved) MainWindow.Save();
+            else SaveCurrentTextInTemp();
+
+            Thread.Sleep(100);
             Environment.Exit(0);
         }
         public static void SaveCurrentTextInTemp()
@@ -763,12 +766,13 @@ namespace TransparentNotePad
                             file_name = file_name.Remove(0, 11);
 
                             string new_path = System.IO.Path.Combine(file_dir, file_name);
+
                             File.Move(old_path, new_path);
                         }
                     }
                 }
 
-                string filename = $"DEFAULTOPEN_tempTextFile__{DateTime.Now.Day}_{DateTime.Now.Month}_{DateTime.Now.Hour}h_{DateTime.Now.Minute}m.tntxt";
+                string filename = $"DEFAULTOPEN_tempTextFile__{DateTime.Now.Day}_{DateTime.Now.Month}_{DateTime.Now.Hour}h_{DateTime.Now.Minute}m_{DateTime.Now.Second}s.tntxt";
                 string path = System.IO.Path.Combine(TempFilePath, filename);
 
                 File.WriteAllText(path, MainWindow.tbox_mainText.Text);

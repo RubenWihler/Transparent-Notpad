@@ -110,6 +110,13 @@ namespace TransparentNotePad
                 SetMode(value);
             }
         }
+        public bool FileSaved
+        {
+            get
+            {
+                return this.fileSaved;
+            }
+        }
 
         private Brush Brush_Transparent
         {
@@ -380,6 +387,50 @@ namespace TransparentNotePad
 
         #region /*---------- Public Methods -----------*/
 
+        public void SaveAs()
+        {
+            SaveFileDialog dialog = new SaveFileDialog
+            {
+                InitialDirectory = Manager.LastTextFileSaveDirectory,
+                Title = "Save text to file",
+
+                CheckFileExists = false,
+                CheckPathExists = true,
+
+                DefaultExt = "txt",
+                Filter = "Text Files(*.txt)|*.txt|All(*.*)|*.tntxt|transparent notpad file(*.tntxt*)|*",
+                FilterIndex = 2,
+                RestoreDirectory = true
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                File.WriteAllText(dialog.FileName, tbox_mainText.Text);
+
+                currentTextDocPath = dialog.FileName;
+                Manager.SetLastSaveEmplacement(currentTextDocPath);
+                fileSaved = true;
+            }
+        }
+
+        public void Save()
+        {
+            if (!fileSaved)
+            {
+                SaveAs();
+            }
+            else
+            {
+                if (File.Exists(currentTextDocPath))
+                {
+                    File.WriteAllText(currentTextDocPath, tbox_mainText.Text);
+                }
+                else
+                {
+                    SaveAs();
+                }
+            }
+        }
 
 
         #endregion
@@ -542,36 +593,41 @@ namespace TransparentNotePad
         }
         private void On_WinDrop(object sender, DragEventArgs e)
         {
-            var addedSize = Width - 800;
-            Point drop_pos = e.GetPosition(this);
-
-            if (drop_pos.X > 618/*670 - 460*/ + addedSize)
+            if (e.Source == display_panel)
             {
-                drop_pos.X = 618 + addedSize;
+                var addedSize = Width - 800;
+                Point drop_pos = e.GetPosition(this);
+
+                if (drop_pos.X > 618/*670 - 460*/ + addedSize)
+                {
+                    drop_pos.X = 618 + addedSize;
+                }
+
+                //if (drop_pos.X < 460 + addedSize)
+                //{
+                //    drop_pos.X = 460 + addedSize;
+                //}
+
+                display_panel.Margin = new Thickness(
+                    drop_pos.X - 7,
+                    display_panel.Margin.Top,
+                    display_panel.Margin.Right,
+                    display_panel.Margin.Bottom);
+
+                panel.Margin = new Thickness(
+                    drop_pos.X,
+                    panel.Margin.Top,
+                    panel.Margin.Right,
+                    panel.Margin.Bottom);
+
+                tbox_mainText.Margin = new Thickness(
+                    tbox_mainText.Margin.Left,
+                    tbox_mainText.Margin.Top,
+                    -drop_pos.X,
+                    tbox_mainText.Margin.Bottom);
             }
 
-            //if (drop_pos.X < 460 + addedSize)
-            //{
-            //    drop_pos.X = 460 + addedSize;
-            //}
-
-            display_panel.Margin = new Thickness(
-                drop_pos.X - 7,
-                display_panel.Margin.Top,
-                display_panel.Margin.Right,
-                display_panel.Margin.Bottom);
-
-            panel.Margin = new Thickness(
-                drop_pos.X,
-                panel.Margin.Top,
-                panel.Margin.Right,
-                panel.Margin.Bottom);
-
-            tbox_mainText.Margin = new Thickness(
-                tbox_mainText.Margin.Left,
-                tbox_mainText.Margin.Top,
-                -drop_pos.X,
-                tbox_mainText.Margin.Bottom);
+            
         }
         private void OnWinResize(object sender, SizeChangedEventArgs e)
         {
@@ -838,48 +894,12 @@ namespace TransparentNotePad
 
         private void btn_TextSaveAs_Click(object sender, RoutedEventArgs e)
         {
-            //SaveFileDialog dialog = new SaveFileDialog();
-            SaveFileDialog dialog = new SaveFileDialog
-            {
-                InitialDirectory = Manager.LastTextFileSaveDirectory,
-                Title = "Save text to file",
-
-                CheckFileExists = false,
-                CheckPathExists = true,
-
-                DefaultExt = "txt",
-                Filter = "Text Files(*.txt)|*.txt|All(*.*)|*.tntxt|transparent notpad file(*.tntxt*)|*",
-                FilterIndex = 2,
-                RestoreDirectory = true
-            };
-
-            if (dialog.ShowDialog() == true)
-            {
-                File.WriteAllText(dialog.FileName, tbox_mainText.Text);
-
-                currentTextDocPath = dialog.FileName;
-                Manager.SetLastSaveEmplacement(currentTextDocPath);
-                fileSaved = true;
-            }            
+            SaveAs();
         }
 
         private void btn_TextSave_Click(object sender, RoutedEventArgs e)
         {
-            if (!fileSaved)
-            {
-                btn_TextSaveAs_Click(this, e);
-            }
-            else
-            {
-                if (File.Exists(currentTextDocPath))
-                {
-                    File.WriteAllText(currentTextDocPath, tbox_mainText.Text);
-                }
-                else
-                {
-                    btn_TextSaveAs_Click(this, e);
-                }
-            }
+            Save();
         }
 
         private void btn_OpenTextDoc_Click(object sender, RoutedEventArgs e)
@@ -939,6 +959,21 @@ namespace TransparentNotePad
         private void On_DropOnWindow(object sender, DragEventArgs e)
         {
             On_WinDrop(sender, e);
+        }
+
+
+
+
+
+
+
+        private void brd_DesktopModePanel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ButtonState == MouseButtonState.Pressed)
+            {
+                DragDrop.DoDragDrop(brd_DesktopModePanel, brd_DesktopModePanel, DragDropEffects.Move);
+
+            }
         }
     }
 }
