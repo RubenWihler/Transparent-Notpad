@@ -55,6 +55,12 @@ namespace TransparentNotePad
 
         DispatcherTimer dispatcherTimer;
 
+        private double DMP_drag_origineX_distance = 0;
+        private double DMP_drag_origineY_distance = 0;
+
+        private DataObject dmp_drag_data;
+        private DataObject panel_drag_data;
+
         #region /*------------- Proprety --------------*/
 
         public Style Panel_Buttons_Style
@@ -593,7 +599,8 @@ namespace TransparentNotePad
         }
         private void On_WinDrop(object sender, DragEventArgs e)
         {
-            if (e.Source == display_panel)
+            e.Handled = true;
+            if (e.Data == panel_drag_data)
             {
                 var addedSize = Width - 800;
                 Point drop_pos = e.GetPosition(this);
@@ -627,7 +634,13 @@ namespace TransparentNotePad
                     tbox_mainText.Margin.Bottom);
             }
 
-            
+            if (e.Data == dmp_drag_data)
+            {
+                Point drop_pos = e.GetPosition(this);
+
+                Canvas.SetTop(brd_DesktopModePanel, drop_pos.Y - ((brd_DesktopModePanel.Height / 2)));
+                Canvas.SetLeft(brd_DesktopModePanel, drop_pos.X - ((brd_DesktopModePanel.Width / 2)));
+            }
         }
         private void OnWinResize(object sender, SizeChangedEventArgs e)
         {
@@ -684,10 +697,10 @@ namespace TransparentNotePad
         }
         private void Resizer_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                DragDrop.DoDragDrop(panel, panel, DragDropEffects.None);
-            }
+            //if (e.LeftButton == MouseButtonState.Pressed)
+            //{
+            //    DragDrop.DoDragDrop(panel, panel, DragDropEffects.None);
+            //}
         }
         private void DragWindow(object sender, MouseButtonEventArgs e)
         {
@@ -707,10 +720,10 @@ namespace TransparentNotePad
         }
         private void Border_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                DragDrop.DoDragDrop(panel, panel, DragDropEffects.None);
-            }
+            //if (e.LeftButton == MouseButtonState.Pressed)
+            //{
+            //    DragDrop.DoDragDrop(panel, panel, DragDropEffects.Move);
+            //}
 
         }
         private void btn_quit_Click(object sender, RoutedEventArgs e)
@@ -933,7 +946,11 @@ namespace TransparentNotePad
 
         private void display_panel_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                panel_drag_data = new DataObject(panel);
+                DragDrop.DoDragDrop(panel, panel_drag_data, DragDropEffects.None);
+            }
         }
 
         private void tbox_mainText_TextChanged(object sender, TextChangedEventArgs e)
@@ -971,9 +988,28 @@ namespace TransparentNotePad
         {
             if (e.ButtonState == MouseButtonState.Pressed)
             {
-                DragDrop.DoDragDrop(brd_DesktopModePanel, brd_DesktopModePanel, DragDropEffects.Move);
+                Point mousePos = e.GetPosition(DM_canvas);
+                double pos_left = Canvas.GetLeft(brd_DesktopModePanel);
+                double pos_top = Canvas.GetTop(brd_DesktopModePanel);
+                
+                DMP_drag_origineX_distance = mousePos.X - (pos_left - (brd_DesktopModePanel.Width));
+                DMP_drag_origineY_distance = mousePos.Y - (pos_top - brd_DesktopModePanel.Height);
+
+                dmp_drag_data = new DataObject(brd_DesktopModePanel);
+
+                DragDrop.DoDragDrop(brd_DesktopModePanel, dmp_drag_data, DragDropEffects.Move);
 
             }
+        }
+
+        private void DM_canvas_DragOver(object sender, DragEventArgs e)
+        {
+            
+        }
+
+        private void DM_canvas_Drop(object sender, DragEventArgs e)
+        {
+            
         }
     }
 }
