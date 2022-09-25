@@ -9,7 +9,8 @@
       "TransparentNotePad/1.0.0": {
         "dependencies": {
           "Extended.Wpf.Toolkit": "4.4.0",
-          "FontAwesome.WPF": "4.7.0.9"
+          "FontAwesome.WPF": "4.7.0.9",
+          "System.Drawing.Common": "6.0.0"
         },
         "runtime": {
           "TransparentNotePad.dll": {}
@@ -84,6 +85,12 @@
             "fileVersion": "4.7.0.9"
           }
         }
+      },
+      "Microsoft.Win32.SystemEvents/6.0.0": {},
+      "System.Drawing.Common/6.0.0": {
+        "dependencies": {
+          "Microsoft.Win32.SystemEvents": "6.0.0"
+        }
       }
     }
   },
@@ -106,6 +113,20 @@
       "sha512": "sha512-SXE080rnyWMm9Dt0BZzMxh89/o9teuSaqL1N+0O/XM/F/HU8JuZA4XaEKxjBigwZPHHU3/udTa0QMYCHkmH43Q==",
       "path": "fontawesome.wpf/4.7.0.9",
       "hashPath": "fontawesome.wpf.4.7.0.9.nupkg.sha512"
+    },
+    "Microsoft.Win32.SystemEvents/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-hqTM5628jSsQiv+HGpiq3WKBl2c8v1KZfby2J6Pr7pEPlK9waPdgEO6b8A/+/xn/yZ9ulv8HuqK71ONy2tg67A==",
+      "path": "microsoft.win32.systemevents/6.0.0",
+      "hashPath": "microsoft.win32.systemevents.6.0.0.nupkg.sha512"
+    },
+    "System.Drawing.Common/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-NfuoKUiP2nUWwKZN6twGqXioIe1zVD0RIj2t976A+czLHr2nY454RwwXs6JU9Htc6mwqL6Dn/nEL3dpVf2jOhg==",
+      "path": "system.drawing.common/6.0.0",
+      "hashPath": "system.drawing.common.6.0.0.nupkg.sha512"
     }
   }
 }

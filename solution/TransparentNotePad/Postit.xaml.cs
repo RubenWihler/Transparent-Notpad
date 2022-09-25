@@ -255,11 +255,14 @@ namespace TransparentNotePad
         {
             if (up)
             {
-                tbox_mainText.FontSize++;
+                if (tbox_mainText.FontSize < 150)
+                {
+                    tbox_mainText.FontSize++;
+                }
             }
             else
             {
-                if (tbox_mainText.FontSize >= 1)
+                if (tbox_mainText.FontSize > 1)
                 {
                     tbox_mainText.FontSize--;
                 }

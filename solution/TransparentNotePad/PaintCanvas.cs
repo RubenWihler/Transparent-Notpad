@@ -11,7 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-
+using Brush = System.Windows.Media.Brush;
 using Color = System.Windows.Media.Color;
 using Point = System.Drawing.Point;
 
@@ -62,7 +62,26 @@ namespace TransparentNotePad
             }
         }
         public uint Elements { get; private set; }
+        public bool ShowEraserPreview
+        {
+            get
+            {
+                return this.showEraserPreview;
+            }
+            set
+            {
+                this.showEraserPreview = value;
 
+                if (erase_cursor_preview != null)
+                {
+                    erase_cursor_preview!.Visibility =
+                            (selectedBrush == PaintBrush.Eraser) 
+                            && value ?
+                            Visibility.Visible : Visibility.Hidden;
+                }
+                    
+            }
+        }
 
         public PaintBrush SelectedBrush
         {
@@ -75,8 +94,13 @@ namespace TransparentNotePad
                 selectedBrush = value;
 
                 if (erase_cursor_preview != null)
-                    erase_cursor_preview!.Visibility = 
-                        selectedBrush == PaintBrush.Eraser ? Visibility.Visible : Visibility.Hidden;
+                {
+                    erase_cursor_preview!.Visibility =
+                        selectedBrush == PaintBrush.Eraser 
+                        && showEraserPreview ? 
+                        Visibility.Visible : Visibility.Hidden;
+                }
+                    
             }
         }
         public Color CurrentColor { get; set; }
@@ -88,6 +112,7 @@ namespace TransparentNotePad
         private Point? currentPoint = null;
         private PaintBrush selectedBrush;
         private System.Windows.Point? alt_resize_basePoint;
+        private bool showEraserPreview = true;
 
         private List<DependencyObject> foundControls = new List<DependencyObject>();
 
@@ -193,8 +218,16 @@ namespace TransparentNotePad
         }
         public void Clear()
         {
-            this.Children.Clear();
-            Init_ErasePreview();
+            List<UIElement> elements = Children.Cast<UIElement>().Where((child) => !child.Uid.Contains("DO_NOT_REMOVE")).ToList();
+            
+            for (int i = 0; i < elements.Count; i++)
+            {
+                Children.Remove(elements[i]);
+            }
+        }
+        public void StopPaint()
+        {
+            MouseDisable();
         }
 
         public override void EndInit()
@@ -206,6 +239,7 @@ namespace TransparentNotePad
         {
             Init_Events();
             Init_DefaultValues();
+            Init_StaticObjects();
             Console.WriteLine("PAINT CANVAS -> INIT ENDED!");
         }
         private void Init_Events()
@@ -214,6 +248,13 @@ namespace TransparentNotePad
             this.MouseLeftButtonDown += OnMouseLefButtonDown;
             this.MouseLeftButtonUp += OnMouseLefButtonUp;
             this.MouseLeave += OnMouseExitCanvas;
+        }
+        private void Init_StaticObjects()
+        {
+            for (int i = 0; i < Children.Count; i++)
+            {
+                Children[i].Uid += "DO_NOT_REMOVE";
+            }
         }
         private void Init_DefaultValues()
         {
@@ -231,6 +272,7 @@ namespace TransparentNotePad
             this.erase_cursor_preview.Stroke = new SolidColorBrush(Color.FromArgb(230, 200, 200, 200));
             this.erase_cursor_preview.IsHitTestVisible = false;
             this.erase_cursor_preview.Fill = new SolidColorBrush(Color.FromArgb(70, 200, 200, 200));
+            this.erase_cursor_preview.Uid += "DO_NOT_REMOVE";
             this.Children.Add(this.erase_cursor_preview);
             SetZIndex(this.erase_cursor_preview, 10);
             this.erase_cursor_preview.Visibility = Visibility.Hidden;
@@ -328,10 +370,11 @@ namespace TransparentNotePad
             {
                 try
                 {
-                    if (foundControls[i] != this && foundControls[i] != erase_cursor_preview)
+                    if (foundControls[i] != this 
+                        && !((UIElement)foundControls[i]).Uid.Contains("DO_NOT_REMOVE"))
                     {
-                        dic_futureUndoElements.Add(foundControls[i] as UIElement, false);
-                        this.Children.Remove(foundControls[i] as UIElement);
+                        dic_futureUndoElements.Add((UIElement)foundControls[i], false);
+                        this.Children.Remove((UIElement)foundControls[i]);
                     }
                 }
                 catch (Exception) { }

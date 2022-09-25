@@ -156,6 +156,7 @@
             <Setter Property="Margin" Value="5,10,5,9.7"/>
         </Style>
         <Style x:Key="Rounded Button" TargetType="Button">
+            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -169,7 +170,72 @@
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
-                </Setter>
+            </Setter>
+        </Style>
+        <Style x:Key="Circle Button" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" BorderThickness="0" CornerRadius="50" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFaaaaaa"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="DMP_button" TargetType="Button">
+            <Setter Property="Tag" Value="DMP_btn"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Margin" Value="7,7,7,7"/>
+            <Setter Property="Foreground" Value="#FF484848"/>
+            <Setter Property="Background" Value="#FFE6E6E6"/>
+            <Setter Property="BorderBrush" Value="#FF484848"/>
+            <Setter Property="MaxWidth" Value="50"/>
+            <Setter Property="MaxHeight" Value="50"/>
+            <Setter Property="MinWidth" Value="12"/>
+            <Setter Property="MinHeight" Value="15"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" BorderThickness="1" CornerRadius="4" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#FFaaaaaa"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="DMP_buttonIcon" TargetType="fa:ImageAwesome">
+            <Setter Property="Tag" Value="btn_panel_draw_brushIcons"/>
+            <Setter Property="Foreground" Value="#FF484848"/>
+            <Setter Property="Margin" Value="15,15,15,15"/>
+            <Setter Property="IsHitTestVisible" Value="False"/>
+        </Style>
+        <Style x:Key="DMP_Label" TargetType="Label">
+            <Setter Property="Tag" Value="DMP_label"/>
+            <Setter Property="Foreground" Value="#FFE6E6E6"/>
+            <Setter Property="Margin" Value="2,2,2,2"/>
+            <Setter Property="FontFamily" Value="Poppins"/>
+        </Style>
+        <Style x:Key="DMP_Slider" TargetType="Slider">
+            <Setter Property="Tag" Value="DMP_slider"/>
+            <Setter Property="Margin" Value="5,0,5,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="DMP_ColorPicker" TargetType="xctk:ColorPicker">
+            <Setter Property="Tag" Value="DMP_color_Picker"/>
+            <Setter Property="Margin" Value="5,0,5,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
     </Window.Resources>
     <Border x:Name="brd_main" CornerRadius="0,0,30,30" BorderThickness="0" Padding="4"  Background="#4CFFFFFF" ClipToBounds="True" AllowDrop="True">
@@ -192,11 +258,11 @@
                 <Grid x:Name="panel" Background="#00000000" MinWidth="150" MouseLeftButtonDown="DragWindow" AllowDrop="True" Margin="618,0,0,0" DragLeave="panel_DragLeave">
                     <Border x:Name="panel_border" CornerRadius="0,0,30,0" BorderBrush="Black" BorderThickness="0" Background="#FFBFBFBF" Drop="On_DropOnWindow"/>
                     <ItemsControl x:Name="Panel_Items_textMode" Style="{StaticResource Panel_Grid}" Margin="10,32,10,0">
-                        <Button x:Name="btn_panel_text_switchMode" Grid.Column="0" Grid.Row="0" Content="Paint" Style="{DynamicResource PanelButton}" Click="btn_switchMode_Click">
+                        <Button x:Name="btn_panel_text_openAsNoteWindow" Grid.Column="0" Grid.Row="0" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_note_Click_1">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
-                                        <TextBlock Style="{StaticResource PanelButtonText}">Paint</TextBlock>
+                                        <TextBlock Style="{StaticResource PanelButtonText}">New Note</TextBlock>
                                     </Viewbox>
                                 </DataTemplate>
                             </Button.ContentTemplate>
@@ -210,15 +276,25 @@
                                 </DataTemplate>
                             </Button.ContentTemplate>
                         </Button>
-                        <Button x:Name="btn_panel_text_openAsNoteWindow" Grid.Column="1" Grid.Row="1" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_note_Click_1">
+                        <Button x:Name="btn_panel_text_switchMode" Grid.Column="0" Grid.Row="1" Content="Paint" Style="{DynamicResource PanelButton}" Click="btn_switchMode_Click">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
-                                        <TextBlock Style="{StaticResource PanelButtonText}">New Note</TextBlock>
+                                        <TextBlock Style="{StaticResource PanelButtonText}">Paint</TextBlock>
                                     </Viewbox>
                                 </DataTemplate>
                             </Button.ContentTemplate>
                         </Button>
+                        <Button x:Name="btn_panel_text_DesktopMode" Grid.Column="1" Grid.Row="1" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_desktopMode_Click">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <TextBlock Style="{StaticResource PanelButtonText}">Desktop</TextBlock>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
+
 
                         <Viewbox Grid.Column="0" Grid.Row="3" Style="{StaticResource PanelTextViewBox}">
                             <TextBlock x:Name="tblc_text_font" Style="{StaticResource PanelButtonText}">Text Font:</TextBlock>
@@ -276,11 +352,12 @@
                         </Button>
                     </ItemsControl>
                     <ItemsControl x:Name="Panel_Items_drawMode" Style="{StaticResource Panel_Grid}" Margin="10,32,10,0">
-                        <Button x:Name="btn_panel_draw_switchMode" Grid.Column="0" Grid.Row="0" Content="Paint" Style="{DynamicResource PanelButton}" Click="btn_switchMode_Click">
+
+                        <Button x:Name="btn_panel_draw_openAsNoteWindow" Grid.Column="0" Grid.Row="0" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_note_Click_1">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
-                                        <TextBlock Style="{StaticResource PanelButtonText}">Text</TextBlock>
+                                        <TextBlock Style="{StaticResource PanelButtonText}">New Note</TextBlock>
                                     </Viewbox>
                                 </DataTemplate>
                             </Button.ContentTemplate>
@@ -290,6 +367,24 @@
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
                                         <TextBlock Style="{StaticResource PanelButtonText}">Option</TextBlock>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
+                        <Button x:Name="btn_panel_draw_switchMode" Grid.Column="0" Grid.Row="1" Content="Paint" Style="{DynamicResource PanelButton}" Click="btn_switchMode_Click">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <TextBlock Style="{StaticResource PanelButtonText}">Text</TextBlock>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
+                        <Button x:Name="btn_panel_draw_DesktopMode" Grid.Column="1" Grid.Row="1" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_desktopMode_Click">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <TextBlock Style="{StaticResource PanelButtonText}">Desktop</TextBlock>
                                     </Viewbox>
                                 </DataTemplate>
                             </Button.ContentTemplate>
@@ -314,7 +409,6 @@
                                 </DataTemplate>
                             </Button.ContentTemplate>
                         </Button>
-
 
                         <Viewbox Grid.Column="0" Grid.Row="4" Style="{StaticResource PanelTextViewBox}">
                             <TextBlock x:Name="tblc_brush_size" Style="{StaticResource PanelButtonText}">Brush Size:</TextBlock>
@@ -357,49 +451,469 @@
                     </ItemsControl>
                 </Grid>
 
-                <Canvas x:Name="DM_canvas">
+                <local:PaintCanvas x:Name="dm_PaintCanvas"
+                                   Background="#01FFFFFF"
+                                   IsHitTestVisible="False"
+                                   AllowDrop="True"
+                                   Drop="DM_canvas_Drop">
                     <Border x:Name="brd_DesktopModePanel"
-                        Background="#FF444444"
-                        Width="60"
-                        Height="250"
-                        CornerRadius="10" MouseDown="brd_DesktopModePanel_MouseDown">
+                            Background="#FF444444"
+                            Width="95"
+                            Height="384"
+                            CornerRadius="10" 
+                            MouseDown="brd_DesktopModePanel_MouseDown" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Center"
+                            IsHitTestVisible="True"
+                            MouseEnter="brd_DesktopModePanel_MouseEnter"
+                            MouseLeave="brd_DesktopModePanel_MouseLeave"
+                            Cursor="Arrow"
+                            Panel.ZIndex="11">
+
                         <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="197*"/>
-                                <RowDefinition Height="53*"/>
-                            </Grid.RowDefinitions>
-
-                            <Grid Grid.Row="0">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
-                            </Grid>
-
-                            <Button Grid.Row="1"
-                                    Margin="15,10,15,15"
-                                    Background="#FFED4D4D"
-                                    Style="{StaticResource Rounded Button}">
-                                <Viewbox Margin="5">
-                                    <fa:ImageAwesome Icon="Close" 
-                                                     Foreground="#ff333333"/>
+                            <Button x:Name="DMP_btn_Extend" 
+                                    Margin="0,180,-12,180" 
+                                    HorizontalAlignment="Right" 
+                                    Width="24"
+                                    Style="{StaticResource Rounded Button}" Click="DMP_btn_Extend_Click">
+                                <Viewbox>
+                                    <fa:ImageAwesome x:Name="DMP_icon_Extend" 
+                                                     Icon="ArrowCircleRight"
+                                                     Style="{StaticResource DMP_buttonIcon}"/>
                                 </Viewbox>
                             </Button>
+                            <Grid Margin="8,25,8,25">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="41*"/>
+                                    <RowDefinition Height="7*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32*" x:Name="DMP_gridDef_Base"/>
+                                    <ColumnDefinition Width="0" x:Name="DMP_gridDef_Extend"/>
+                                </Grid.ColumnDefinitions>
 
+                                <Grid Grid.Row="0"
+                                      Grid.Column="0"
+                                      MaxWidth="79"
+                                      MinWidth="79">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
 
+                                    <Button x:Name="DMP_btn_DrawTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="0"
+                                        Grid.Column="0" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Pencil"
+                                                             Icon="Pencil" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button x:Name="DMP_btn_EraseTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="0"
+                                        Grid.Column="1" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Eraser" 
+                                                             Icon="Eraser" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button x:Name="DMP_btn_PointerTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="1"
+                                        Grid.Column="0" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Cursor"
+                                                             Icon="MousePointer" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button x:Name="DMP_btn_TextTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="1"
+                                        Grid.Column="1" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Text"
+                                                             Icon="Font" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button x:Name="DMP_btn_RectBorderTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="2"
+                                        Grid.Column="0" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_RectBorder"
+                                                             Icon="SquareOutline" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button x:Name="DMP_btn_RectFillTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="2"
+                                        Grid.Column="1" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_RectFill"
+                                                             Icon="Square" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button x:Name="DMP_btn_CircleBorderTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="3"
+                                        Grid.Column="0" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_CircleBorder"
+                                                             Icon="CircleOutline" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button x:Name="DMP_btn_CircleFillTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="3"
+                                        Grid.Column="1" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_CircleFill"
+                                                             Icon="Circle" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button x:Name="DMP_btn_ArrowTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="4"
+                                        Grid.Column="1" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Arrow"
+                                                             Icon="ArrowRight" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+
+                                    <Button x:Name="DMP_btn_Clear"
+                                            Style="{StaticResource DMP_button}"
+                                            Grid.Row="6"
+                                            Grid.Column="1" 
+                                            Click="DMP_btn_Clear_Click"
+                                            ToolTip="Clear all elements">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Clear"
+                                                             Icon="Trash" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+                                </Grid>
+                                <Button Grid.Row="1"
+                                        Grid.Column="0"
+                                        Margin="15,10,15,15"
+                                        Background="#FFED4D4D"
+                                        Style="{StaticResource Rounded Button}" Click="DMP_Close_Click"
+                                        ToolTip="exit desktop mode">
+                                    <Viewbox Margin="5">
+                                        <fa:ImageAwesome Icon="Close" 
+                                                     Foreground="#ff333333"/>
+                                    </Viewbox>
+                                </Button>
+
+                                <Grid x:Name="DMP_grid_Extended"
+                                      Grid.Row="0"
+                                      Grid.Column="1"
+                                      Opacity="0"
+                                      IsHitTestVisible="False">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Viewbox Grid.Row="0"
+                                         Grid.Column="0">
+                                        <Label x:Name="DM_lbl_brushSize"
+                                           Style="{StaticResource DMP_Label}"
+                                           Content="brush size:"/>
+                                    </Viewbox>
+                                    <Slider x:Name="DMP_slider_brushSize"
+                                            Grid.Row="0"
+                                            Grid.Column="1" 
+                                            Style="{StaticResource DMP_Slider}"
+                                            Minimum="1"
+                                            Maximum="100"
+                                            Value="10"
+                                            ValueChanged="DMP_slider_brushSize_ValueChanged"/>
+
+                                    <Viewbox Grid.Row="1"
+                                         Grid.Column="0">
+                                        <Label x:Name="DM_lbl_eraserSize"
+                                           Style="{StaticResource DMP_Label}"
+                                           Content="eraser size:"/>
+                                    </Viewbox>
+                                    <Slider x:Name="DMP_slider_eraserSize"
+                                            Grid.Row="1"
+                                            Grid.Column="1" 
+                                            Style="{StaticResource DMP_Slider}"
+                                            Minimum="1"
+                                            Maximum="200"
+                                            Value="50" ValueChanged="DMP_slider_eraserSize_ValueChanged"/>
+
+                                    <Viewbox Grid.Row="2"
+                                         Grid.Column="0">
+                                        <Label x:Name="DM_lbl_Color"
+                                           Style="{StaticResource DMP_Label}"
+                                           Content="color:"/>
+                                    </Viewbox>
+                                    <xctk:ColorPicker x:Name="DMP_colorPicker"
+                                                  Grid.Row="2"
+                                                  Grid.Column="1"
+                                                  Style="{StaticResource DMP_ColorPicker}" SelectedColorChanged="DMP_colorPicker_SelectedColorChanged"/>
+                                </Grid>
+
+                            </Grid>
                         </Grid>
+
                     </Border>
-                </Canvas>
+                </local:PaintCanvas>
+                <!--<Canvas x:Name="DM_canvas"
+                        IsHitTestVisible="False"
+                        Background="#00000000">
+                    <Border x:Name="brd_DesktopModePanel"
+                            Background="#FF444444"
+                            Width="95"
+                            Height="384"
+                            CornerRadius="10" 
+                            MouseDown="brd_DesktopModePanel_MouseDown" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Center"
+                            IsHitTestVisible="True">
+
+                        <Grid>
+                            <Button x:Name="DMP_btn_Extend" 
+                                    Margin="0,180,-12,180" 
+                                    HorizontalAlignment="Right" 
+                                    Width="24"
+                                    Style="{StaticResource Rounded Button}" Click="DMP_btn_Extend_Click">
+                                <Viewbox>
+                                    <fa:ImageAwesome x:Name="DMP_icon_Extend" 
+                                                     Icon="ArrowCircleRight"
+                                                     Style="{StaticResource DMP_buttonIcon}"/>
+                                </Viewbox>
+                            </Button>
+                            <Grid Margin="8,25,8,25">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="41*"/>
+                                    <RowDefinition Height="7*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32*" x:Name="DMP_gridDef_Base"/>
+                                    <ColumnDefinition Width="0" x:Name="DMP_gridDef_Extend"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid Grid.Row="0"
+                                      Grid.Column="0"
+                                      MaxWidth="79"
+                                      MinWidth="79">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Button x:Name="DMP_btn_DrawTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="0"
+                                        Grid.Column="0" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Pencil"
+                                                             Icon="Pencil" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button x:Name="DMP_btn_EraseTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="0"
+                                        Grid.Column="1" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Eraser" 
+                                                             Icon="Eraser" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button x:Name="DMP_btn_PointerTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="1"
+                                        Grid.Column="0" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Cursor"
+                                                             Icon="MousePointer" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button x:Name="DMP_btn_TextTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="1"
+                                        Grid.Column="1" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Text"
+                                                             Icon="Font" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button x:Name="DMP_btn_RectBorderTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="2"
+                                        Grid.Column="0" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_RectBorder"
+                                                             Icon="SquareOutline" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button x:Name="DMP_btn_RectFillTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="2"
+                                        Grid.Column="1" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_RectFill"
+                                                             Icon="Square" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button x:Name="DMP_btn_CircleBorderTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="3"
+                                        Grid.Column="0" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_CircleBorder"
+                                                             Icon="CircleOutline" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button x:Name="DMP_btn_CircleFillTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="3"
+                                        Grid.Column="1" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_CircleFill"
+                                                             Icon="Circle" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button x:Name="DMP_btn_ArrowTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="4"
+                                        Grid.Column="1" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Arrow"
+                                                             Icon="ArrowRight" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
+                                </Grid>
+                                <Button Grid.Row="1"
+                                        Grid.Column="0"
+                                        Margin="15,10,15,15"
+                                        Background="#FFED4D4D"
+                                        Style="{StaticResource Rounded Button}" Click="DMP_Close_Click"
+                                        ToolTip="exit desktop mode">
+                                    <Viewbox Margin="5">
+                                        <fa:ImageAwesome Icon="Close" 
+                                                     Foreground="#ff333333"/>
+                                    </Viewbox>
+                                </Button>
+
+                                <Grid x:Name="DMP_grid_Extended"
+                                      Grid.Row="0"
+                                      Grid.Column="1"
+                                      Opacity="0"
+                                      IsHitTestVisible="False">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Viewbox Grid.Row="0"
+                                         Grid.Column="0">
+                                        <Label x:Name="DM_lbl_brushSize"
+                                           Style="{StaticResource DMP_Label}"
+                                           Content="brush size:"/>
+                                    </Viewbox>
+                                    <Slider x:Name="DMP_slider_brushSize"
+                                            Grid.Row="0"
+                                            Grid.Column="1" 
+                                            Style="{StaticResource DMP_Slider}"
+                                            Minimum="1"
+                                            Maximum="100"
+                                            Value="10"
+                                            ValueChanged="DMP_slider_brushSize_ValueChanged"/>
+
+                                    <Viewbox Grid.Row="1"
+                                         Grid.Column="0">
+                                        <Label x:Name="DM_lbl_eraserSize"
+                                           Style="{StaticResource DMP_Label}"
+                                           Content="eraser size:"/>
+                                    </Viewbox>
+                                    <Slider x:Name="DMP_slider_eraserSize"
+                                            Grid.Row="1"
+                                            Grid.Column="1" 
+                                            Style="{StaticResource DMP_Slider}"
+                                            Minimum="1"
+                                            Maximum="200"
+                                            Value="50" ValueChanged="DMP_slider_eraserSize_ValueChanged"/>
+
+                                    <Viewbox Grid.Row="2"
+                                         Grid.Column="0">
+                                        <Label x:Name="DM_lbl_Color"
+                                           Style="{StaticResource DMP_Label}"
+                                           Content="color:"/>
+                                    </Viewbox>
+                                    <xctk:ColorPicker x:Name="DMP_colorPicker"
+                                                  Grid.Row="2"
+                                                  Grid.Column="1"
+                                                  Style="{StaticResource DMP_ColorPicker}"/>
+                                </Grid>
+
+                            </Grid>
+                        </Grid>
+
+                    </Border>
+                </Canvas>-->
                 
+
 
 
                 <Grid x:Name="upBar" Background="#FFDADADA" Grid.ColumnSpan="2" Height="32" VerticalAlignment="Top" Grid.RowSpan="2" MouseLeftButtonDown="DragWindow">

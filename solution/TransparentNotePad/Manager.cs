@@ -21,6 +21,8 @@ using Microsoft.Win32;
 using System.Data;
 using System.Security.Permissions;
 using System.Runtime.CompilerServices;
+using FontFamily = System.Windows.Media.FontFamily;
+using Brush = System.Windows.Media.Brush;
 
 namespace TransparentNotePad
 {
@@ -403,6 +405,7 @@ namespace TransparentNotePad
 
         public static void SetTheme(Theme theme, bool save = false)
         {
+            MainWindow.SetDMPTheme(theme);
             MainWindow.TextAreaColor = GetColorFromThemeFileString(theme.Color_TextArea);
 
             MainWindow.tbox_mainText.Foreground = new
@@ -867,6 +870,23 @@ namespace TransparentNotePad
             }
             #endif
         }
+    }
 
+    public static class ManagerExtension
+    {
+        public static System.Windows.Media.Color HexToColor(this string hex)
+        {
+            byte a, r, g, b;
+            string[] parts = hex.Split(' ');
+
+            if (parts.Length != 4) return System.Windows.Media.Color.FromArgb(0, 0, 0, 0);
+
+            a = Convert.ToByte(parts[0], 16);
+            r = Convert.ToByte(parts[1], 16);
+            g = Convert.ToByte(parts[2], 16);
+            b = Convert.ToByte(parts[3], 16);
+
+            return System.Windows.Media.Color.FromArgb(a, r, g, b);
+        }
     }
 }

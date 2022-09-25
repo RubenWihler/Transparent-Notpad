@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "PKCgIg2NtQfc6zi3AixRPbp5yG3AIo++HVuvr6x6QqLRFVM7E7Jhvdo3bRA3nNFsJBJ7YGnI2Qpqr/YW/3pA4Q==",
+  "dgSpecHash": "imTetDkEOnHul4fPca8rVHSygZnsLdCYzOe4pIqDaN6a/tT9yErqNcsXsqFciOLO4hRKLqayaao/fRfFhQiAeg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Admin\\Documents\\GitHub\\Transparent-Notpad\\solution\\TransparentNotePad\\TransparentNotePad.csproj",
+  "projectFilePath": "D:\\GitHub\\Practical_Notpad\\solution\\TransparentNotePad\\TransparentNotePad.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Admin\\.nuget\\packages\\extended.wpf.toolkit\\4.4.0\\extended.wpf.toolkit.4.4.0.nupkg.sha512",
-    "C:\\Users\\Admin\\.nuget\\packages\\fontawesome.wpf\\4.7.0.9\\fontawesome.wpf.4.7.0.9.nupkg.sha512"
+    "C:\\Users\\Ruben\\.nuget\\packages\\extended.wpf.toolkit\\4.4.0\\extended.wpf.toolkit.4.4.0.nupkg.sha512",
+    "C:\\Users\\Ruben\\.nuget\\packages\\fontawesome.wpf\\4.7.0.9\\fontawesome.wpf.4.7.0.9.nupkg.sha512",
+    "C:\\Users\\Ruben\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "C:\\Users\\Ruben\\.nuget\\packages\\system.drawing.common\\6.0.0\\system.drawing.common.6.0.0.nupkg.sha512"
   ],
   "logs": [
     {
