@@ -600,6 +600,16 @@
                                                              Style="{StaticResource DMP_buttonIcon}"/>
                                         </Viewbox>
                                     </Button>
+                                    <Button x:Name="DMP_btn_LineTool"
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="4"
+                                        Grid.Column="0" Click="DMP_btn_Tools_Click">
+                                        <Viewbox>
+                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Line"
+                                                             Icon="Minus" 
+                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                        </Viewbox>
+                                    </Button>
 
                                     <Button x:Name="DMP_btn_Clear"
                                             Style="{StaticResource DMP_button}"

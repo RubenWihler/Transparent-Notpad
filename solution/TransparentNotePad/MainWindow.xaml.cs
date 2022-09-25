@@ -48,7 +48,8 @@ namespace TransparentNotePad
             RectFill,
             CircleBorder,
             CircleFill,
-            Arrow
+            Arrow,
+            Line
         }
 
         /*---------- Fields ----------*/
@@ -652,12 +653,24 @@ namespace TransparentNotePad
             double right_middle_x = SystemParameters.PrimaryScreenWidth - 130;
             double right_middle_y = (SystemParameters.PrimaryScreenHeight / 2) - (brd_DesktopModePanel.Height / 2);
 
+            //left middle snap
+            double left_middle_x = 30;
+            
+
             if (left >= right_middle_x - SNAP_FORCE
                 && left <= right_middle_x + SNAP_FORCE
                 && top >= right_middle_y - SNAP_FORCE
                 && top <= right_middle_y + SNAP_FORCE)
             {
                 Canvas.SetLeft(brd_DesktopModePanel, right_middle_x);
+                Canvas.SetTop(brd_DesktopModePanel, right_middle_y);
+            }
+            else if (left >= left_middle_x - SNAP_FORCE
+                && left <= left_middle_x + SNAP_FORCE
+                && top >= right_middle_y - SNAP_FORCE
+                && top <= right_middle_y + SNAP_FORCE)
+            {
+                Canvas.SetLeft(brd_DesktopModePanel, left_middle_x);
                 Canvas.SetTop(brd_DesktopModePanel, right_middle_y);
             }
         }
@@ -750,6 +763,9 @@ namespace TransparentNotePad
             DMP_btn_ArrowTool.Background = btn_bg_brush;
             DM_ToolIcon_Arrow.Foreground = btn_fg_brush_unselected;
 
+            DMP_btn_LineTool.Background = btn_bg_brush;
+            DM_ToolIcon_Line.Foreground = btn_fg_brush_unselected;
+
             DMP_btn_Clear.Background = btn_bg_brush;
             DM_ToolIcon_Clear.Foreground = btn_fg_brush;
 
@@ -776,6 +792,7 @@ namespace TransparentNotePad
                 case DMTools.CircleBorder: return DM_ToolIcon_CircleBorder;
                 case DMTools.CircleFill: return DM_ToolIcon_CircleFill;
                 case DMTools.Arrow: return DM_ToolIcon_Arrow;
+                case DMTools.Line: return DM_ToolIcon_Line;
             }
 
             throw new Exception($"Tool: {tool} hasn't icon !");
@@ -810,6 +827,9 @@ namespace TransparentNotePad
                     return true;
                 case DMTools.Arrow:
                     icon = DM_ToolIcon_Arrow;
+                    return true;
+                case DMTools.Line:
+                    icon = DM_ToolIcon_Line;
                     return true;
             }
 
@@ -1484,38 +1504,44 @@ namespace TransparentNotePad
 
             else if ((Button)sender == DMP_btn_TextTool)
             {
-
+                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Text;
                 SetCurrentDMTool(DMTools.Text);
             }
 
             else if ((Button)sender == DMP_btn_RectBorderTool)
             {
-
+                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Rectangle_Outline;
                 SetCurrentDMTool(DMTools.RectBorder);
             }
 
             else if ((Button)sender == DMP_btn_RectFillTool)
             {
-
+                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Rectangle_Filled;
                 SetCurrentDMTool(DMTools.RectFill);
             }
 
             else if ((Button)sender == DMP_btn_CircleBorderTool)
             {
-
+                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Circle_Outline;
                 SetCurrentDMTool(DMTools.CircleBorder);
             }
 
             else if ((Button)sender == DMP_btn_CircleFillTool)
             {
-
+                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Circle_Filled;
                 SetCurrentDMTool(DMTools.CircleFill);
             }
 
             else if ((Button)sender == DMP_btn_ArrowTool)
             {
-
+                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Arrow;
                 SetCurrentDMTool(DMTools.Arrow);
+            }
+
+            else if ((Button)sender == DMP_btn_LineTool)
+            {
+                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Line;
+                SetCurrentDMTool(DMTools.Line);
             }
         }
 
