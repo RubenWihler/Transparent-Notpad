@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace TransparentNotePad
 {
     [Serializable]
-    public struct Theme
+    public readonly struct Theme
     {
         public Theme(
             string tname,
@@ -64,36 +64,36 @@ namespace TransparentNotePad
             Color_Btn_ShowHidePanel = color_Btn_ShowHidePanel;
         }
 
-        public String Theme_Name { get; set; }
-        public String Color_DefaultText { get; set; }
-        public String Color_UpBar { get; set; }
-        public String Color_Panel { get; set; }
-        public String Color_DisplayPanel { get; set; }
-        public String Color_TextArea { get; set; }
+        public String Theme_Name { get; }
+        public String Color_DefaultText { get; }
+        public String Color_UpBar { get; }
+        public String Color_Panel { get; }
+        public String Color_DisplayPanel { get;  }
+        public String Color_TextArea { get; }
 
-        public String Color_Btn_Quit { get; set; }
-        public String Color_Btn_Minimise { get; set; }
-        public String Color_Btn_Maximise { get; set; }
-        public String Color_Btn_Top { get; set; }
-        public string Color_Btn_ShowHidePanel { get; set; }
+        public String Color_Btn_Quit { get; }
+        public String Color_Btn_Minimise { get;  }
+        public String Color_Btn_Maximise { get; }
+        public String Color_Btn_Top { get;  }
+        public string Color_Btn_ShowHidePanel { get; }
 
-        public String Color_Text_Opacity_lbl { get; set; }
-        public String Color_Text_Panel_Btns_Bg { get; set; }
-        public String Color_Text_Panel_Btns_Text { get; set; }
-        public String Color_Text_Panel_Btns_Border { get; set; }
+        public String Color_Text_Opacity_lbl { get;  }
+        public String Color_Text_Panel_Btns_Bg { get;}
+        public String Color_Text_Panel_Btns_Text { get; }
+        public String Color_Text_Panel_Btns_Border { get; }
 
-        public String Color_General_Bright_1 { get; set; }
-        public String Color_General_Bright_2 { get; set; }
-        public String Color_General_Bright_3 { get; set; }
-        public String Color_General_Dark_1 { get; set; }
-        public String Color_General_Dark_2 { get; set; }
-        public String Color_General_Dark_3 { get; set; }
+        public String Color_General_Bright_1 { get; }
+        public String Color_General_Bright_2 { get; }
+        public String Color_General_Bright_3 { get;}
+        public String Color_General_Dark_1 { get; }
+        public String Color_General_Dark_2 { get;  }
+        public String Color_General_Dark_3 { get;  }
 
-        public String Color_Btn_Brush_Active { get; set; }
-        public String Color_Btn_Brush_Disable { get; set; }
+        public String Color_Btn_Brush_Active { get;  }
+        public String Color_Btn_Brush_Disable { get; }
 
-        public string Font_UI_General { get; set; }
+        public string Font_UI_General { get;}
 
-        public string Default_PaintColor { get; set; }
+        public string Default_PaintColor { get; }
     }
 }

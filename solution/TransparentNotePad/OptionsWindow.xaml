@@ -36,10 +36,10 @@
             <Setter Property="Background" Value="#FF9C9C9C"></Setter>
         </Style>
     </Window.Resources>
-    <Border Background="#FFD8D8D8" CornerRadius="20,20,20,20" ClipToBounds="True">
+    <Border Background="#FFD8D8D8" CornerRadius="10" ClipToBounds="True">
         <Grid Background="#00000000" ClipToBounds="True">
             <Grid Height="46" VerticalAlignment="Top">
-                <Border Background="#FF949494" CornerRadius="20,20,0,0">
+                <Border Background="#FF949494" CornerRadius="10,10,0,0">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="30" Opacity="0.2" Direction="-89.8"/>
                     </Border.Effect>

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Printing;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -90,6 +91,8 @@ namespace TransparentNotePad
         private AppMode lastAppModeBeforeCurrent;
         private ImageAwesome currentDMTool_Icon;
         private bool dmp_extended = false;
+        private Brush? lastWinOpacityBeforeDMPDrag;
+        private bool lastWinOpacityBeforeDMPFrag_Saved;
 
         #region /*------------- Proprety --------------*/
 
@@ -1076,8 +1079,14 @@ namespace TransparentNotePad
 
             if (e.Data == dmp_drag_data)
             {
-                Point drop_pos = e.GetPosition(this);
+                //if (!lastWinOpacityBeforeDMPFrag_Saved)
+                //{
+                //    lastWinOpacityBeforeDMPDrag = dm_PaintCanvas.Background;
+                //    dm_PaintCanvas.Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
+                //    lastWinOpacityBeforeDMPFrag_Saved = true;
+                //}
 
+                Point drop_pos = e.GetPosition(this);
                 Canvas.SetTop(brd_DesktopModePanel, drop_pos.Y - ((brd_DesktopModePanel.Height / 2)));
                 Canvas.SetLeft(brd_DesktopModePanel, drop_pos.X - ((brd_DesktopModePanel.Width / 2)));
             }
@@ -1209,6 +1218,18 @@ namespace TransparentNotePad
             else
             {
                 WindowState = WindowState.Maximized;
+
+                display_panel.Margin = new Thickness(
+                    1500 - 7,
+                    display_panel.Margin.Top,
+                    display_panel.Margin.Right,
+                    display_panel.Margin.Bottom);
+
+                panel.Margin = new Thickness(
+                    1500,
+                    panel.Margin.Top,
+                    panel.Margin.Right,
+                    panel.Margin.Bottom);
             }
         }
         private void btn_DisplayPanel_Click(object sender, RoutedEventArgs e)
@@ -1221,7 +1242,6 @@ namespace TransparentNotePad
         {
             OpenOptions();
         }
-
 
         private void btn_option_Click_1(object sender, RoutedEventArgs e)
         {
@@ -1245,11 +1265,6 @@ namespace TransparentNotePad
             }
             
         }
-
-
-
-
-
 
 
 
@@ -1446,6 +1461,9 @@ namespace TransparentNotePad
             dmp_snappingTimer.Interval = TimeSpan.FromMilliseconds(10);
             dmp_snappingTimer.Tick += DMP_Snaping;
             dmp_snappingTimer.Start();
+
+            //dm_PaintCanvas.Background = lastWinOpacityBeforeDMPDrag;
+            //lastWinOpacityBeforeDMPFrag_Saved = false;
         }
 
 

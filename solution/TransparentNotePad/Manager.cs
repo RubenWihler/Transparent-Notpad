@@ -172,6 +172,36 @@ namespace TransparentNotePad
             this.optionWindow = new OptionWindow();
         }
 
+        #region |------------ Initialization ------------|
+
+        private static void Init_Theme()
+        {
+            List<Theme> themes;
+            if (TryGetThemeFromXMLFile(out themes))
+            {
+                var v = from Theme t in themes
+                        where t.Theme_Name == StoredDataFile.Selected_Theme
+                        select t;
+
+                //Console.WriteLine(v.FirstOrDefault().Theme_Name);
+
+                if (v.Any())
+                {
+                    SetTheme(v.FirstOrDefault());
+                    Instance.currentTheme = v.FirstOrDefault();
+                }
+                else
+                {
+                    SetTheme(themes[0]);
+                    Instance.currentTheme = themes[0];
+                }
+            }
+        }
+
+        #endregion
+
+        #region |------------ File Generation and Checking ------------|
+
         private static void CheckFile()
         {
             if (!Directory.Exists(AppDataPath))
@@ -214,6 +244,10 @@ namespace TransparentNotePad
             string path_bright = System.IO.Path.Combine(ThemesPath, "defaultTheme_Bright.xml");
             string path_dark = System.IO.Path.Combine(ThemesPath, "defaultTheme_Dark.xml");
             string path_classic = System.IO.Path.Combine(ThemesPath, "classic_tn.xml");
+            string path_classic_blue = System.IO.Path.Combine(ThemesPath, "classic_tn_blue.xml");
+            string path_classic_red = System.IO.Path.Combine(ThemesPath, "classic_tn_red.xml");
+            string path_classic_yellow = System.IO.Path.Combine(ThemesPath, "classic_tn_yellow.xml");
+            string path_wood = System.IO.Path.Combine(ThemesPath, "wood_theme.xml");
 
             XmlSerializer serializer = new XmlSerializer(typeof(Theme));
 
@@ -300,6 +334,114 @@ namespace TransparentNotePad
                 "FF fd 7e 44",
                 "FF fd 7e 44");
 
+                Theme classic_tn_Blue = new(
+                "Classic Blue Transparent Notepad",
+                "FF dd dd dd",
+                "FF 50 50 50",
+                "FF 38 38 38",
+                "FF 50 50 50",
+                "4C 40 40 40",
+                "FF ED 4D 4D",
+                "FF ED A7 5F",
+                "FF 38 78 f7",
+                "FF dd dd dd",
+                "00 00 00 00",
+                "FF 53 53 53",
+                "FF 38 78 f7",
+                "00 00 00 00",
+                "FF 94 94 94",
+                "FF B1 B1 B1",
+                "FF EA EA EA",
+                "FF 77 77 77",
+                "FF 58 58 58",
+                "FF 35 35 35",
+                "FF 38 78 f7",
+                "FF BF BF BF",
+                "poppins",
+                "FF 38 78 f7",
+                "FF 38 78 f7");
+
+                Theme classic_tn_Red = new(
+                "Classic Red Transparent Notepad",
+                "FF dd dd dd",
+                "FF 50 50 50",
+                "FF 38 38 38",
+                "FF 50 50 50",
+                "4C 40 40 40",
+                "FF ED 4D 4D",
+                "FF ED A7 5F",
+                "ff ff 50 53",
+                "FF dd dd dd",
+                "00 00 00 00",
+                "FF 53 53 53",
+                "ff f7 38 3b",
+                "00 00 00 00",
+                "FF 94 94 94",
+                "FF B1 B1 B1",
+                "FF EA EA EA",
+                "FF 77 77 77",
+                "FF 58 58 58",
+                "FF 35 35 35",
+                "ff ff 50 53",
+                "FF BF BF BF",
+                "poppins",
+                "ff ff 50 53",
+                "ff ff 50 53");
+
+                Theme classic_tn_Yellow = new(
+                "Classic Yellow Transparent Notepad",
+                "FF dd dd dd",
+                "FF 50 50 50",
+                "FF 38 38 38",
+                "FF 50 50 50",
+                "4C 40 40 40",
+                "FF ED 4D 4D",
+                "FF ED A7 5F",
+                "ff ff c7 38",//
+                "FF dd dd dd",
+                "00 00 00 00",
+                "FF 53 53 53",
+                "ff ff c7 38",//
+                "00 00 00 00",
+                "FF 94 94 94",
+                "FF B1 B1 B1",
+                "FF EA EA EA",
+                "FF 77 77 77",
+                "FF 58 58 58",
+                "FF 35 35 35",
+                "ff ff c7 38",
+                "FF BF BF BF",
+                "poppins",
+                "ff ff c7 38",//
+                "ff ff c7 38");//
+
+                Theme theme_Wood = new(
+                "Classic Wood",
+                "FF dd dd dd",
+                "ff 6b 58 4b",
+                "ff 48 42 3d",
+                "FF 50 50 50",
+                "4C 40 40 40",
+                "FF ED 4D 4D",
+                "FF ED A7 5F",
+                "ff 53 e4 51",
+                "FF dd dd dd",
+                "00 00 00 00",
+                "FF 53 53 53",
+                "ff 53 e4 51",
+                "00 00 00 00",
+                "FF 94 94 94",
+                "FF B1 B1 B1",
+                "FF EA EA EA",
+                "FF 77 77 77",
+                "FF 58 58 58",
+                "FF 35 35 35",
+                "ff 53 e4 51",
+                "FF BF BF BF",
+                "poppins",
+                "ff 53 e4 51",
+                "ff 53 e4 51");
+
                 using (Stream writer = new FileStream(path_bright, FileMode.OpenOrCreate))
                 {
                     serializer.Serialize(writer, theme_bright);
@@ -311,6 +453,22 @@ namespace TransparentNotePad
                 using (Stream writer = new FileStream(path_classic, FileMode.OpenOrCreate))
                 {
                     serializer.Serialize(writer, classic_tn);
+                }
+                using (Stream writer = new FileStream(path_classic_blue, FileMode.OpenOrCreate))
+                {
+                    serializer.Serialize(writer, classic_tn_Blue);
+                }
+                using (Stream writer = new FileStream(path_classic_red, FileMode.OpenOrCreate))
+                {
+                    serializer.Serialize(writer, classic_tn_Red);
+                }
+                using (Stream writer = new FileStream(path_classic_yellow, FileMode.OpenOrCreate))
+                {
+                    serializer.Serialize(writer, classic_tn_Yellow);
+                }
+                using (Stream writer = new FileStream(path_wood, FileMode.OpenOrCreate))
+                {
+                    serializer.Serialize(writer, theme_Wood);
                 }
             }
             catch (Exception e)
@@ -343,30 +501,11 @@ namespace TransparentNotePad
 
             return generated_file;
         }
-        private static void Init_Theme()
-        {
-            List<Theme> themes;
-            if (TryGetThemeFromXMLFile(out themes))
-            {
-                var v = from Theme t in themes
-                        where t.Theme_Name == StoredDataFile.Selected_Theme
-                        select t;
 
-                Console.WriteLine(v.FirstOrDefault().Theme_Name);
+        #endregion
 
-                if (v.Any())
-                {
-                    SetTheme(v.FirstOrDefault());
-                    Instance.currentTheme = v.FirstOrDefault();
-                }
-                else
-                {
-                    SetTheme(themes[0]);
-                    Instance.currentTheme = themes[0];
-                }
-            }
-        }
-        
+        #region |------------ Windows Management ------------|
+
         public static bool TryOpenWindow<T>(T win) where T : Window
         {
             if (win != null)
@@ -389,7 +528,6 @@ namespace TransparentNotePad
 
             return false;
         }
-
         public static bool TryGetWindowIsActive<T>(T win, out bool result) where T : Window
         {
             if (win != null)
@@ -402,6 +540,9 @@ namespace TransparentNotePad
             return false;
         }
 
+        #endregion
+
+        #region |------------ Set Saved File Values ------------|
 
         public static void SetTheme(Theme theme, bool save = false)
         {
@@ -552,35 +693,34 @@ namespace TransparentNotePad
             SaveStoredData(file);
         }
 
-        public static IEnumerable<T> FindVisualChilds<T>(DependencyObject depObj) where T : DependencyObject
+        #endregion
+
+        #region |------------ Try Get Values From Files ------------|
+
+        public static UInt32 GetTempFiles_Text_Count()
         {
-            if (depObj == null) yield return (T)Enumerable.Empty<T>();
-            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            return Convert.ToUInt32(Directory.GetFiles(TempFilePath).Length);
+        }
+        public static bool TryOpenLastTextUsed()
+        {
+            string path = LastSavedTextFile;
+
+            if (path != "none")
             {
-                DependencyObject ithChild = VisualTreeHelper.GetChild(depObj, i);
-                if (ithChild == null) continue;
-                if (ithChild is T t) yield return t;
-                foreach (T childOfChild in FindVisualChilds<T>(ithChild)) yield return childOfChild;
+                if (File.Exists(path))
+                {
+                    MainWindow.tbox_mainText.Text = File.ReadAllText(path);
+                    return true;
+                }
             }
-        }
 
-        public static Brush GetBrushFromString(string hex)
-        {
-            return new SolidColorBrush(GetColorFromThemeFileString(hex));
-        }
-        public static System.Windows.Media.Color GetColorFromThemeFileString(string hex)
-        {
-            byte a, r, g, b;
-            string[] parts = hex.Split(' ');
+            if (TryGetTempFiles_Text_LASTUSED(out TextFile? tfile))
+            {
+                MainWindow.tbox_mainText.Text = ((TextFile)tfile).Content;
+                return true;
+            }
 
-            if (parts.Length != 4) return System.Windows.Media.Color.FromArgb(0,0,0,0);
-            
-            a = Convert.ToByte(parts[0], 16);
-            r = Convert.ToByte(parts[1], 16);
-            g = Convert.ToByte(parts[2], 16);
-            b = Convert.ToByte(parts[3], 16);
-
-            return System.Windows.Media.Color.FromArgb(a, r, g, b);
+            return false;
         }
 
         public static bool TryGetTempFiles_Text(out List<TextFile> text_file_content)
@@ -597,7 +737,7 @@ namespace TransparentNotePad
                 {
                     if (path[i].TryPathToTextFile(out file))
                     {
-                        if (((TextFile)file).Content.Trim().Length < 1)
+                        if (((TextFile)file!).Content.Trim().Length < 1)
                         {
                             empty_files.Add(path[i]);
                         }
@@ -644,47 +784,20 @@ namespace TransparentNotePad
                             where System.IO.Path.GetFileName(p).Contains("DEFAULTOPEN")
                             select p;
 
-                return value.FirstOrDefault().TryPathToTextFile(out lastTextFileUsed);
+                return value.FirstOrDefault()!.TryPathToTextFile(out lastTextFileUsed);
             }
             catch (Exception e)
             {
-                #if DEBUG
+#if DEBUG
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Error while loading last text file from temp!\nerror: {e}");
                 Console.ResetColor();
-                #endif
+#endif
 
                 lastTextFileUsed = null;
                 return false;
             }
         }
-        public static UInt32 GetTempFiles_Text_Count()
-        {
-            return Convert.ToUInt32(Directory.GetFiles(TempFilePath).Length);
-        }
-        public static bool TryOpenLastTextUsed()
-        {
-            string path = LastSavedTextFile;
-
-            if (path != "none")
-            {
-                if (File.Exists(path))
-                {
-                    MainWindow.tbox_mainText.Text = File.ReadAllText(path);
-                    return true;
-                }
-            }
-
-            if (TryGetTempFiles_Text_LASTUSED(out TextFile? tfile))
-            {
-                MainWindow.tbox_mainText.Text = ((TextFile)tfile).Content;
-                return true;
-            }
-
-            return false;
-        }
-        
-
         public static bool TryGetThemeFromXMLFile(out List<Theme> themes)
         {
             themes = new List<Theme>();
@@ -736,6 +849,10 @@ namespace TransparentNotePad
                 return false;
             }
         }
+
+        #endregion
+
+        #region |------------ Quit App and Save Methods ------------|
 
         public static void QuitApp()
         {
@@ -789,6 +906,10 @@ namespace TransparentNotePad
             Console.WriteLine($"Saved File into {StoredDataFilePath}");
         }
 
+        #endregion
+
+        #region |------------ Zoom Timer Save ------------|
+
         public static void StartZoomTimer()
         {
             if (zoomTimerToken != null)
@@ -821,6 +942,10 @@ namespace TransparentNotePad
             Console.WriteLine($"SAVED DATA FILE INTO: {StoredDataFilePath}");
             Console.ResetColor();
         }
+
+        #endregion
+
+        #region |------------ Utils ------------|
 
         public static bool TryGetObjectFromResource<T>(Window win, string resourceName, out T? result)
         {
@@ -870,6 +995,37 @@ namespace TransparentNotePad
             }
             #endif
         }
+        public static IEnumerable<T> FindVisualChilds<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj == null) yield return (T)Enumerable.Empty<T>();
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            {
+                DependencyObject ithChild = VisualTreeHelper.GetChild(depObj, i);
+                if (ithChild == null) continue;
+                if (ithChild is T t) yield return t;
+                foreach (T childOfChild in FindVisualChilds<T>(ithChild)) yield return childOfChild;
+            }
+        }
+        public static Brush GetBrushFromString(string hex)
+        {
+            return new SolidColorBrush(GetColorFromThemeFileString(hex));
+        }
+        public static System.Windows.Media.Color GetColorFromThemeFileString(string hex)
+        {
+            byte a, r, g, b;
+            string[] parts = hex.Split(' ');
+
+            if (parts.Length != 4) return System.Windows.Media.Color.FromArgb(0, 0, 0, 0);
+
+            a = Convert.ToByte(parts[0], 16);
+            r = Convert.ToByte(parts[1], 16);
+            g = Convert.ToByte(parts[2], 16);
+            b = Convert.ToByte(parts[3], 16);
+
+            return System.Windows.Media.Color.FromArgb(a, r, g, b);
+        }
+
+        #endregion
     }
 
     public static class ManagerExtension
