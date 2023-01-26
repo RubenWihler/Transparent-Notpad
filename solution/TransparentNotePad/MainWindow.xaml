@@ -3,10 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TransparentNotePad" 
+        xmlns:local="clr-namespace:TransparentNotePad"
+        xmlns:customcontrols="clr-namespace:TransparentNotePad.CustomControls"
         xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:fa="http://schemas.fontawesome.io/icons/" 
         mc:Ignorable="d"
         AllowsTransparency="True" WindowStyle="None"
         Icon="./Resources/Icon/icon_orange.png"
@@ -63,6 +64,11 @@
             <Setter Property="MinHeight" Value="25"/>
         </Style>
         <Style x:Key="PanelButtonText" TargetType="TextBlock">
+            <Setter Property="Tag" Value="btn_panel_text"/>
+            <Setter Property="FontFamily" Value="Poppins"/>
+            <Setter Property="FontSize" Value="11"/>
+        </Style>
+        <Style x:Key="PanelTextBlock" TargetType="customcontrols:CustomTextBlock">
             <Setter Property="Tag" Value="btn_panel_text"/>
             <Setter Property="FontFamily" Value="Poppins"/>
             <Setter Property="FontSize" Value="11"/>
@@ -238,73 +244,76 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
     </Window.Resources>
-    <Border x:Name="brd_main" CornerRadius="0,0,30,30" BorderThickness="0" Padding="4"  Background="#4CFFFFFF" ClipToBounds="True" AllowDrop="True">
+    <Border x:Name="brd_main" CornerRadius="15,15,15,15" BorderThickness="0" Padding="4"  Background="#4CFFFFFF" ClipToBounds="True" AllowDrop="True">
         <Grid Background="Transparent" Opacity="255" Margin="-4,-4,-4,-4" ClipToBounds="True">
             <Grid Background="{x:Null}" ClipToBounds="True" AllowDrop="True">
+                
+                <!--~~~~~~~~~~~~~~~ Paint Mode Canvas ~~~~~~~~~~~~~~~~-->
                 <Grid Background="#00000000" Grid.RowSpan="2" Grid.ColumnSpan="2" AllowDrop="True">
                     <Border Background="#00000000" CornerRadius="0,0,30,30" AllowDrop="True">
                         <local:PaintCanvas x:Name="paint_area" Margin="0,33,0,0" Background="#00000000" AllowDrop="True">
-
                         </local:PaintCanvas>
                     </Border>
                     <TextBox x:Name="tbox_mainText" Margin="10,58,10,10" TextWrapping="Wrap" Text="TextBox" Background="#00000000" BorderBrush="#00000000" SelectionBrush="#FF6BB8FF" SelectionTextBrush="{x:Null}" FontSize="24" BorderThickness="0,0,0,0" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" IsTabStop="False" AcceptsTab="True" AcceptsReturn="True" AllowDrop="False" TextChanged="tbox_mainText_TextChanged" PreviewDragOver="On_WinDrop"/>
                 </Grid>
 
-                <Border x:Name="display_panel" CornerRadius="5" BorderBrush="Black" BorderThickness="0" Margin="611,157,0,129" Background="#FFA4A4A4" MouseMove="Border_MouseDown" MinHeight="41" Cursor="Hand" Focusable="True" Panel.ZIndex="1" Grid.Row="1" HorizontalAlignment="Left" Width="14" MouseDown="display_panel_MouseDown" MouseUp="display_panel_MouseUp" AllowDrop="True" Drop="On_DropOnWindow">
+                <!--~~~~~~~~~~~~~~~ Panels ~~~~~~~~~~~~~~~~-->
+                <customcontrols:CustomBorder x:Name="display_panel" CornerRadius="5" BorderBrush="Black" BorderThickness="0" Margin="611,157,0,129" Background="#FFA4A4A4" MouseMove="Border_MouseDown" MinHeight="41" Cursor="Hand" Focusable="True" Panel.ZIndex="1" Grid.Row="1" HorizontalAlignment="Left" Width="14" MouseDown="display_panel_MouseDown" MouseUp="display_panel_MouseUp" AllowDrop="True" Drop="On_DropOnWindow" themeColorType="PanelController">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="10" Opacity="0.4" Direction="-89.8"/>
                     </Border.Effect>
-                </Border>
+                </customcontrols:CustomBorder>
                 <Grid x:Name="panel" Background="#00000000" MinWidth="150" MouseLeftButtonDown="DragWindow" AllowDrop="True" Margin="618,0,0,0" DragLeave="panel_DragLeave">
-                    <Border x:Name="panel_border" CornerRadius="0,0,30,0" BorderBrush="Black" BorderThickness="0" Background="#FFBFBFBF" Drop="On_DropOnWindow"/>
+                    <customcontrols:CustomBorder x:Name="panel_border" CornerRadius="0,15,15,0" BorderBrush="Black" BorderThickness="0" Background="#FFBFBFBF" Drop="On_DropOnWindow" themeColorType="PanelBackground"/>
+                    <!--~~~~~~~~ Text Mode Panel ~~~~~~~-->
                     <ItemsControl x:Name="Panel_Items_textMode" Style="{StaticResource Panel_Grid}" Margin="10,32,10,0">
-                        <Button x:Name="btn_panel_text_openAsNoteWindow" Grid.Column="0" Grid.Row="0" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_note_Click_1">
+                        <customcontrols:CustomButton x:Name="btn_panel_text_openAsNoteWindow" buttonGroupType="Panel" Grid.Column="0" Grid.Row="0" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_note_Click_1">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
-                                        <TextBlock Style="{StaticResource PanelButtonText}">New Note</TextBlock>
+                                        <customcontrols:CustomTextBlock themeColorType="PanelButtonText" Style="{StaticResource PanelTextBlock}">New Note</customcontrols:CustomTextBlock>
                                     </Viewbox>
                                 </DataTemplate>
                             </Button.ContentTemplate>
-                        </Button>
-                        <Button x:Name="btn_panel_text_option" Grid.Column="1" Grid.Row="0" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_option_Click_1">
+                        </customcontrols:CustomButton>
+                        <customcontrols:CustomButton x:Name="btn_panel_text_option" buttonGroupType="Panel" Grid.Column="1" Grid.Row="0" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_option_Click_1">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
-                                        <TextBlock Style="{StaticResource PanelButtonText}">Option</TextBlock>
+                                        <customcontrols:CustomTextBlock themeColorType="PanelButtonText" Style="{StaticResource PanelTextBlock}">Option</customcontrols:CustomTextBlock>
                                     </Viewbox>
                                 </DataTemplate>
                             </Button.ContentTemplate>
-                        </Button>
-                        <Button x:Name="btn_panel_text_switchMode" Grid.Column="0" Grid.Row="1" Content="Paint" Style="{DynamicResource PanelButton}" Click="btn_switchMode_Click">
+                        </customcontrols:CustomButton>
+                        <customcontrols:CustomButton x:Name="btn_panel_text_switchMode" buttonGroupType="Panel" Grid.Column="0" Grid.Row="1" Content="Paint" Style="{DynamicResource PanelButton}" Click="btn_switchMode_Click">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
-                                        <TextBlock Style="{StaticResource PanelButtonText}">Paint</TextBlock>
+                                        <customcontrols:CustomTextBlock themeColorType="PanelButtonText" Style="{StaticResource PanelTextBlock}">Paint</customcontrols:CustomTextBlock>
                                     </Viewbox>
                                 </DataTemplate>
                             </Button.ContentTemplate>
-                        </Button>
-                        <Button x:Name="btn_panel_text_DesktopMode" Grid.Column="1" Grid.Row="1" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_desktopMode_Click">
+                        </customcontrols:CustomButton>
+                        <customcontrols:CustomButton x:Name="btn_panel_text_DesktopMode" buttonGroupType="Panel" Grid.Column="1" Grid.Row="1" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_desktopMode_Click">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
-                                        <TextBlock Style="{StaticResource PanelButtonText}">Desktop</TextBlock>
+                                        <customcontrols:CustomTextBlock themeColorType="PanelButtonText" Style="{StaticResource PanelTextBlock}">Desktop</customcontrols:CustomTextBlock>
                                     </Viewbox>
                                 </DataTemplate>
                             </Button.ContentTemplate>
-                        </Button>
+                        </customcontrols:CustomButton>
 
 
                         <Viewbox Grid.Column="0" Grid.Row="3" Style="{StaticResource PanelTextViewBox}">
-                            <TextBlock x:Name="tblc_text_font" Style="{StaticResource PanelButtonText}">Text Font:</TextBlock>
+                            <customcontrols:CustomTextBlock x:Name="tblc_text_font" themeColorType="PanelText" Style="{StaticResource PanelTextBlock}">Text Font:</customcontrols:CustomTextBlock>
                         </Viewbox>
                         <ComboBox x:Name="cmbbox_Panels_FontSelector" Style="{DynamicResource Panel_ComboBox}"
                                   Grid.Column="1" Grid.Row="3"
                                   ItemsSource="{Binding Source={StaticResource familyCollection}}" SelectionChanged="cmbbox_Panels_FontSelector_SelectionChanged" VerticalAlignment="Center"/>
 
                         <Viewbox Grid.Column="0" Grid.Row="4" Style="{StaticResource PanelTextViewBox}">
-                            <TextBlock x:Name="tblc_text_color" Style="{StaticResource PanelButtonText}">Text Color:</TextBlock>
+                            <customcontrols:CustomTextBlock x:Name="tblc_text_color" themeColorType="PanelText" Style="{StaticResource PanelTextBlock}">Text Color:</customcontrols:CustomTextBlock>
                         </Viewbox>
                         <xctk:ColorPicker
                                 x:Name="colpicker_text_color"
@@ -313,84 +322,83 @@
                                 SelectedColorChanged="OnTextColorChanged">
                         </xctk:ColorPicker>
 
-                        <Button x:Name="btn_panel_text_save" Grid.Column="0" Grid.Row="8" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_TextSave_Click">
+                        <customcontrols:CustomButton x:Name="btn_panel_text_save" buttonGroupType="Panel" Grid.Column="0" Grid.Row="8" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_TextSave_Click">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
-                                        <TextBlock Style="{StaticResource PanelButtonText}">Save</TextBlock>
+                                        <customcontrols:CustomTextBlock themeColorType="PanelButtonText" Style="{StaticResource PanelTextBlock}">Save</customcontrols:CustomTextBlock>
                                     </Viewbox>
                                 </DataTemplate>
                             </Button.ContentTemplate>
-                        </Button>
-                        <Button x:Name="btn_panel_text_saveas" Grid.Column="0" Grid.Row="9" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_TextSaveAs_Click">
+                        </customcontrols:CustomButton>
+                        <customcontrols:CustomButton x:Name="btn_panel_text_saveas" buttonGroupType="Panel" Grid.Column="0" Grid.Row="9" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_TextSaveAs_Click">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
-                                        <TextBlock Style="{StaticResource PanelButtonText}">Save As</TextBlock>
+                                        <customcontrols:CustomTextBlock themeColorType="PanelButtonText" Style="{StaticResource PanelTextBlock}">Save As</customcontrols:CustomTextBlock>
                                     </Viewbox>
                                 </DataTemplate>
                             </Button.ContentTemplate>
-                        </Button>
-
-                        <Button x:Name="btn_panel_text_openInFileExplorer" Grid.Column="1" Grid.Row="9" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_ViewInExplorerClick">
+                        </customcontrols:CustomButton>
+                        <customcontrols:CustomButton x:Name="btn_panel_text_openInFileExplorer" buttonGroupType="Panel" Grid.Column="1" Grid.Row="9" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_ViewInExplorerClick">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
-                                        <TextBlock Style="{StaticResource PanelButtonText}">Explorer</TextBlock>
+                                        <customcontrols:CustomTextBlock themeColorType="PanelButtonText" Style="{StaticResource PanelTextBlock}">Explorer</customcontrols:CustomTextBlock>
                                     </Viewbox>
                                 </DataTemplate>
                             </Button.ContentTemplate>
-                        </Button>
-                        <Button x:Name="btn_panel_text_OpenTextDoc" Grid.Column="1" Grid.Row="8" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_OpenTextDoc_Click">
+                        </customcontrols:CustomButton>
+                        <customcontrols:CustomButton x:Name="btn_panel_text_OpenTextDoc" buttonGroupType="Panel" Grid.Column="1" Grid.Row="8" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_OpenTextDoc_Click">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
-                                        <TextBlock Style="{StaticResource PanelButtonText}">Open</TextBlock>
+                                        <customcontrols:CustomTextBlock themeColorType="PanelButtonText" Style="{StaticResource PanelTextBlock}">Open</customcontrols:CustomTextBlock>
                                     </Viewbox>
                                 </DataTemplate>
                             </Button.ContentTemplate>
-                        </Button>
+                        </customcontrols:CustomButton>
                     </ItemsControl>
+                    <!--~~~~~~~~ Paint Mode Panel ~~~~~~~-->
                     <ItemsControl x:Name="Panel_Items_drawMode" Style="{StaticResource Panel_Grid}" Margin="10,32,10,0">
+                        <customcontrols:CustomButton x:Name="btn_panel_draw_openAsNoteWindow" buttonGroupType="Panel" Grid.Column="0" Grid.Row="0" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_note_Click_1">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <customcontrols:CustomTextBlock themeColorType="PanelButtonText" Style="{StaticResource PanelTextBlock}">New Note</customcontrols:CustomTextBlock>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </customcontrols:CustomButton>
+                        <customcontrols:CustomButton x:Name="btn_panel_draw_option" buttonGroupType="Panel" Grid.Column="1" Grid.Row="0" Content="Option" Style="{StaticResource PanelButton}" Click="btn_option_Click_1">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <customcontrols:CustomTextBlock themeColorType="PanelButtonText" Style="{StaticResource PanelTextBlock}">Option</customcontrols:CustomTextBlock>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </customcontrols:CustomButton>
+                        <customcontrols:CustomButton x:Name="btn_panel_draw_switchMode" buttonGroupType="Panel" Grid.Column="0" Grid.Row="1" Content="Paint" Style="{DynamicResource PanelButton}" Click="btn_switchMode_Click">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <customcontrols:CustomTextBlock themeColorType="PanelButtonText" Style="{StaticResource PanelTextBlock}">Text</customcontrols:CustomTextBlock>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </customcontrols:CustomButton>
+                        <customcontrols:CustomButton x:Name="btn_panel_draw_DesktopMode" buttonGroupType="Panel" Grid.Column="1" Grid.Row="1" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_desktopMode_Click">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
+                                        <customcontrols:CustomTextBlock themeColorType="PanelButtonText" Style="{StaticResource PanelTextBlock}">Desktop</customcontrols:CustomTextBlock>
+                                    </Viewbox>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </customcontrols:CustomButton>
 
-                        <Button x:Name="btn_panel_draw_openAsNoteWindow" Grid.Column="0" Grid.Row="0" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_note_Click_1">
-                            <Button.ContentTemplate>
-                                <DataTemplate>
-                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
-                                        <TextBlock Style="{StaticResource PanelButtonText}">New Note</TextBlock>
-                                    </Viewbox>
-                                </DataTemplate>
-                            </Button.ContentTemplate>
-                        </Button>
-                        <Button x:Name="btn_panel_draw_option" Grid.Column="1" Grid.Row="0" Content="Option" Style="{StaticResource PanelButton}" Click="btn_option_Click_1">
-                            <Button.ContentTemplate>
-                                <DataTemplate>
-                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
-                                        <TextBlock Style="{StaticResource PanelButtonText}">Option</TextBlock>
-                                    </Viewbox>
-                                </DataTemplate>
-                            </Button.ContentTemplate>
-                        </Button>
-                        <Button x:Name="btn_panel_draw_switchMode" Grid.Column="0" Grid.Row="1" Content="Paint" Style="{DynamicResource PanelButton}" Click="btn_switchMode_Click">
-                            <Button.ContentTemplate>
-                                <DataTemplate>
-                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
-                                        <TextBlock Style="{StaticResource PanelButtonText}">Text</TextBlock>
-                                    </Viewbox>
-                                </DataTemplate>
-                            </Button.ContentTemplate>
-                        </Button>
-                        <Button x:Name="btn_panel_draw_DesktopMode" Grid.Column="1" Grid.Row="1" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_desktopMode_Click">
-                            <Button.ContentTemplate>
-                                <DataTemplate>
-                                    <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
-                                        <TextBlock Style="{StaticResource PanelButtonText}">Desktop</TextBlock>
-                                    </Viewbox>
-                                </DataTemplate>
-                            </Button.ContentTemplate>
-                        </Button>
-
-                        <Button x:Name="btn_panel_draw_NormalBrush" Grid.Column="0" Grid.Row="3" Content="Option" Style="{StaticResource Panel_BrushButton}" Click="OnPenButtonClick">
+                        <customcontrols:CustomButton x:Name="btn_panel_draw_NormalBrush" buttonGroupType="Panel" Grid.Column="0" Grid.Row="3" Content="Option" Style="{StaticResource Panel_BrushButton}" Click="OnPenButtonClick">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
@@ -398,8 +406,8 @@
                                     </Viewbox>
                                 </DataTemplate>
                             </Button.ContentTemplate>
-                        </Button>
-                        <Button x:Name="btn_panel_draw_EraseBrush" Grid.Column="1" Grid.Row="3" Content="Option" Style="{StaticResource Panel_BrushButton}" Click="OnEraserBtn_Click">
+                        </customcontrols:CustomButton>
+                        <customcontrols:CustomButton x:Name="btn_panel_draw_EraseBrush" buttonGroupType="Panel" Grid.Column="1" Grid.Row="3" Content="Option" Style="{StaticResource Panel_BrushButton}" Click="OnEraserBtn_Click">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
@@ -408,10 +416,10 @@
                                     </Viewbox>
                                 </DataTemplate>
                             </Button.ContentTemplate>
-                        </Button>
+                        </customcontrols:CustomButton>
 
                         <Viewbox Grid.Column="0" Grid.Row="4" Style="{StaticResource PanelTextViewBox}">
-                            <TextBlock x:Name="tblc_brush_size" Style="{StaticResource PanelButtonText}">Brush Size:</TextBlock>
+                            <customcontrols:CustomTextBlock x:Name="tblc_brush_size" themeColorType="PanelText" Style="{StaticResource PanelTextBlock}">Brush Size:</customcontrols:CustomTextBlock>
                         </Viewbox>
                         <Slider x:Name="slider_brush_size"
                                 VerticalAlignment="Center" 
@@ -420,7 +428,7 @@
                                 ValueChanged="BrushSizeChanged"/>
 
                         <Viewbox Grid.Column="0" Grid.Row="5" Style="{StaticResource PanelTextViewBox}">
-                            <TextBlock x:Name="tblc_eraser_size" Style="{StaticResource PanelButtonText}">Eraser Size:</TextBlock>
+                            <customcontrols:CustomTextBlock x:Name="tblc_eraser_size" themeColorType="PanelText" Style="{StaticResource PanelTextBlock}">Eraser Size:</customcontrols:CustomTextBlock>
                         </Viewbox>
                         <Slider x:Name="slider_eraserSize"
                                 VerticalAlignment="Center" 
@@ -429,7 +437,7 @@
                                 ValueChanged="EraserSizeChanged" Value="28"/>
 
                         <Viewbox Grid.Column="0" Grid.Row="6" Style="{StaticResource PanelTextViewBox}">
-                            <TextBlock x:Name="tblc_brush_color" Style="{StaticResource PanelButtonText}">Brush Color:</TextBlock>
+                            <customcontrols:CustomTextBlock x:Name="tblc_brush_color" themeColorType="PanelText" Style="{StaticResource PanelTextBlock}">Brush Color:</customcontrols:CustomTextBlock>
                         </Viewbox>
 
                         <xctk:ColorPicker
@@ -439,18 +447,19 @@
                                 SelectedColorChanged="ColorPicker_SelectedColorChanged">
                         </xctk:ColorPicker>
 
-                        <Button x:Name="btn_panel_draw_Clear" Grid.Column="1" Grid.Row="7" Content="Option" Style="{StaticResource PanelButton}" Click="On_BtnClear_Click" Background="#FFFF7B5E">
+                        <customcontrols:CustomButton x:Name="btn_panel_draw_Clear" buttonGroupType="Panel" Grid.Column="1" Grid.Row="7" Content="Option" Style="{StaticResource PanelButton}" Click="On_BtnClear_Click" Background="#FFFF7B5E">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
-                                        <TextBlock Style="{StaticResource PanelButtonText}" Foreground="#FF313131">Clear</TextBlock>
+                                        <customcontrols:CustomTextBlock Style="{StaticResource PanelTextBlock}" themeColorType="PanelButtonText" Foreground="#FF313131">Clear</customcontrols:CustomTextBlock>
                                     </Viewbox>
                                 </DataTemplate>
                             </Button.ContentTemplate>
-                        </Button>
+                        </customcontrols:CustomButton>
                     </ItemsControl>
                 </Grid>
 
+                <!--~~~~~~~~~~~~~~~ Desktop Mode Canvas ~~~~~~~~~~~~~~~~-->
                 <local:PaintCanvas x:Name="dm_PaintCanvas"
                                    Background="#01FFFFFF"
                                    IsHitTestVisible="False"
@@ -922,62 +931,60 @@
 
                     </Border>
                 </Canvas>-->
-                
 
-
-
-                <Grid x:Name="upBar" Background="#FFDADADA" Grid.ColumnSpan="2" Height="32" VerticalAlignment="Top" Grid.RowSpan="2" MouseLeftButtonDown="DragWindow">
-                    <Border BorderBrush="#80DADADA" BorderThickness="0,0,0,1" Height="46" VerticalAlignment="Top">
-                        <Border.Effect>
-                            <DropShadowEffect BlurRadius="14.8"/>
-                        </Border.Effect>
-                    </Border>
-                    <Slider x:Name="slider_winOpacity" HorizontalAlignment="Left" Margin="13,0,0,0" VerticalAlignment="Center" Width="176" AllowDrop="True" Background="{x:Null}" Foreground="#FFD05B5B" BorderBrush="Black" Value="5" Maximum="255" ValueChanged="Slider_ValueChanged" ToolTip="window's opacity"/>
-                    <Button x:Name="btn_quit" Margin="0,5,10,5"  Background="#FFED4D4D" BorderBrush="#FF272727" Click="btn_quit_Click" Cursor="Hand" Content="X" FontSize="18" FontFamily="Tw Cen MT" FontWeight="Bold" Foreground="#FF171717" Style="{StaticResource UpRightButtonStyle}" HorizontalAlignment="Right" Width="22">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="20"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
-                    <Button x:Name="btn_minimise" Margin="0,5,37,5"  Background="#FFEDA75F" BorderBrush="#FF272727" Click="btn_minimise_Click" Cursor="Hand" Content="—" FontFamily="Tw Cen MT" Foreground="#FF171717" FontWeight="Bold" FontSize="14" Style="{StaticResource UpRightButtonStyle}" HorizontalAlignment="Right" Width="22" >
-                        <Button.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="20"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
-                    <Button x:Name="btn_top" Margin="0,5,98,5"  Background="#FF5F61ED" BorderBrush="#FF272727" Click="btn_top_Click" Cursor="Hand" Content="Top  ✓" FontFamily="Tw Cen MT" Foreground="#FF171717" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" Width="72" >
-                        <Button.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="6"/>
-                            </Style>
-                        </Button.Resources>
-                        <Button.Style>
-                            <StaticResource ResourceKey="UpRightButtonStyle"/>
-                        </Button.Style>
-                    </Button>
-                    <Button x:Name="btn_fullscreen" Margin="0,5,64,5"  Background="#FF63ED5F" BorderBrush="#FF272727" Click="btn_fullscreen_Click" Cursor="Hand" Content="+" FontFamily="Tw Cen MT" Foreground="#FF171717" FontSize="18" FontWeight="Bold" HorizontalAlignment="Right" Width="22" >
-                        <Button.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="5"/>
-                            </Style>
-                        </Button.Resources>
-                        <Button.Style>
-                            <StaticResource ResourceKey="UpRightButtonStyle"/>
-                        </Button.Style>
-                    </Button>
-                    <Button x:Name="btn_DisplayPanel" Margin="0,5,180,5"  Background="#FFF94AAA" BorderBrush="#FF272727" Click="btn_DisplayPanel_Click" Cursor="Hand" Content="Hide Panel" FontFamily="Tw Cen MT" Foreground="#FF171717" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" Width="89" >
-                        <Button.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="CornerRadius" Value="6"/>
-                            </Style>
-                        </Button.Resources>
-                        <Button.Style>
-                            <StaticResource ResourceKey="UpRightButtonStyle"/>
-                        </Button.Style>
-                    </Button>
-                </Grid>
+                <!--~~~~~~~~~~~~~~~ Top bar ~~~~~~~~~~~~~~~~-->
+                <customcontrols:CustomBorder x:Name="upBar" Background="#FFDADADA" Grid.ColumnSpan="2" Height="32" VerticalAlignment="Top" Grid.RowSpan="2" MouseLeftButtonDown="DragWindow" CornerRadius="15,15,0,0" themeColorType="TopBarBackground">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="14.8" Opacity="0.09"/>
+                    </Border.Effect>
+                    <Grid x:Name="upBar_grid">
+                        <Slider x:Name="slider_winOpacity" HorizontalAlignment="Left" Margin="13,0,0,0" VerticalAlignment="Center" Width="176" AllowDrop="True" Background="{x:Null}" Foreground="#FFD05B5B" BorderBrush="Black" Value="5" Maximum="255" ValueChanged="Slider_ValueChanged" ToolTip="window's opacity"/>
+                        <customcontrols:CustomButton x:Name="btn_quit" buttonGroupType="TopBarButtonClose" Margin="0,5,10,5"  Background="#FFED4D4D" BorderBrush="#FF272727" Click="btn_quit_Click" Cursor="Hand" Content="X" FontSize="18" FontFamily="Tw Cen MT" FontWeight="Bold" Foreground="#FF171717" Style="{StaticResource UpRightButtonStyle}" HorizontalAlignment="Right" Width="22">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="20"/>
+                                </Style>
+                            </Button.Resources>
+                        </customcontrols:CustomButton>
+                        <customcontrols:CustomButton x:Name="btn_minimise" buttonGroupType="TopBarButtonMinimise" Margin="0,5,37,5"  Background="#FFEDA75F" BorderBrush="#FF272727" Click="btn_minimise_Click" Cursor="Hand" Content="—" FontFamily="Tw Cen MT" Foreground="#FF171717" FontWeight="Bold" FontSize="14" Style="{StaticResource UpRightButtonStyle}" HorizontalAlignment="Right" Width="22" >
+                            <Button.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="20"/>
+                                </Style>
+                            </Button.Resources>
+                        </customcontrols:CustomButton>
+                        <customcontrols:CustomButton x:Name="btn_fullscreen" buttonGroupType="TopBarButtonMaximize" Margin="0,5,64,5"  Background="#FF63ED5F" BorderBrush="#FF272727" Click="btn_fullscreen_Click" Cursor="Hand" Content="+" FontFamily="Tw Cen MT" Foreground="#FF171717" FontSize="18" FontWeight="Bold" HorizontalAlignment="Right" Width="22" >
+                            <Button.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="5"/>
+                                </Style>
+                            </Button.Resources>
+                            <Button.Style>
+                                <StaticResource ResourceKey="UpRightButtonStyle"/>
+                            </Button.Style>
+                        </customcontrols:CustomButton>
+                        <customcontrols:CustomButton x:Name="btn_top" buttonGroupType="TopBarButtonTop" Margin="0,5,98,5"  Background="#FF5F61ED" BorderBrush="#FF272727" Click="btn_top_Click" Cursor="Hand" Content="Top  ✓" FontFamily="Tw Cen MT" Foreground="#FF171717" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" Width="72" >
+                            <Button.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="6"/>
+                                </Style>
+                            </Button.Resources>
+                            <Button.Style>
+                                <StaticResource ResourceKey="UpRightButtonStyle"/>
+                            </Button.Style>
+                        </customcontrols:CustomButton>
+                        <customcontrols:CustomButton x:Name="btn_DisplayPanel" buttonGroupType="TopBarButtonHidePanel" Margin="0,5,180,5"  Background="#FFF94AAA" BorderBrush="#FF272727" Click="btn_DisplayPanel_Click" Cursor="Hand" Content="Hide Panel" FontFamily="Tw Cen MT" Foreground="#FF171717" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right" Width="89" >
+                            <Button.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="6"/>
+                                </Style>
+                            </Button.Resources>
+                            <Button.Style>
+                                <StaticResource ResourceKey="UpRightButtonStyle"/>
+                            </Button.Style>
+                        </customcontrols:CustomButton>
+                    </Grid>
+                </customcontrols:CustomBorder>
             </Grid>
             <local:PaintCanvas/>
         </Grid>

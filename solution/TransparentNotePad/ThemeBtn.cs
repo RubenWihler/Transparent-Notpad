@@ -9,6 +9,6 @@ namespace TransparentNotePad
 {
     public class ThemeBtn : Label
     {
-        public Theme theme { get; set; }
+        public ThemeOLD theme { get; set; }
     }
 }

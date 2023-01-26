@@ -1,99 +1,180 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace TransparentNotePad
 {
-    [Serializable]
-    public readonly struct Theme
+    public enum ThemeColorType
     {
-        public Theme(
-            string tname,
-            string color_DefaultText,
-            string color_UpBar,
-            string color_Panel,
-            string color_DisplayPanel,
-            string color_TextArea,
-            string color_Btn_Quit,
-            string color_Btn_Minimise,
-            string color_Btn_Maximise,
-            string color_Btn_Top,
-            string color_Text_Opacity_lbl,
-            string color_Text_Panel_Btns_Bg,
-            string color_Text_Panel_Btns_Text,
-            string color_Text_Panel_Btns_Border,
-            string color_General_Bright_1,
-            string color_General_Bright_2,
-            string color_General_Bright_3,
-            string color_General_Dark_1,
-            string color_General_Dark_2,
-            string color_General_Dark_3,
-            string color_Btn_Brush_Active,
-            string color_Btn_Brush_Disable,
-            string font_UI_General,
-            string default_PaintColor,
-            string color_Btn_ShowHidePanel)
+        Primary, Secondary, Tertiary,
+        Validate, Warning, Alert,
+        TopBarBackground, PanelBackground, EditorBackground,
+        PanelText, PanelButtonText, PanelController
+    }
+
+    public enum ButtonGroupType
+    {
+        Panel, DesktopModePanel, 
+        TopBarButtonClose, TopBarButtonMinimise, TopBarButtonMaximize,
+        TopBarButtonHidePanel, TopBarButtonTop,
+    }
+
+    [System.Serializable]
+    public struct ButtonGroupThemeSettings
+    {
+        public ThemeColor BackgroundColor { get; set; }
+        public ThemeColor HoverColor { get; set; }
+        public ThemeColor BorderColor { get; set; }
+        public ThemeColor ContentColor { get; set; }
+        public ThemeColor GlowColor { get; set; }
+
+        public int BorderThickness { get; set; }
+        public int GlowOpacity { get; set; }
+    }
+
+    [System.Serializable]
+    public struct Theme
+    {
+        public const string DEFAULT_FONT_FAMILY = "Poppins";
+
+        public ThemeColor PrimaryColor { get; set; }
+        public ThemeColor SecondaryColor { get; set;}
+        public ThemeColor TertiaryColor { get; set; }
+
+        /// <summary>
+        /// For Validate/ok color [DEFAULT GREEN]
+        /// </summary>
+        public ThemeColor ValidateColor { get; set; }
+        /// <summary>
+        /// For Middly important color [DEFAULT ORANGE]
+        /// </summary>
+        public ThemeColor WarningColor { get; set; }
+        /// <summary>
+        /// For Alert/important/cancel color [DEFAULT RED]
+        /// </summary>
+        public ThemeColor AlertColor { get; set; }
+
+        public ThemeColor TopBarBackgroundColor { get; set; }
+        public ThemeColor PanelBackgroundColor { get; set; }
+        public ThemeColor EditorBackgroundColor { get; set; }
+
+        public ThemeColor PanelTextColor { get; set; }
+        public ThemeColor PanelButtonTextColor { get; set; }
+        public ThemeColor PanelControllerColor { get; set; }
+
+        public ButtonGroupThemeSettings PanelButtons { get; set; }
+        public ButtonGroupThemeSettings DesktopModePanelButtons { get; set; }
+
+        public ButtonGroupThemeSettings TopBarButtonClose { get; set; }
+        public ButtonGroupThemeSettings TopBarButtonMinimise { get; set; }
+        public ButtonGroupThemeSettings TopBarButtonMaximise { get; set; }
+        public ButtonGroupThemeSettings TopBarButtonHidePanel { get; set; }
+        public ButtonGroupThemeSettings TopBarButtonTop { get; set; }
+
+        public string GlobalTextFont { get; set; }
+        public ThemeColor GlobalTextColor { get; set; }
+    }
+
+    public static class ThemeExtension
+    {
+        public static ThemeColor GetThemeColorOf(this Theme theme, ThemeColorType colorType)
         {
-            Theme_Name = tname;
-            Color_DefaultText = color_DefaultText;
-            Color_UpBar = color_UpBar;
-            Color_Panel = color_Panel;
-            Color_DisplayPanel = color_DisplayPanel;
-            Color_TextArea = color_TextArea;
-            Color_Btn_Quit = color_Btn_Quit;
-            Color_Btn_Minimise = color_Btn_Minimise;
-            Color_Btn_Maximise = color_Btn_Maximise;
-            Color_Btn_Top = color_Btn_Top;
-            Color_Text_Opacity_lbl = color_Text_Opacity_lbl;
-            Color_Text_Panel_Btns_Bg = color_Text_Panel_Btns_Bg;
-            Color_Text_Panel_Btns_Text = color_Text_Panel_Btns_Text;
-            Color_Text_Panel_Btns_Border = color_Text_Panel_Btns_Border;
-            Color_General_Bright_1 = color_General_Bright_1;
-            Color_General_Bright_2 = color_General_Bright_2;
-            Color_General_Bright_3 = color_General_Bright_3;
-            Color_General_Dark_1 = color_General_Dark_1;
-            Color_General_Dark_2 = color_General_Dark_2;
-            Color_General_Dark_3 = color_General_Dark_3;
-            Color_Btn_Brush_Active = color_Btn_Brush_Active;
-            Color_Btn_Brush_Disable = color_Btn_Brush_Disable;
-            Font_UI_General = font_UI_General;
-            Default_PaintColor = default_PaintColor;
-            Color_Btn_ShowHidePanel = color_Btn_ShowHidePanel;
+            switch (colorType)
+            {
+                case ThemeColorType.Primary:
+                    return theme.PrimaryColor;
+
+                case ThemeColorType.Secondary:
+                    return theme.SecondaryColor;
+
+                case ThemeColorType.Tertiary:
+                    return theme.TertiaryColor;
+
+                case ThemeColorType.Validate:
+                    return theme.ValidateColor;
+
+                case ThemeColorType.Warning:
+                    return theme.WarningColor;
+
+                case ThemeColorType.Alert:
+                    return theme.AlertColor;
+
+                case ThemeColorType.TopBarBackground:
+                    return theme.TopBarBackgroundColor;
+
+                case ThemeColorType.PanelBackground:
+                    return theme.PanelBackgroundColor;
+
+                case ThemeColorType.EditorBackground:
+                    return theme.EditorBackgroundColor;
+
+                case ThemeColorType.PanelText:
+                    return theme.PanelTextColor;
+
+                case ThemeColorType.PanelButtonText:
+                    return theme.PanelButtonTextColor;
+
+                case ThemeColorType.PanelController:
+                    return theme.PanelControllerColor;
+
+                default:
+                    return theme.PrimaryColor;
+            }
+        }
+        public static Color GetColorOf(this Theme theme, ThemeColorType colorType)
+        {
+            return theme.GetThemeColorOf(colorType).ToColor();
+        }
+        public static SolidColorBrush GetBrushColorOf(this Theme theme, ThemeColorType colorType)
+        {
+            return theme.GetThemeColorOf(colorType).ToBrush();
         }
 
-        public String Theme_Name { get; }
-        public String Color_DefaultText { get; }
-        public String Color_UpBar { get; }
-        public String Color_Panel { get; }
-        public String Color_DisplayPanel { get;  }
-        public String Color_TextArea { get; }
+        public static ButtonGroupThemeSettings GetButtonGroupThemeSettingsOf(this Theme theme, ButtonGroupType buttonGroupType)
+        {
+            switch (buttonGroupType)
+            {
+                case ButtonGroupType.Panel:
+                    return theme.PanelButtons;
 
-        public String Color_Btn_Quit { get; }
-        public String Color_Btn_Minimise { get;  }
-        public String Color_Btn_Maximise { get; }
-        public String Color_Btn_Top { get;  }
-        public string Color_Btn_ShowHidePanel { get; }
+                case ButtonGroupType.DesktopModePanel:
+                    return theme.DesktopModePanelButtons;
 
-        public String Color_Text_Opacity_lbl { get;  }
-        public String Color_Text_Panel_Btns_Bg { get;}
-        public String Color_Text_Panel_Btns_Text { get; }
-        public String Color_Text_Panel_Btns_Border { get; }
+                case ButtonGroupType.TopBarButtonClose:
+                    return theme.TopBarButtonClose;
 
-        public String Color_General_Bright_1 { get; }
-        public String Color_General_Bright_2 { get; }
-        public String Color_General_Bright_3 { get;}
-        public String Color_General_Dark_1 { get; }
-        public String Color_General_Dark_2 { get;  }
-        public String Color_General_Dark_3 { get;  }
+                case ButtonGroupType.TopBarButtonMinimise:
+                    return theme.TopBarButtonMinimise;
 
-        public String Color_Btn_Brush_Active { get;  }
-        public String Color_Btn_Brush_Disable { get; }
+                case ButtonGroupType.TopBarButtonMaximize:
+                    return theme.TopBarButtonMaximise;
 
-        public string Font_UI_General { get;}
+                case ButtonGroupType.TopBarButtonHidePanel:
+                    return theme.TopBarButtonHidePanel;
 
-        public string Default_PaintColor { get; }
+                case ButtonGroupType.TopBarButtonTop:
+                    return theme.TopBarButtonTop;
+
+                default:
+                    return theme.PanelButtons;
+            }
+        }
+
+        public static FontFamily GetFontFamily(this Theme theme)
+        {
+            var fontFamilyConverter = new FontFamilyConverter();
+            var fontfamily = (FontFamily?)fontFamilyConverter.ConvertFromString(theme.GlobalTextFont);
+
+            if (fontfamily == null)
+            {
+                return (FontFamily)fontFamilyConverter.ConvertFromString(Theme.DEFAULT_FONT_FAMILY)!;
+            }
+                
+            return fontfamily;
+        }
     }
 }

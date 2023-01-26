@@ -34,9 +34,9 @@ namespace TransparentNotePad
         private OptionWindow optionWindow;
         private MainWindow mainWindow;
         
-        private Theme currentTheme;
+        private ThemeOLD currentTheme;
 
-        public event Action<Theme> onThemeChanged;
+        public event Action<ThemeOLD> onThemeChanged;
 
 
         #region /*---------- Proprety ----------*/
@@ -49,7 +49,7 @@ namespace TransparentNotePad
             }
         }
 
-        public static Theme CurrentTheme
+        public static ThemeOLD CurrentTheme
         {
             get
             {
@@ -176,10 +176,10 @@ namespace TransparentNotePad
 
         private static void Init_Theme()
         {
-            List<Theme> themes;
+            List<ThemeOLD> themes;
             if (TryGetThemeFromXMLFile(out themes))
             {
-                var v = from Theme t in themes
+                var v = from ThemeOLD t in themes
                         where t.Theme_Name == StoredDataFile.Selected_Theme
                         select t;
 
@@ -249,11 +249,11 @@ namespace TransparentNotePad
             string path_classic_yellow = System.IO.Path.Combine(ThemesPath, "classic_tn_yellow.xml");
             string path_wood = System.IO.Path.Combine(ThemesPath, "wood_theme.xml");
 
-            XmlSerializer serializer = new XmlSerializer(typeof(Theme));
+            XmlSerializer serializer = new XmlSerializer(typeof(ThemeOLD));
 
             try
             {
-                Theme theme_bright = new(
+                ThemeOLD theme_bright = new(
                 "default-bright",
                 "FF 00 00 00",
                 "FF DA DA DA",
@@ -280,7 +280,7 @@ namespace TransparentNotePad
                 "FF 31 31 31",
                 "FF F9 4A AA");
 
-                Theme theme_dark = new(
+                ThemeOLD theme_dark = new(
                 "default-dark",
                 "FF dd dd dd",
                 "FF 50 50 50",
@@ -307,7 +307,7 @@ namespace TransparentNotePad
                 "FF E5 E5 E5",
                 "FF F9 4A AA");
 
-                Theme classic_tn = new(
+                ThemeOLD classic_tn = new(
                 "Classic Transparent Notepad",
                 "FF dd dd dd",
                 "FF 50 50 50",
@@ -334,7 +334,7 @@ namespace TransparentNotePad
                 "FF fd 7e 44",
                 "FF fd 7e 44");
 
-                Theme classic_tn_Blue = new(
+                ThemeOLD classic_tn_Blue = new(
                 "Classic Blue Transparent Notepad",
                 "FF dd dd dd",
                 "FF 50 50 50",
@@ -361,7 +361,7 @@ namespace TransparentNotePad
                 "FF 38 78 f7",
                 "FF 38 78 f7");
 
-                Theme classic_tn_Red = new(
+                ThemeOLD classic_tn_Red = new(
                 "Classic Red Transparent Notepad",
                 "FF dd dd dd",
                 "FF 50 50 50",
@@ -388,7 +388,7 @@ namespace TransparentNotePad
                 "ff ff 50 53",
                 "ff ff 50 53");
 
-                Theme classic_tn_Yellow = new(
+                ThemeOLD classic_tn_Yellow = new(
                 "Classic Yellow Transparent Notepad",
                 "FF dd dd dd",
                 "FF 50 50 50",
@@ -415,7 +415,7 @@ namespace TransparentNotePad
                 "ff ff c7 38",//
                 "ff ff c7 38");//
 
-                Theme theme_Wood = new(
+                ThemeOLD theme_Wood = new(
                 "Classic Wood",
                 "FF dd dd dd",
                 "ff 6b 58 4b",
@@ -544,7 +544,7 @@ namespace TransparentNotePad
 
         #region |------------ Set Saved File Values ------------|
 
-        public static void SetTheme(Theme theme, bool save = false)
+        public static void SetTheme(ThemeOLD theme, bool save = false)
         {
             MainWindow.SetDMPTheme(theme);
             MainWindow.TextAreaColor = GetColorFromThemeFileString(theme.Color_TextArea);
@@ -798,13 +798,13 @@ namespace TransparentNotePad
                 return false;
             }
         }
-        public static bool TryGetThemeFromXMLFile(out List<Theme> themes)
+        public static bool TryGetThemeFromXMLFile(out List<ThemeOLD> themes)
         {
-            themes = new List<Theme>();
+            themes = new List<ThemeOLD>();
 
             try
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(Theme));
+                XmlSerializer serializer = new XmlSerializer(typeof(ThemeOLD));
                 string[] themeFile_Path = Directory.GetFiles(ThemesPath);
 
                 for (int i = 0; i < themeFile_Path.Length; i++)
@@ -812,7 +812,7 @@ namespace TransparentNotePad
                     using (Stream reader = new FileStream(themeFile_Path[i], FileMode.Open))
                     {
                         object? t = serializer.Deserialize(reader);
-                        if (t != null) themes.Add((Theme)t);
+                        if (t != null) themes.Add((ThemeOLD)t);
                     }
                 }
 
@@ -1012,6 +1012,8 @@ namespace TransparentNotePad
         }
         public static System.Windows.Media.Color GetColorFromThemeFileString(string hex)
         {
+            if (hex == null) return System.Windows.Media.Color.FromArgb(0, 0, 0, 0);
+
             byte a, r, g, b;
             string[] parts = hex.Split(' ');
 
@@ -1032,6 +1034,8 @@ namespace TransparentNotePad
     {
         public static System.Windows.Media.Color HexToColor(this string hex)
         {
+            if (hex == null) return System.Windows.Media.Color.FromArgb(0,0,0,0);
+            
             byte a, r, g, b;
             string[] parts = hex.Split(' ');
 

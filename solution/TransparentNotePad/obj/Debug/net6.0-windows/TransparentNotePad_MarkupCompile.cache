@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-D:\GitHub\Practical_Notpad\solution\TransparentNotePad\obj\Debug\net6.0-windows\
+D:\GitHub\Transparent-Notpad\solution\TransparentNotePad\obj\Debug\net6.0-windows\
 TransparentNotePad
 none
 false
 TRACE;DEBUG;NET;NET6_0;NETCOREAPP
-D:\GitHub\Practical_Notpad\solution\TransparentNotePad\App.xaml
+D:\GitHub\Transparent-Notpad\solution\TransparentNotePad\App.xaml
 3738310531
 1679540316
-12-1976333582
-201-649819516
+19569585280
+2011841787236
 MainWindow.xaml;OptionsWindow.xaml;Postit.xaml;
 
 False

@@ -45,9 +45,9 @@ namespace TransparentNotePad
             theme_initialized = false;
             cmbbox_Theme.Items.Clear();
 
-            if (Manager.TryGetThemeFromXMLFile(out List<Theme> tlist))
+            if (Manager.TryGetThemeFromXMLFile(out List<ThemeOLD> tlist))
             {
-                foreach (Theme t in tlist)
+                foreach (ThemeOLD t in tlist)
                 {
                     CreateThemeButton(t);
                 }
@@ -55,7 +55,7 @@ namespace TransparentNotePad
 
             theme_initialized = true;
         }
-        private void CreateThemeButton(Theme theme)
+        private void CreateThemeButton(ThemeOLD theme)
         {
             ThemeBtn btn = new ThemeBtn();
             btn.theme = theme;

@@ -29,7 +29,7 @@ namespace TransparentNotePad
     {
         private bool inOption;
 
-        private Theme? currentTheme;
+        private ThemeOLD? currentTheme;
 
         private RowDefinition rowAnim1;
 
@@ -139,7 +139,7 @@ namespace TransparentNotePad
 
             SetWindowOpacity(Convert.ToByte(Options_slider_winOpacity.Value));
         }
-        public void SetTheme(Theme theme)
+        public void SetTheme(ThemeOLD theme)
         {
             this.currentTheme = theme;
             UpdateTheme();

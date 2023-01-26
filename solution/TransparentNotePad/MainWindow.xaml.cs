@@ -726,7 +726,7 @@ namespace TransparentNotePad
             }
         }
 
-        public void SetDMPTheme(Theme theme)
+        public void SetDMPTheme(ThemeOLD theme)
         {
             Brush panel_brush = new SolidColorBrush(theme.Color_Panel.HexToColor());
             Brush btn_bg_brush = new SolidColorBrush(theme.Color_Text_Panel_Btns_Bg.HexToColor());
