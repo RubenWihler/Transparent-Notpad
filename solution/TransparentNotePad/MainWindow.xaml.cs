@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Printing;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,6 +22,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Xml;
+using TransparentNotePad.CustomControls;
+using TransparentNotePad.SaveSystem;
+using Xceed.Wpf.AvalonDock.Themes;
 using Brush = System.Windows.Media.Brush;
 using Color = System.Windows.Media.Color;
 using FontFamily = System.Windows.Media.FontFamily;
@@ -54,7 +58,6 @@ namespace TransparentNotePad
         }
 
         /*---------- Fields ----------*/
-        private Color text_area_color;
         private bool win_transparent = true;
         private bool canFullTransparent = true;
         private bool panel_displaying = true;
@@ -62,7 +65,7 @@ namespace TransparentNotePad
         private int current_zoom = 20;
         private bool fontBox_initalized = false;
         private List<Task> zoomTimers = new List<Task>();
-        private CancellationTokenSource? zoomTimerToken;
+        private static CancellationTokenSource? _zoomTimerToken;
         private bool crtl_pressed = false;
         private PaintCanvas.PaintBrush currentBrush;
         private bool inDisplayMoving = false;
@@ -73,7 +76,6 @@ namespace TransparentNotePad
 
         private bool fileSaved = false;
         private string currentTextDocPath;
-        private Color panel_color;
         
 
         DispatcherTimer dispatcherTimer;
@@ -119,23 +121,7 @@ namespace TransparentNotePad
         {
             get
             {
-                return this.panel_color;
-            }
-            set
-            {
-                this.panel_color = value;
-            }
-        }
-        public Color TextAreaColor
-        {
-            get
-            {
-                return text_area_color;
-            }
-            set
-            {
-                text_area_color = value;
-                SetWindowOpacity(lastWinOppacity);
+                return ThemeManager.CurrentTheme.PanelBackgroundColor.ToColor();
             }
         }
         public AppMode CurrentMode
@@ -169,14 +155,14 @@ namespace TransparentNotePad
         {
             get
             {
-                return Manager.GetBrushFromString(Manager.CurrentTheme.Color_Btn_Brush_Active);
+                return ThemeManager.CurrentTheme.PanelBrushButtonIcon.Variants[1].ToBrush();
             }
         }
         private Brush Brush_Button_Disable
         {
             get
             {
-                return Manager.GetBrushFromString(Manager.CurrentTheme.Color_Btn_Brush_Disable);
+                return ThemeManager.CurrentTheme.PanelBrushButtonIcon.Variants[0].ToBrush();
             }
         }
 
@@ -217,6 +203,7 @@ namespace TransparentNotePad
                 ".tntxt", 
                 System.Reflection.Assembly.GetEntryAssembly().Location,
                 "TNTXTX (same as .txt files, but opens by default with Transparent Notpad)");
+
             Init_Field();
             Init_Event();
             //temp
@@ -247,16 +234,13 @@ namespace TransparentNotePad
         }
         private void RetardedCall(object? sender, EventArgs args)
         {
-            Manager.TryGetStoredFile(out StoredDataFile data_file);
-            Console.WriteLine($"RetardedCall");
-            Manager.SetTheme(Manager.CurrentTheme);
-            Manager.SetDefaultTextZoom(data_file.LastTextZoom);
+            //Console.WriteLine($"RetardedCall");
             Init_FontBox();
 
             slider_brush_size.Value = 7;
             dispatcherTimer.Tick -= RetardedCall;
             dispatcherTimer.Stop();
-            dispatcherTimer = null;
+            dispatcherTimer = null!;
             DMP_slider_brushSize.Value = 7;
             DMP_slider_eraserSize.Value = 50;
             SetCurrentDMTool(DMTools.Pen);
@@ -269,19 +253,18 @@ namespace TransparentNotePad
 
         private void Init_FontBox()
         {
-            foreach (var v in cmbbox_Panels_FontSelector.Items)
+            var selected_font_name = OptionsManager.CurrentOptionFile.EditorFont;
+
+            foreach (var font in cmbbox_Panels_FontSelector.Items)
             {
-                FontFamily f = v as FontFamily;
+                var font_family = (FontFamily)font;
 
-                Manager.TryGetStoredFile(out StoredDataFile file);
-                string storedDefaultFont = file.Font;
-
-                if (f != null)
+                if (font_family != null)
                 {
-                    if (f.Source == storedDefaultFont)
+                    if (font_family.Source == selected_font_name)
                     {
-                        cmbbox_Panels_FontSelector.SelectedItem = f;
-                        Manager.SetDefaultTypeFont(f, false);
+                        cmbbox_Panels_FontSelector.SelectedItem = font;
+                        break;
                     }
                 }
             }
@@ -302,11 +285,13 @@ namespace TransparentNotePad
         }
         private void SetWindowOpacity(byte alpha, bool setSliderValue = true)
         {
+            var theme_editor_bg_color = ThemeManager.CurrentTheme.EditorBackgroundColor.ToColor();
+            
             brd_main.Background = new SolidColorBrush(Color.FromArgb(
                 Math.Clamp((byte)alpha,(byte)(canFullTransparent ? 0x00 : 0x01),(byte)0xff),
-                text_area_color.R,
-                text_area_color.G,
-                text_area_color.B));
+                theme_editor_bg_color.R,
+                theme_editor_bg_color.G,
+                theme_editor_bg_color.B));
 
             win_transparent = false;
             lastWinOppacity = alpha;
@@ -357,7 +342,7 @@ namespace TransparentNotePad
             }
 
             current_zoom = Convert.ToInt32(tbox_mainText.FontSize);
-            Manager.StartZoomTimer();
+            StartZoomTimer();
         }
         
         private void OpenOptions()
@@ -470,6 +455,7 @@ namespace TransparentNotePad
             this.WindowState = WindowState.Maximized;
             SetWindowOpacity(0x01, true);
             DisplayPanel(false);
+            ResetAllDMToolsIconColor();
         }
         
         private void SetDMPExtended(bool value)
@@ -513,11 +499,9 @@ namespace TransparentNotePad
 
         private void SetCurrentDMTool(DMTools tool)
         {
-            Brush selected_brush = new SolidColorBrush(
-                Manager.GetColorFromThemeFileString(Manager.CurrentTheme.Color_Btn_Brush_Active));
-
-            Brush unselected_brush = new SolidColorBrush(
-                Manager.GetColorFromThemeFileString(Manager.CurrentTheme.Color_Btn_Brush_Disable));
+            var theme = ThemeManager.CurrentTheme;
+            Brush selected_brush = theme.DesktopModePanelToolButtonIcon.Variants[1].ToBrush();
+            Brush unselected_brush = theme.DesktopModePanelToolButtonIcon.Variants[0].ToBrush();
 
             if (currentDMTool_Icon != null)
                 currentDMTool_Icon.Foreground = unselected_brush;
@@ -530,7 +514,19 @@ namespace TransparentNotePad
 
             currentDMTools = tool;
         }
+        private void ResetAllDMToolsIconColor()
+        {
+            var theme = ThemeManager.CurrentTheme;
+            var unselected_brush = theme.DesktopModePanelToolButtonIcon.Variants[0].ToBrush();
+            var tools_icon = GetAllDMToolIcons();
 
+            for (int i = 0; i < tools_icon.Length; i++)
+            {
+                tools_icon[i].Foreground = unselected_brush;
+            }
+
+            SetCurrentDMTool(currentDMTools);
+        }
         private void ExportToPng(Canvas surface)
         {
             Rect bounds = VisualTreeHelper.GetDescendantBounds(surface);
@@ -550,7 +546,7 @@ namespace TransparentNotePad
             /* Save image to file */
             SaveFileDialog dialog = new SaveFileDialog
             {
-                InitialDirectory = Manager.LastTextFileSaveDirectory,
+                InitialDirectory = OptionsManager.CurrentOptionFile.FileSavePath,
                 Title = "Save to Image",
 
                 CheckFileExists = false,
@@ -593,7 +589,7 @@ namespace TransparentNotePad
             /* Save image to file */
             SaveFileDialog dialog = new SaveFileDialog
             {
-                InitialDirectory = Manager.LastTextFileSaveDirectory,
+                InitialDirectory = OptionsManager.CurrentOptionFile.FileSavePath,
                 Title = "Save to Image",
 
                 CheckFileExists = false,
@@ -686,7 +682,7 @@ namespace TransparentNotePad
         {
             SaveFileDialog dialog = new SaveFileDialog
             {
-                InitialDirectory = Manager.LastTextFileSaveDirectory,
+                InitialDirectory = OptionsManager.CurrentOptionFile.FileSavePath,
                 Title = "Save text to file",
 
                 CheckFileExists = false,
@@ -703,7 +699,7 @@ namespace TransparentNotePad
                 File.WriteAllText(dialog.FileName, tbox_mainText.Text);
 
                 currentTextDocPath = dialog.FileName;
-                Manager.SetLastSaveEmplacement(currentTextDocPath);
+                OptionsManager.SetFileSaveEmplacement(currentTextDocPath);
                 fileSaved = true;
             }
         }
@@ -726,62 +722,6 @@ namespace TransparentNotePad
             }
         }
 
-        public void SetDMPTheme(ThemeOLD theme)
-        {
-            Brush panel_brush = new SolidColorBrush(theme.Color_Panel.HexToColor());
-            Brush btn_bg_brush = new SolidColorBrush(theme.Color_Text_Panel_Btns_Bg.HexToColor());
-            Brush btn_fg_brush = new SolidColorBrush(theme.Color_Text_Panel_Btns_Text.HexToColor());
-            Brush btn_fg_brush_selected = new SolidColorBrush(theme.Color_Btn_Brush_Active.HexToColor());
-            Brush btn_fg_brush_unselected = new SolidColorBrush(theme.Color_Btn_Brush_Disable.HexToColor());
-
-            brd_DesktopModePanel.Background = panel_brush;
-
-            DMP_btn_Extend.Background = btn_bg_brush;
-            DMP_icon_Extend.Foreground = btn_fg_brush;
-
-            DMP_btn_DrawTool.Background = btn_bg_brush;
-            DM_ToolIcon_Pencil.Foreground = btn_fg_brush_unselected;
-
-            DMP_btn_EraseTool.Background = btn_bg_brush;
-            DM_ToolIcon_Eraser.Foreground = btn_fg_brush_unselected;
-
-            DMP_btn_PointerTool.Background = btn_bg_brush;
-            DM_ToolIcon_Cursor.Foreground = btn_fg_brush_unselected;
-
-            DMP_btn_TextTool.Background = btn_bg_brush;
-            DM_ToolIcon_Text.Foreground = btn_fg_brush_unselected;
-
-            DMP_btn_RectBorderTool.Background = btn_bg_brush;
-            DM_ToolIcon_RectBorder.Foreground = btn_fg_brush_unselected;
-
-            DMP_btn_RectFillTool.Background = btn_bg_brush;
-            DM_ToolIcon_RectFill.Foreground = btn_fg_brush_unselected;
-
-            DMP_btn_CircleBorderTool.Background = btn_bg_brush;
-            DM_ToolIcon_CircleBorder.Foreground = btn_fg_brush_unselected;
-
-            DMP_btn_CircleFillTool.Background = btn_bg_brush;
-            DM_ToolIcon_CircleFill.Foreground = btn_fg_brush_unselected;
-
-            DMP_btn_ArrowTool.Background = btn_bg_brush;
-            DM_ToolIcon_Arrow.Foreground = btn_fg_brush_unselected;
-
-            DMP_btn_LineTool.Background = btn_bg_brush;
-            DM_ToolIcon_Line.Foreground = btn_fg_brush_unselected;
-
-            DMP_btn_Clear.Background = btn_bg_brush;
-            DM_ToolIcon_Clear.Foreground = btn_fg_brush;
-
-            DM_lbl_brushSize.Foreground = btn_fg_brush;
-            DM_lbl_eraserSize.Foreground = btn_fg_brush;
-            DM_lbl_Color.Foreground = btn_fg_brush;
-
-            if (currentDMTool_Icon != null)
-                currentDMTool_Icon.Foreground = btn_fg_brush_selected;
-
-            DMP_colorPicker.SelectedColor = theme.Color_Text_Panel_Btns_Text.HexToColor();
-        }
-
         public ImageAwesome GetDMToolIcon(DMTools tool)
         {
             switch (tool)
@@ -799,6 +739,22 @@ namespace TransparentNotePad
             }
 
             throw new Exception($"Tool: {tool} hasn't icon !");
+        }
+        public ImageAwesome[] GetAllDMToolIcons()
+        {
+            return new ImageAwesome[]
+            {
+                DM_ToolIcon_Pencil,
+                DM_ToolIcon_Eraser,
+                DM_ToolIcon_Cursor,
+                DM_ToolIcon_Text,
+                DM_ToolIcon_RectBorder,
+                DM_ToolIcon_RectFill,
+                DM_ToolIcon_CircleBorder,
+                DM_ToolIcon_CircleFill,
+                DM_ToolIcon_Arrow,
+                DM_ToolIcon_Line
+            };
         }
         public bool TryGetDMToolIcon(DMTools tool, out ImageAwesome icon)
         {
@@ -1261,7 +1217,8 @@ namespace TransparentNotePad
         {
             if (fontBox_initalized)
             {
-                Manager.SetDefaultTypeFont((FontFamily)((sender as ComboBox).SelectedItem), true);
+                var font_name = ((FontFamily)((ComboBox)sender).SelectedItem).Source;
+                OptionsManager.SetDefaultFont(font_name);
             }
             
         }
@@ -1374,7 +1331,7 @@ namespace TransparentNotePad
         {
             OpenFileDialog dialog = new OpenFileDialog
             {
-                InitialDirectory = Manager.LastTextFileSaveDirectory,
+                InitialDirectory = OptionsManager.CurrentOptionFile.FileSavePath,
                 Title = "Open Text File",
 
                 CheckFileExists = true,
@@ -1385,9 +1342,16 @@ namespace TransparentNotePad
 
             if (dialog.ShowDialog() == true)
             {
-                Manager.SaveCurrentTextInTemp();
-                tbox_mainText.Text = File.ReadAllText(dialog.FileName);
+                if (fileSaved && File.Exists(currentTextDocPath))
+                {
+                    File.WriteAllText(currentTextDocPath, tbox_mainText.Text);
+                }
+                else
+                {
+                    SaveManager.SaveTextToTemporaryFile(tbox_mainText.Text);
+                }
 
+                tbox_mainText.Text = File.ReadAllText(dialog.FileName);
                 currentTextDocPath = dialog.FileName;
                 fileSaved = true;
             }
@@ -1493,8 +1457,7 @@ namespace TransparentNotePad
         private void DMP_btn_Tools_Click(object sender, RoutedEventArgs e)
         {
             SetWindowOpacity(0x01);
-            dm_PaintCanvas.Background
-                    = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
+            dm_PaintCanvas.Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
 
             if ((Button)sender == DMP_btn_DrawTool)
             {
@@ -1596,5 +1559,31 @@ namespace TransparentNotePad
             if (dm_PaintCanvas != null)
                 dm_PaintCanvas.CurrentColor = e.NewValue!.Value;
         }
+
+        #region Text Zoom Save Timer
+
+        public void StartZoomTimer()
+        {
+            if (_zoomTimerToken != null)
+            {
+                _zoomTimerToken?.Cancel();
+            }
+
+            _zoomTimerToken = new CancellationTokenSource();
+            Task.Run(() => ZoomTimer(_zoomTimerToken.Token, tbox_mainText.FontSize));
+        }
+        private async Task ZoomTimer(CancellationToken cancellationToken, double zoomValue)
+        {
+            //duration: 1000 (20 * 50);
+            for (int i = 0; i < 20; i++)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await Task.Delay(50);
+            }
+
+            OptionsManager.SetDefaultZoom(zoomValue);
+        }
+
+        #endregion
     }
 }

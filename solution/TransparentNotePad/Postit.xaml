@@ -4,15 +4,21 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TransparentNotePad"
+        xmlns:customcontrols="clr-namespace:TransparentNotePad.CustomControls"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:fa="http://schemas.fontawesome.io/icons/" xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         mc:Ignorable="d"
         AllowsTransparency="True"
         WindowStyle="None"
         ResizeMode="CanResizeWithGrip"
-        
         Background="#00000000" 
-        Title="Note" Height="450" Width="343" MouseWheel="Window_MouseWheel" PreviewKeyDown="Window_PreviewKeyDown">
+        Title="Note" 
+        Height="500" 
+        Width="400"
+        MinWidth="300" 
+        MinHeight="150"
+        MouseWheel="Window_MouseWheel" 
+        PreviewKeyDown="Window_PreviewKeyDown" >
     <Window.Resources>
         <CollectionViewSource 
             Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}" 
@@ -37,7 +43,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#FFaaaaaa"/>
+                                <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource Self}, Path=HoverBackground}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -64,67 +70,94 @@
             <Setter Property="FontSize" Value="16"/>
         </Style>
     </Window.Resources>
-    <Border x:Name="border_main"
-        CornerRadius="0,0,20,20"
+    <customcontrols:CustomBorder 
+        x:Name="border_main"
+        themeColorType="NoteEditorBackground"
+        CornerRadius="10"
         Background="#FFE6E6E6"
         MouseLeftButtonDown="DragWindow">
-        <Grid x:Name="baseGrid" 
-              Background="#0000">
+        <Grid 
+            x:Name="baseGrid" 
+            Background="#0000">
             <Grid.RowDefinitions>
                 <RowDefinition Height="37*" MinHeight="30" MaxHeight="40"/>
+                <!--<RowDefinition Height="37*" MinHeight="150" MaxHeight="225"/>-->
                 <RowDefinition Height="413*"/>
             </Grid.RowDefinitions>
-            <Border x:Name="Header_Border" 
-                    Background="#FFC5C5C5" MouseDown="Header_Border_MouseDown">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="10" Opacity="0.2" Direction="-89.8" Color="Black"/>
-                </Border.Effect>
+
+            <!--~~~~~~~~~~~~~~~ Top bar ~~~~~~~~~~~~~~~~-->
+            <customcontrols:CustomBorder 
+                x:Name="Header_Border" 
+                themeColorType="NoteHeaderBackground"
+                Background="#FFC5C5C5"
+                MouseDown="Header_Border_MouseDown"
+                CornerRadius="10,10,0,0">
+                <!--<Border.Effect>
+                    <DropShadowEffect BlurRadius="10" Opacity="0.15" Direction="-89.8" Color="Black"/>
+                </Border.Effect>-->
                 <Grid>
-                    <Grid x:Name="Options" Opacity="0">
+                    <!--~~~~~~~~~~~~~~~ Panel ~~~~~~~~~~~~~~~~-->
+                    <Grid 
+                        x:Name="Options" 
+                        Opacity="0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="38*">
                             </RowDefinition>
                             <RowDefinition Height="143*"/>
                         </Grid.RowDefinitions>
-                        
-                        <Grid x:Name="Options_Header"
-                              Grid.Row="0">
+
+                        <Grid 
+                            x:Name="Options_Header"
+                            Grid.Row="0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="Options_Btn_Back"
-                                    Style="{StaticResource Header_Button}"
-                                    Margin="10,6,35,6"
-                                    Click="Options_Btn_Back_Click"
-                                    HorizontalAlignment="Left" 
-                                    HorizontalContentAlignment="Center"
-                                    ToolTip="Hide Options">
+                            <customcontrols:CustomButton 
+                                x:Name="Options_Btn_Back"
+                                Style="{StaticResource Header_Button}"
+                                buttonGroupType="NoteHeader"
+                                Width="70"
+                                Margin="10,6,0,6"
+                                Click="Options_Btn_Back_Click"
+                                HorizontalAlignment="Left" 
+                                HorizontalContentAlignment="Center"
+                                ToolTip="Hide Options">
                                 <Viewbox>
-                                    <Label x:Name="Options_Btn_Back_text"
-                                           Style="{StaticResource Header_Btn_Text}"
-                                           Content="Close"
-                                           Width="75"
-                                           HorizontalContentAlignment="Center">
-                                    </Label>
+                                    <customcontrols:CustomIcon 
+                                        x:Name="Header_btn_Back_Icon"
+                                        Margin="0,20,0,20"
+                                        Icon="Gear"
+                                        Style="{StaticResource Header_Button_Icon}"
+                                        themeColorType="NoteHeaderText">
+                                    </customcontrols:CustomIcon>
+                                    <!--<Label 
+                                        x:Name="Options_Btn_Back_text"
+                                        Style="{StaticResource Header_Btn_Text}"
+                                        Content="Close"
+                                        Width="75"
+                                        HorizontalContentAlignment="Center">
+                                    </Label>-->
                                 </Viewbox>
-                            </Button>
+                            </customcontrols:CustomButton>
                             <Viewbox Grid.Column="1">
-                                <Label x:Name="lbl_Options_Title"
-                                   Content="Options"
-                                   FontFamily="Poppins"
-                                   FontSize="25"
-                                   Foreground="#FF252525" 
-                                   HorizontalContentAlignment="Center" 
-                                   VerticalContentAlignment="Center"
-                                   FontWeight="Bold"/>
+                                <customcontrols:CustomLabel 
+                                    x:Name="lbl_Options_Title"
+                                    themeColorType="NoteHeaderText"
+                                    Content="Options"
+                                    FontFamily="Poppins"
+                                    FontSize="25"
+                                    Foreground="#FF252525" 
+                                    HorizontalContentAlignment="Center" 
+                                    VerticalContentAlignment="Center"
+                                    FontWeight="Bold"/>
                             </Viewbox>
-                            
                         </Grid>
-                        <Grid x:Name="Options_Main"
-                              Grid.Row="1"
-                              Margin="10,0,10,0">
+                        <Grid 
+                            x:Name="Options_Main"
+                            Grid.Row="1"
+                            Margin="10,0,10,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
@@ -136,152 +169,231 @@
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
 
-                            <Button x:Name="Options_Btn_Top"
-                                    Grid.Row="0"
-                                    Grid.Column="0"
-                                    Style="{StaticResource Header_Button}"
-                                    FontSize="14"
-                                    Margin="30,4,30,4"
-                                    Click="Options_Btn_Top_Click"
-                                    ToolTip="puts the window on top of the other applications">
+                            <customcontrols:CustomButton 
+                                x:Name="Options_Btn_Top"
+                                buttonGroupType="NoteHeader"
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Style="{StaticResource Header_Button}"
+                                FontSize="14"
+                                Margin="30,4,30,4"
+                                Click="Options_Btn_Top_Click"
+                                ToolTip="puts the window on top of the other applications">
                                 <Viewbox>
-                                    <Label x:Name="Options_lblOfBtn_Top"
-                                           Style="{StaticResource Header_Btn_Text}"
-                                           Content="Top: ✓"/>
+                                    <customcontrols:CustomLabel 
+                                        x:Name="Options_lblOfBtn_Top"
+                                        themeColorType="NoteHeaderText"
+                                        Style="{StaticResource Header_Btn_Text}"
+                                        Content="Top: ✓"/>
                                 </Viewbox>
-                            </Button>
-                            <Button x:Name="Options_Btn_SetDefault"
-                                    Grid.Row="0"
-                                    Grid.Column="1"
-                                    Style="{StaticResource Header_Button}"
-                                    FontSize="14"
-                                    Margin="30,4,30,4"
-                                    Click="Options_Btn_SetDefault_Click"
-                                    ToolTip="sets the current options as default value">
+                            </customcontrols:CustomButton>
+                            <customcontrols:CustomButton 
+                                x:Name="Options_Btn_SetDefault"
+                                buttonGroupType="NoteHeader"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Style="{StaticResource Header_Button}"
+                                FontSize="14"
+                                Margin="30,4,30,4"
+                                Click="Options_Btn_SetDefault_Click"
+                                ToolTip="sets the current options as default value">
                                 <Viewbox>
-                                    <Label x:Name="Options_Btn_SetDefault_Text"
-                                           Style="{StaticResource Header_Btn_Text}"
-                                           Content="Set Default"/>
+                                    <customcontrols:CustomLabel 
+                                        x:Name="Options_Btn_SetDefault_Text"
+                                        themeColorType="NoteHeaderText"
+                                        Style="{StaticResource Header_Btn_Text}"
+                                        Content="Set Default"/>
                                 </Viewbox>
-                            </Button>
+                            </customcontrols:CustomButton>
 
                             <Viewbox Grid.Row="1" Grid.Column="0">
-                                <Label x:Name="Options_lbl_winOpacity"
-                                   Content="Opacity :"
-                                   Style="{StaticResource Options_lbl}"/>
+                                <customcontrols:CustomLabel 
+                                    x:Name="Options_lbl_winOpacity"
+                                    themeColorType="NoteHeaderText"
+                                    Content="Opacity :"
+                                    Style="{StaticResource Options_lbl}"/>
                             </Viewbox>
-                            
-                            <Slider x:Name="Options_slider_winOpacity"
-                                    Grid.Row="1"
-                                    Grid.Column="1" 
-                                    VerticalAlignment="Center"
-                                    Margin="25,0,25,0"
-                                    Minimum="0"
-                                    Maximum="255"
-                                    Value="255" ValueChanged="Options_slider_winOpacity_ValueChanged">
+
+                            <Slider
+                                x:Name="Options_slider_winOpacity"
+                                Grid.Row="1"
+                                Grid.Column="1" 
+                                VerticalAlignment="Center"
+                                Margin="25,0,25,0"
+                                Minimum="0"
+                                Maximum="255"
+                                Value="255" 
+                                ValueChanged="Options_slider_winOpacity_ValueChanged">
                             </Slider>
 
                             <Viewbox Grid.Row="2" Grid.Column="0">
-                                <Label x:Name="Options_lbl_FontColor"
-                                   Content="text color :"
-                                   Style="{StaticResource Options_lbl}"/>
+                                <customcontrols:CustomLabel 
+                                    x:Name="Options_lbl_FontColor"
+                                    themeColorType="NoteHeaderText"
+                                    Content="text color :"
+                                    Style="{StaticResource Options_lbl}"/>
                             </Viewbox>
-                            
-                            <xctk:ColorPicker x:Name="option_colorPicker_textColor" 
-                                              Grid.Row="2" 
-                                              Grid.Column="1"
-                                              Margin="25,6,25,6"
-                                              SelectedColor="#FF212121" SelectedColorChanged="option_colorPicker_textColor_SelectedColorChanged"/>
 
+                            <customcontrols:CustomColorPicker 
+                                x:Name="option_colorPicker_textColor"
+                                colorPickerType="NotePanel"
+                                Grid.Row="2" 
+                                Grid.Column="1"
+                                Margin="25,6,25,6"
+                                SelectedColor="#FF212121" SelectedColorChanged="option_colorPicker_textColor_SelectedColorChanged">
+                            </customcontrols:CustomColorPicker >
                             <Viewbox Grid.Row="3" Grid.Column="0">
-                                <Label x:Name="Options_lbl_Font"
-                                   Content="font :"
-                                   Style="{StaticResource Options_lbl}"/>
+                                <customcontrols:CustomLabel 
+                                    x:Name="Options_lbl_Font"
+                                    themeColorType="NoteHeaderText"
+                                    Content="font :"
+                                    Style="{StaticResource Options_lbl}"/>
                             </Viewbox>
 
-                            <ComboBox x:Name="cmbbox_Panels_FontSelector" 
-                                      Grid.Column="1" Grid.Row="3"
-                                      ItemsSource="{Binding Source={StaticResource familyCollection}}" 
-                                      
-                                      VerticalAlignment="Center"
-                                      Margin="25,6,25,6" SelectionChanged="cmbbox_Panels_FontSelector_SelectionChanged"/>
+                            <customcontrols:CustomComboBox 
+                                x:Name="cmbbox_Panels_FontSelector" 
+                                themeColorType="NoteHeaderText"
+                                Grid.Column="1" Grid.Row="3"
+                                ItemsSource="{Binding Source={StaticResource familyCollection}}" 
+                                VerticalAlignment="Center"
+                                Margin="25,6,25,6" 
+                                SelectionChanged="cmbbox_Panels_FontSelector_SelectionChanged"/>
                         </Grid>
                     </Grid>
-                    <Grid x:Name="Header" Opacity="100"
-                          MinHeight="30"
-                          MaxHeight="40">
+                    <!--~~~~~~~~~~~~~~~ Header ~~~~~~~~~~~~~~~~-->
+                    <Grid 
+                        x:Name="Header" 
+                        Opacity="100"
+                        MinHeight="30"
+                        MaxHeight="40">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="0.6*"/>
+                            <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="Header_btn_Option"
-                                Style="{StaticResource Header_Button}"
-                                Margin="10,6,35,6"
-                                Click="Header_btn_Options_Click"
-                                Grid.Column="0" 
-                                HorizontalAlignment="Left" 
-                                HorizontalContentAlignment="Center"
-                                ToolTip="Display Options">
+
+                        <!--~~~~~~~ Options button ~~~~~~~-->
+                        <customcontrols:CustomButton 
+                            x:Name="Header_btn_Option"
+                            buttonGroupType="NoteHeader"
+                            Style="{StaticResource Header_Button}"
+                            Width="70"
+                            Margin="10,6,0,6"
+                            Click="Header_btn_Options_Click"
+                            Grid.Column="0" 
+                            HorizontalAlignment="Left" 
+                            HorizontalContentAlignment="Center"
+                            ToolTip="Display Options">
                             <Viewbox>
-                                <Label x:Name="Header_btn_Option_text"
-                                       Style="{StaticResource Header_Btn_Text}"
-                                       Content="Options" 
-                                       Width="75" 
-                                       HorizontalContentAlignment="Center"/>
+                                <customcontrols:CustomIcon
+                                    x:Name="Header_btn_Option_Icon"
+                                    Margin="0,20,0,20"
+                                    Icon="Gear" 
+                                    Style="{StaticResource Header_Button_Icon}" 
+                                    themeColorType="NoteHeaderText">
+                                </customcontrols:CustomIcon>
                             </Viewbox>
-                        </Button>
-                        <Viewbox Grid.Column="1">
-                            <Label x:Name="lbl_Title"
-                                   Content="Note"
-                                   FontFamily="Poppins"
-                                   FontSize="28"
-                                   Foreground="#FF252525" 
-                                   HorizontalContentAlignment="Center" 
-                                   VerticalContentAlignment="Center" 
-                                   FontWeight="Bold"/>  
-                        </Viewbox>
+                        </customcontrols:CustomButton>
                         
-                        <Grid Grid.Column="2">
+                        <!--~~~~~~~ Title ~~~~~~~-->
+                        <Viewbox Grid.Column="1">
+                            <customcontrols:CustomLabel  
+                                x:Name="lbl_Title"
+                                themeColorType="NoteHeaderText"
+                                Content="Note"
+                                FontFamily="Poppins"
+                                FontSize="28"
+                                Foreground="#FF252525" 
+                                HorizontalContentAlignment="Center" 
+                                VerticalContentAlignment="Center" 
+                                FontWeight="Bold"/>
+                        </Viewbox>
+
+                        <!--~~~~~~~ 3 Right buttons (save|minimise|close) ~~~~~~~-->
+                        <Grid Grid.Column="2" HorizontalAlignment="Right" Width="114">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
+                                <ColumnDefinition MinWidth="38" MaxWidth="40"/>
+                                <ColumnDefinition MinWidth="38" MaxWidth="40"/>
+                                <ColumnDefinition MinWidth="38" MaxWidth="40"/>
                             </Grid.ColumnDefinitions>
-                            <Button x:Name="Header_btn_Save"
-                                    Style="{StaticResource Header_Button}" Grid.Column="0" Click="Header_btn_Save_Click" ToolTip="Save the text in a file">
-                                <fa:ImageAwesome x:Name="header_btn_Save_Icon" Icon="File" Style="{StaticResource Header_Button_Icon}"></fa:ImageAwesome>
-                            </Button>
-                            <Button x:Name="Header_btn_Minimize"
-                                    Style="{StaticResource Header_Button}" Grid.Column="1" Click="Header_btn_Minimize_Click" ToolTip="Minimize the window">
-                                <fa:ImageAwesome x:Name="header_btn_Minimize_Icon" Icon="WindowMinimize" Style="{StaticResource Header_Button_Icon}" MaxWidth="20"></fa:ImageAwesome>
-                            </Button>
-                            <Button x:Name="Header_btn_Quit"
-                                    Style="{StaticResource Header_Button}" Grid.Column="2" Click="Header_btn_Quit_Click" ToolTip="Close the Note window">
-                                <fa:ImageAwesome x:Name="header_btn_Quit_Icon" Icon="Close" Style="{StaticResource Header_Button_Icon}"></fa:ImageAwesome>
-                            </Button>
+                            <customcontrols:CustomButton  
+                                x:Name="Header_btn_Save"
+                                buttonGroupType="NoteHeader"
+                                Style="{StaticResource Header_Button}"
+                                Grid.Column="0" 
+                                Click="Header_btn_Save_Click" 
+                                ToolTip="Save the text in a file">
+                                <Viewbox>
+                                    <customcontrols:CustomIcon 
+                                        x:Name="header_btn_Save_Icon"
+                                        Margin="0,20,0,20"
+                                        Icon="File" 
+                                        Style="{StaticResource Header_Button_Icon}"
+                                        themeColorType="NoteHeaderText">
+                                    </customcontrols:CustomIcon>
+                                </Viewbox>
+                            </customcontrols:CustomButton>
+                            <customcontrols:CustomButton  
+                                x:Name="Header_btn_Minimize"
+                                buttonGroupType="NoteHeader"
+                                Style="{StaticResource Header_Button}"
+                                Grid.Column="1" Click="Header_btn_Minimize_Click" 
+                                ToolTip="Minimize the window">
+                                <Viewbox>
+                                    <customcontrols:CustomIcon 
+                                        x:Name="header_btn_Minimize_Icon"
+                                        Margin="0,20,0,20"
+                                        Icon="WindowMinimize" 
+                                        Style="{StaticResource Header_Button_Icon}" 
+                                        MaxWidth="20"
+                                        themeColorType="NoteHeaderText">
+                                    </customcontrols:CustomIcon>
+                                </Viewbox>
+                            </customcontrols:CustomButton>
+                            <customcontrols:CustomButton  
+                                x:Name="Header_btn_Quit"
+                                buttonGroupType="NoteHeader"
+                                Style="{StaticResource Header_Button}"
+                                Grid.Column="2" 
+                                Click="Header_btn_Quit_Click" 
+                                ToolTip="Close the Note window">
+                                <Viewbox>
+                                    <customcontrols:CustomIcon 
+                                        x:Name="header_btn_Quit_Icon"
+                                        Margin="0,20,0,20"
+                                        Icon="Close" 
+                                        Style="{StaticResource Header_Button_Icon}"
+                                        themeColorType="NoteHeaderText">
+                                    </customcontrols:CustomIcon>
+                                </Viewbox>
+                            </customcontrols:CustomButton>
                         </Grid>
                     </Grid>
                 </Grid>
-            </Border>
-            <Grid x:Name="main_grid" Grid.Row="1">
-                <TextBox x:Name="tbox_mainText"
-                         Margin="15"
-                         TextWrapping="Wrap"
-                         Text="type text"
-                         Background="{x:Null}"
-                         BorderBrush="#00000000"
-                         SelectionBrush="#FF6BB8FF"
-                         SelectionTextBrush="{x:Null}"
-                         FontSize="24"
-                         BorderThickness="0,0,0,0"
-                         IsTabStop="False"
-                         AcceptsTab="True"
-                         AcceptsReturn="True" 
-                         FontFamily="Cascadia Code" 
-                         Foreground="#FF212121"/>
-            </Grid>
-        </Grid>
-    </Border>
+            </customcontrols:CustomBorder>
 
+            <!--~~~~~~~~~~~~~~~ Editor ~~~~~~~~~~~~~~~~-->
+            <Grid 
+                x:Name="main_grid" 
+                Grid.Row="1">
+                <TextBox 
+                    x:Name="tbox_mainText"
+                    Margin="15"
+                    TextWrapping="Wrap"
+                    Text="type text"
+                    Background="{x:Null}"
+                    BorderBrush="#00000000"
+                    SelectionBrush="#FF6BB8FF"
+                    SelectionTextBrush="{x:Null}"
+                    FontSize="24"
+                    BorderThickness="0,0,0,0"
+                    IsTabStop="False"
+                    AcceptsTab="True"
+                    AcceptsReturn="True" 
+                    FontFamily="Cascadia Code" 
+                    Foreground="#FF212121"/>
+            </Grid>
+            
+        </Grid>
+    </customcontrols:CustomBorder>
 </Window>

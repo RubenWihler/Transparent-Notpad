@@ -1,7 +1,7 @@
 ﻿TransparentNotePad
 
 
-winexe
+exe
 C#
 .cs
 D:\GitHub\Transparent-Notpad\solution\TransparentNotePad\obj\Debug\net6.0-windows\
@@ -12,7 +12,7 @@ TRACE;DEBUG;NET;NET6_0;NETCOREAPP
 D:\GitHub\Transparent-Notpad\solution\TransparentNotePad\App.xaml
 3738310531
 1679540316
-19569585280
+25-1449109847
 2011841787236
 MainWindow.xaml;OptionsWindow.xaml;Postit.xaml;
 

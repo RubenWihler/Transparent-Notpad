@@ -20,11 +20,22 @@ namespace TransparentNotePad
 
         public Color ToColor()
         {
-            return Color.FromArgb(R, G, B, A);
+            return Color.FromArgb(A, R, G, B);
         }
         public SolidColorBrush ToBrush()
         {
             return new SolidColorBrush(ToColor());
         }
+    }
+
+    [System.Serializable]
+    public struct VariableThemeColor
+    {
+        public VariableThemeColor(ThemeColor[] variants)
+        {
+            Variants = variants;
+        }
+
+        public ThemeColor[] Variants { get; set; }
     }
 }

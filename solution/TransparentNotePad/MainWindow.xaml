@@ -97,7 +97,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#FFaaaaaa"/>
+                                <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource Self}, Path=HoverBackground}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -115,6 +115,7 @@
             <Setter Property="MaxHeight" Value="50"/>
             <Setter Property="MinWidth" Value="12"/>
             <Setter Property="MinHeight" Value="15"/>
+            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -123,7 +124,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#FFaaaaaa"/>
+                                <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource Self}, Path=HoverBackground}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -171,7 +172,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#FFaaaaaa"/>
+                                <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource Self}, Path=HoverBackground}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -187,7 +188,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#FFaaaaaa"/>
+                                <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource Self}, Path=HoverBackground}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -214,7 +215,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#FFaaaaaa"/>
+                                <Setter Property="Background" Value="{Binding RelativeSource={RelativeSource Self}, Path=HoverBackground}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -244,10 +245,10 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
     </Window.Resources>
-    <Border x:Name="brd_main" CornerRadius="15,15,15,15" BorderThickness="0" Padding="4"  Background="#4CFFFFFF" ClipToBounds="True" AllowDrop="True">
+    <customcontrols:CustomBorder x:Name="brd_main" CornerRadius="15,15,15,15" BorderThickness="0" Padding="4"  Background="#4CFFFFFF" ClipToBounds="True" AllowDrop="True" themeColorType="EditorBackground">
         <Grid Background="Transparent" Opacity="255" Margin="-4,-4,-4,-4" ClipToBounds="True">
             <Grid Background="{x:Null}" ClipToBounds="True" AllowDrop="True">
-                
+
                 <!--~~~~~~~~~~~~~~~ Paint Mode Canvas ~~~~~~~~~~~~~~~~-->
                 <Grid Background="#00000000" Grid.RowSpan="2" Grid.ColumnSpan="2" AllowDrop="True">
                     <Border Background="#00000000" CornerRadius="0,0,30,30" AllowDrop="True">
@@ -258,7 +259,25 @@
                 </Grid>
 
                 <!--~~~~~~~~~~~~~~~ Panels ~~~~~~~~~~~~~~~~-->
-                <customcontrols:CustomBorder x:Name="display_panel" CornerRadius="5" BorderBrush="Black" BorderThickness="0" Margin="611,157,0,129" Background="#FFA4A4A4" MouseMove="Border_MouseDown" MinHeight="41" Cursor="Hand" Focusable="True" Panel.ZIndex="1" Grid.Row="1" HorizontalAlignment="Left" Width="14" MouseDown="display_panel_MouseDown" MouseUp="display_panel_MouseUp" AllowDrop="True" Drop="On_DropOnWindow" themeColorType="PanelController">
+                <customcontrols:CustomBorder 
+                    x:Name="display_panel" 
+                    CornerRadius="4.5" 
+                    BorderBrush="Black" 
+                    BorderThickness="0" 
+                    Margin="611,157,0,129" 
+                    Background="#FFA4A4A4" 
+                    MouseMove="Border_MouseDown" 
+                    MinHeight="41" Cursor="Hand" 
+                    Focusable="True" 
+                    Panel.ZIndex="1" 
+                    Grid.Row="1" 
+                    HorizontalAlignment="Left" 
+                    Width="14" 
+                    MouseDown="display_panel_MouseDown" 
+                    MouseUp="display_panel_MouseUp" 
+                    AllowDrop="True" 
+                    Drop="On_DropOnWindow" 
+                    themeColorType="PanelController">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="10" Opacity="0.4" Direction="-89.8"/>
                     </Border.Effect>
@@ -267,7 +286,7 @@
                     <customcontrols:CustomBorder x:Name="panel_border" CornerRadius="0,15,15,0" BorderBrush="Black" BorderThickness="0" Background="#FFBFBFBF" Drop="On_DropOnWindow" themeColorType="PanelBackground"/>
                     <!--~~~~~~~~ Text Mode Panel ~~~~~~~-->
                     <ItemsControl x:Name="Panel_Items_textMode" Style="{StaticResource Panel_Grid}" Margin="10,32,10,0">
-                        <customcontrols:CustomButton x:Name="btn_panel_text_openAsNoteWindow" buttonGroupType="Panel" Grid.Column="0" Grid.Row="0" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_note_Click_1">
+                        <customcontrols:CustomButton x:Name="btn_panel_text_openAsNoteWindow" buttonGroupType="Panel" Grid.Column="0" Grid.Row="0" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_note_Click_1" Cursor="Hand">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
@@ -276,7 +295,7 @@
                                 </DataTemplate>
                             </Button.ContentTemplate>
                         </customcontrols:CustomButton>
-                        <customcontrols:CustomButton x:Name="btn_panel_text_option" buttonGroupType="Panel" Grid.Column="1" Grid.Row="0" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_option_Click_1">
+                        <customcontrols:CustomButton x:Name="btn_panel_text_option" buttonGroupType="Panel" Grid.Column="1" Grid.Row="0" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_option_Click_1" Cursor="Hand">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
@@ -285,7 +304,7 @@
                                 </DataTemplate>
                             </Button.ContentTemplate>
                         </customcontrols:CustomButton>
-                        <customcontrols:CustomButton x:Name="btn_panel_text_switchMode" buttonGroupType="Panel" Grid.Column="0" Grid.Row="1" Content="Paint" Style="{DynamicResource PanelButton}" Click="btn_switchMode_Click">
+                        <customcontrols:CustomButton x:Name="btn_panel_text_switchMode" buttonGroupType="Panel" Grid.Column="0" Grid.Row="1" Content="Paint" Style="{DynamicResource PanelButton}" Click="btn_switchMode_Click" Cursor="Hand">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
@@ -294,7 +313,7 @@
                                 </DataTemplate>
                             </Button.ContentTemplate>
                         </customcontrols:CustomButton>
-                        <customcontrols:CustomButton x:Name="btn_panel_text_DesktopMode" buttonGroupType="Panel" Grid.Column="1" Grid.Row="1" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_desktopMode_Click">
+                        <customcontrols:CustomButton x:Name="btn_panel_text_DesktopMode" buttonGroupType="Panel" Grid.Column="1" Grid.Row="1" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_desktopMode_Click" Cursor="Hand">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
@@ -308,21 +327,27 @@
                         <Viewbox Grid.Column="0" Grid.Row="3" Style="{StaticResource PanelTextViewBox}">
                             <customcontrols:CustomTextBlock x:Name="tblc_text_font" themeColorType="PanelText" Style="{StaticResource PanelTextBlock}">Text Font:</customcontrols:CustomTextBlock>
                         </Viewbox>
-                        <ComboBox x:Name="cmbbox_Panels_FontSelector" Style="{DynamicResource Panel_ComboBox}"
-                                  Grid.Column="1" Grid.Row="3"
-                                  ItemsSource="{Binding Source={StaticResource familyCollection}}" SelectionChanged="cmbbox_Panels_FontSelector_SelectionChanged" VerticalAlignment="Center"/>
-
+                        <customcontrols:CustomComboBox 
+                            x:Name="cmbbox_Panels_FontSelector"
+                            themeColorType="PanelText"
+                            Style="{DynamicResource Panel_ComboBox}"
+                            Grid.Column="1" 
+                            Grid.Row="3"
+                            ItemsSource="{Binding Source={StaticResource familyCollection}}" 
+                            SelectionChanged="cmbbox_Panels_FontSelector_SelectionChanged"
+                            VerticalAlignment="Center"/>
                         <Viewbox Grid.Column="0" Grid.Row="4" Style="{StaticResource PanelTextViewBox}">
                             <customcontrols:CustomTextBlock x:Name="tblc_text_color" themeColorType="PanelText" Style="{StaticResource PanelTextBlock}">Text Color:</customcontrols:CustomTextBlock>
                         </Viewbox>
-                        <xctk:ColorPicker
-                                x:Name="colpicker_text_color"
-                                VerticalAlignment="Center" 
-                                Grid.Column="1" Grid.Row="4"
-                                SelectedColorChanged="OnTextColorChanged">
-                        </xctk:ColorPicker>
+                        <customcontrols:CustomColorPicker
+                            x:Name="colpicker_text_color"
+                            colorPickerType="Panel"
+                            VerticalAlignment="Center"
+                            Grid.Column="1" Grid.Row="4"
+                            SelectedColorChanged="OnTextColorChanged">
+                        </customcontrols:CustomColorPicker>
 
-                        <customcontrols:CustomButton x:Name="btn_panel_text_save" buttonGroupType="Panel" Grid.Column="0" Grid.Row="8" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_TextSave_Click">
+                        <customcontrols:CustomButton x:Name="btn_panel_text_save" buttonGroupType="Panel" Grid.Column="0" Grid.Row="8" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_TextSave_Click" Cursor="Hand">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
@@ -331,7 +356,7 @@
                                 </DataTemplate>
                             </Button.ContentTemplate>
                         </customcontrols:CustomButton>
-                        <customcontrols:CustomButton x:Name="btn_panel_text_saveas" buttonGroupType="Panel" Grid.Column="0" Grid.Row="9" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_TextSaveAs_Click">
+                        <customcontrols:CustomButton x:Name="btn_panel_text_saveas" buttonGroupType="Panel" Grid.Column="0" Grid.Row="9" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_TextSaveAs_Click" Cursor="Hand">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
@@ -340,7 +365,7 @@
                                 </DataTemplate>
                             </Button.ContentTemplate>
                         </customcontrols:CustomButton>
-                        <customcontrols:CustomButton x:Name="btn_panel_text_openInFileExplorer" buttonGroupType="Panel" Grid.Column="1" Grid.Row="9" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_ViewInExplorerClick">
+                        <customcontrols:CustomButton x:Name="btn_panel_text_openInFileExplorer" buttonGroupType="Panel" Grid.Column="1" Grid.Row="9" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_ViewInExplorerClick" Cursor="Hand">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
@@ -349,7 +374,7 @@
                                 </DataTemplate>
                             </Button.ContentTemplate>
                         </customcontrols:CustomButton>
-                        <customcontrols:CustomButton x:Name="btn_panel_text_OpenTextDoc" buttonGroupType="Panel" Grid.Column="1" Grid.Row="8" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_OpenTextDoc_Click">
+                        <customcontrols:CustomButton x:Name="btn_panel_text_OpenTextDoc" buttonGroupType="Panel" Grid.Column="1" Grid.Row="8" Content="Save" Style="{DynamicResource PanelButton}" Click="btn_OpenTextDoc_Click" Cursor="Hand">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
@@ -361,7 +386,7 @@
                     </ItemsControl>
                     <!--~~~~~~~~ Paint Mode Panel ~~~~~~~-->
                     <ItemsControl x:Name="Panel_Items_drawMode" Style="{StaticResource Panel_Grid}" Margin="10,32,10,0">
-                        <customcontrols:CustomButton x:Name="btn_panel_draw_openAsNoteWindow" buttonGroupType="Panel" Grid.Column="0" Grid.Row="0" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_note_Click_1">
+                        <customcontrols:CustomButton x:Name="btn_panel_draw_openAsNoteWindow" buttonGroupType="Panel" Grid.Column="0" Grid.Row="0" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_note_Click_1" Cursor="Hand">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
@@ -370,7 +395,7 @@
                                 </DataTemplate>
                             </Button.ContentTemplate>
                         </customcontrols:CustomButton>
-                        <customcontrols:CustomButton x:Name="btn_panel_draw_option" buttonGroupType="Panel" Grid.Column="1" Grid.Row="0" Content="Option" Style="{StaticResource PanelButton}" Click="btn_option_Click_1">
+                        <customcontrols:CustomButton x:Name="btn_panel_draw_option" buttonGroupType="Panel" Grid.Column="1" Grid.Row="0" Content="Option" Style="{StaticResource PanelButton}" Click="btn_option_Click_1" Cursor="Hand">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
@@ -379,7 +404,7 @@
                                 </DataTemplate>
                             </Button.ContentTemplate>
                         </customcontrols:CustomButton>
-                        <customcontrols:CustomButton x:Name="btn_panel_draw_switchMode" buttonGroupType="Panel" Grid.Column="0" Grid.Row="1" Content="Paint" Style="{DynamicResource PanelButton}" Click="btn_switchMode_Click">
+                        <customcontrols:CustomButton x:Name="btn_panel_draw_switchMode" buttonGroupType="Panel" Grid.Column="0" Grid.Row="1" Content="Paint" Style="{DynamicResource PanelButton}" Click="btn_switchMode_Click" Cursor="Hand">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
@@ -388,7 +413,7 @@
                                 </DataTemplate>
                             </Button.ContentTemplate>
                         </customcontrols:CustomButton>
-                        <customcontrols:CustomButton x:Name="btn_panel_draw_DesktopMode" buttonGroupType="Panel" Grid.Column="1" Grid.Row="1" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_desktopMode_Click">
+                        <customcontrols:CustomButton x:Name="btn_panel_draw_DesktopMode" buttonGroupType="Panel" Grid.Column="1" Grid.Row="1" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_desktopMode_Click" Cursor="Hand">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
@@ -398,7 +423,7 @@
                             </Button.ContentTemplate>
                         </customcontrols:CustomButton>
 
-                        <customcontrols:CustomButton x:Name="btn_panel_draw_NormalBrush" buttonGroupType="Panel" Grid.Column="0" Grid.Row="3" Content="Option" Style="{StaticResource Panel_BrushButton}" Click="OnPenButtonClick">
+                        <customcontrols:CustomButton x:Name="btn_panel_draw_NormalBrush" buttonGroupType="Panel" Grid.Column="0" Grid.Row="3" Content="Option" Style="{StaticResource Panel_BrushButton}" Click="OnPenButtonClick" Cursor="Hand">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
@@ -407,7 +432,7 @@
                                 </DataTemplate>
                             </Button.ContentTemplate>
                         </customcontrols:CustomButton>
-                        <customcontrols:CustomButton x:Name="btn_panel_draw_EraseBrush" buttonGroupType="Panel" Grid.Column="1" Grid.Row="3" Content="Option" Style="{StaticResource Panel_BrushButton}" Click="OnEraserBtn_Click">
+                        <customcontrols:CustomButton x:Name="btn_panel_draw_EraseBrush" buttonGroupType="Panel" Grid.Column="1" Grid.Row="3" Content="Option" Style="{StaticResource Panel_BrushButton}" Click="OnEraserBtn_Click" Cursor="Hand">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
@@ -421,33 +446,34 @@
                         <Viewbox Grid.Column="0" Grid.Row="4" Style="{StaticResource PanelTextViewBox}">
                             <customcontrols:CustomTextBlock x:Name="tblc_brush_size" themeColorType="PanelText" Style="{StaticResource PanelTextBlock}">Brush Size:</customcontrols:CustomTextBlock>
                         </Viewbox>
-                        <Slider x:Name="slider_brush_size"
-                                VerticalAlignment="Center" 
-                                Maximum="100" Minimum="1"
-                                Grid.Column="1" Grid.Row="4"
-                                ValueChanged="BrushSizeChanged"/>
-
+                        <Slider 
+                            x:Name="slider_brush_size"
+                            VerticalAlignment="Center" 
+                            Maximum="100" Minimum="1"
+                            Grid.Column="1" Grid.Row="4"
+                            ValueChanged="BrushSizeChanged"/>
                         <Viewbox Grid.Column="0" Grid.Row="5" Style="{StaticResource PanelTextViewBox}">
                             <customcontrols:CustomTextBlock x:Name="tblc_eraser_size" themeColorType="PanelText" Style="{StaticResource PanelTextBlock}">Eraser Size:</customcontrols:CustomTextBlock>
                         </Viewbox>
-                        <Slider x:Name="slider_eraserSize"
-                                VerticalAlignment="Center" 
-                                Maximum="100" Minimum="1"
-                                Grid.Column="1" Grid.Row="5"
-                                ValueChanged="EraserSizeChanged" Value="28"/>
-
+                        <Slider 
+                            x:Name="slider_eraserSize"
+                            VerticalAlignment="Center" 
+                            Maximum="100" Minimum="1"
+                            Grid.Column="1" Grid.Row="5"
+                            ValueChanged="EraserSizeChanged" Value="28"/>
                         <Viewbox Grid.Column="0" Grid.Row="6" Style="{StaticResource PanelTextViewBox}">
                             <customcontrols:CustomTextBlock x:Name="tblc_brush_color" themeColorType="PanelText" Style="{StaticResource PanelTextBlock}">Brush Color:</customcontrols:CustomTextBlock>
                         </Viewbox>
 
-                        <xctk:ColorPicker
-                                x:Name="cpick_brushColorPicker"
-                                VerticalAlignment="Center" 
-                                Grid.Column="1" Grid.Row="6"
-                                SelectedColorChanged="ColorPicker_SelectedColorChanged">
-                        </xctk:ColorPicker>
+                        <customcontrols:CustomColorPicker
+                            x:Name="cpick_brushColorPicker"
+                            colorPickerType="Panel"
+                            VerticalAlignment="Center"
+                            Grid.Column="1" Grid.Row="6"
+                            SelectedColorChanged="ColorPicker_SelectedColorChanged">
+                        </customcontrols:CustomColorPicker>
 
-                        <customcontrols:CustomButton x:Name="btn_panel_draw_Clear" buttonGroupType="Panel" Grid.Column="1" Grid.Row="7" Content="Option" Style="{StaticResource PanelButton}" Click="On_BtnClear_Click" Background="#FFFF7B5E">
+                        <customcontrols:CustomButton x:Name="btn_panel_draw_Clear" buttonGroupType="Panel" Grid.Column="1" Grid.Row="7" Content="Option" Style="{StaticResource PanelButton}" Click="On_BtnClear_Click" Background="#FFFF7B5E" Cursor="Hand">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Viewbox Style="{StaticResource PanelButtonTextViewBox}">
@@ -460,37 +486,44 @@
                 </Grid>
 
                 <!--~~~~~~~~~~~~~~~ Desktop Mode Canvas ~~~~~~~~~~~~~~~~-->
-                <local:PaintCanvas x:Name="dm_PaintCanvas"
-                                   Background="#01FFFFFF"
-                                   IsHitTestVisible="False"
-                                   AllowDrop="True"
-                                   Drop="DM_canvas_Drop">
-                    <Border x:Name="brd_DesktopModePanel"
-                            Background="#FF444444"
-                            Width="95"
-                            Height="384"
-                            CornerRadius="10" 
-                            MouseDown="brd_DesktopModePanel_MouseDown" 
-                            HorizontalAlignment="Left" 
-                            VerticalAlignment="Center"
-                            IsHitTestVisible="True"
-                            MouseEnter="brd_DesktopModePanel_MouseEnter"
-                            MouseLeave="brd_DesktopModePanel_MouseLeave"
-                            Cursor="Arrow"
-                            Panel.ZIndex="11">
-
+                <local:PaintCanvas 
+                    x:Name="dm_PaintCanvas"
+                    Background="#01FFFFFF"
+                    IsHitTestVisible="False"
+                    AllowDrop="True"
+                    Drop="DM_canvas_Drop">
+                    <customcontrols:CustomBorder 
+                        x:Name="brd_DesktopModePanel"
+                        themeColorType="DesktopModePanelBackground"
+                        Background="#FF444444"
+                        Width="95"
+                        Height="384"
+                        CornerRadius="10" 
+                        MouseDown="brd_DesktopModePanel_MouseDown" 
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Center"
+                        IsHitTestVisible="True"
+                        MouseEnter="brd_DesktopModePanel_MouseEnter"
+                        MouseLeave="brd_DesktopModePanel_MouseLeave"
+                        Cursor="Arrow"
+                        Panel.ZIndex="11">
                         <Grid>
-                            <Button x:Name="DMP_btn_Extend" 
-                                    Margin="0,180,-12,180" 
-                                    HorizontalAlignment="Right" 
-                                    Width="24"
-                                    Style="{StaticResource Rounded Button}" Click="DMP_btn_Extend_Click">
+                            <customcontrols:CustomButton 
+                                x:Name="DMP_btn_Extend"
+                                buttonGroupType="DesktopModePanel"
+                                Margin="0,180,-12,180" 
+                                HorizontalAlignment="Right" 
+                                Width="24"
+                                Style="{StaticResource Rounded Button}"
+                                Click="DMP_btn_Extend_Click">
                                 <Viewbox>
-                                    <fa:ImageAwesome x:Name="DMP_icon_Extend" 
-                                                     Icon="ArrowCircleRight"
-                                                     Style="{StaticResource DMP_buttonIcon}"/>
+                                    <customcontrols:CustomIcon 
+                                        x:Name="DMP_icon_Extend" 
+                                        Icon="ArrowCircleRight"
+                                        Style="{StaticResource DMP_buttonIcon}"
+                                        themeColorType="DesktopModePanelText"/>
                                 </Viewbox>
-                            </Button>
+                            </customcontrols:CustomButton>
                             <Grid Margin="8,25,8,25">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="41*"/>
@@ -501,10 +534,11 @@
                                     <ColumnDefinition Width="0" x:Name="DMP_gridDef_Extend"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Grid Grid.Row="0"
-                                      Grid.Column="0"
-                                      MaxWidth="79"
-                                      MinWidth="79">
+                                <Grid 
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    MaxWidth="79"
+                                    MinWidth="79">
                                     <Grid.RowDefinitions>
                                         <RowDefinition/>
                                         <RowDefinition/>
@@ -519,137 +553,205 @@
                                         <ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
 
-                                    <Button x:Name="DMP_btn_DrawTool"
+                                    <customcontrols:CustomButton 
+                                        x:Name="DMP_btn_DrawTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="0"
-                                        Grid.Column="0" Click="DMP_btn_Tools_Click">
+                                        Grid.Column="0" 
+                                        Click="DMP_btn_Tools_Click"
+                                        ToolTip="draw tool"
+                                        buttonGroupType="DesktopModePanel">
                                         <Viewbox>
-                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Pencil"
-                                                             Icon="Pencil" 
-                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                            <customcontrols:CustomIcon
+                                                x:Name="DM_ToolIcon_Pencil"
+                                                Icon="Pencil" 
+                                                Style="{StaticResource DMP_buttonIcon}"
+                                                themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </Button>
-                                    <Button x:Name="DMP_btn_EraseTool"
+                                    </customcontrols:CustomButton>
+                                    <customcontrols:CustomButton 
+                                        x:Name="DMP_btn_EraseTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="0"
-                                        Grid.Column="1" Click="DMP_btn_Tools_Click">
+                                        Grid.Column="1" 
+                                        Click="DMP_btn_Tools_Click"
+                                        buttonGroupType="DesktopModePanel">
                                         <Viewbox>
-                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Eraser" 
-                                                             Icon="Eraser" 
-                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                            <customcontrols:CustomIcon
+                                                x:Name="DM_ToolIcon_Eraser" 
+                                                Icon="Eraser" 
+                                                Style="{StaticResource DMP_buttonIcon}"
+                                                themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </Button>
-                                    <Button x:Name="DMP_btn_PointerTool"
+                                    </customcontrols:CustomButton>
+                                    <customcontrols:CustomButton 
+                                        x:Name="DMP_btn_PointerTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="1"
-                                        Grid.Column="0" Click="DMP_btn_Tools_Click">
+                                        Grid.Column="0" 
+                                        Click="DMP_btn_Tools_Click"
+                                        ToolTip="desktop cursor"
+                                        buttonGroupType="DesktopModePanel">
                                         <Viewbox>
-                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Cursor"
-                                                             Icon="MousePointer" 
-                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                            <customcontrols:CustomIcon  
+                                                x:Name="DM_ToolIcon_Cursor"
+                                                Icon="MousePointer" 
+                                                Style="{StaticResource DMP_buttonIcon}"
+                                                themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </Button>
-                                    <Button x:Name="DMP_btn_TextTool"
+                                    </customcontrols:CustomButton>
+                                    <customcontrols:CustomButton 
+                                        x:Name="DMP_btn_TextTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="1"
-                                        Grid.Column="1" Click="DMP_btn_Tools_Click">
+                                        Grid.Column="1" 
+                                        Click="DMP_btn_Tools_Click"
+                                        ToolTip="text box tool"
+                                        buttonGroupType="DesktopModePanel">
                                         <Viewbox>
-                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Text"
-                                                             Icon="Font" 
-                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                            <customcontrols:CustomIcon 
+                                                x:Name="DM_ToolIcon_Text"
+                                                Icon="Font" 
+                                                Style="{StaticResource DMP_buttonIcon}"
+                                                themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </Button>
-                                    <Button x:Name="DMP_btn_RectBorderTool"
+                                    </customcontrols:CustomButton>
+                                    <customcontrols:CustomButton 
+                                        x:Name="DMP_btn_RectBorderTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="2"
-                                        Grid.Column="0" Click="DMP_btn_Tools_Click">
+                                        Grid.Column="0" 
+                                        Click="DMP_btn_Tools_Click"
+                                        ToolTip="rectangle tool"
+                                        buttonGroupType="DesktopModePanel">
                                         <Viewbox>
-                                            <fa:ImageAwesome x:Name="DM_ToolIcon_RectBorder"
-                                                             Icon="SquareOutline" 
-                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                            <customcontrols:CustomIcon 
+                                                x:Name="DM_ToolIcon_RectBorder"
+                                                Icon="SquareOutline" 
+                                                Style="{StaticResource DMP_buttonIcon}"
+                                                themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </Button>
-                                    <Button x:Name="DMP_btn_RectFillTool"
+                                    </customcontrols:CustomButton>
+                                    <customcontrols:CustomButton 
+                                        x:Name="DMP_btn_RectFillTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="2"
-                                        Grid.Column="1" Click="DMP_btn_Tools_Click">
+                                        Grid.Column="1" 
+                                        Click="DMP_btn_Tools_Click"
+                                        ToolTip="filled rectangle tool"
+                                        buttonGroupType="DesktopModePanel">
                                         <Viewbox>
-                                            <fa:ImageAwesome x:Name="DM_ToolIcon_RectFill"
-                                                             Icon="Square" 
-                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                            <customcontrols:CustomIcon  
+                                                x:Name="DM_ToolIcon_RectFill"
+                                                Icon="Square" 
+                                                Style="{StaticResource DMP_buttonIcon}"
+                                                themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </Button>
-                                    <Button x:Name="DMP_btn_CircleBorderTool"
+                                    </customcontrols:CustomButton>
+                                    <customcontrols:CustomButton 
+                                        x:Name="DMP_btn_CircleBorderTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="3"
-                                        Grid.Column="0" Click="DMP_btn_Tools_Click">
+                                        Grid.Column="0" 
+                                        Click="DMP_btn_Tools_Click"
+                                        ToolTip="circle tool"
+                                        buttonGroupType="DesktopModePanel">
                                         <Viewbox>
-                                            <fa:ImageAwesome x:Name="DM_ToolIcon_CircleBorder"
-                                                             Icon="CircleOutline" 
-                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                            <customcontrols:CustomIcon 
+                                                x:Name="DM_ToolIcon_CircleBorder"
+                                                Icon="CircleOutline" 
+                                                Style="{StaticResource DMP_buttonIcon}"
+                                                themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </Button>
-                                    <Button x:Name="DMP_btn_CircleFillTool"
+                                    </customcontrols:CustomButton>
+                                    <customcontrols:CustomButton 
+                                        x:Name="DMP_btn_CircleFillTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="3"
-                                        Grid.Column="1" Click="DMP_btn_Tools_Click">
+                                        Grid.Column="1" 
+                                        Click="DMP_btn_Tools_Click"
+                                        ToolTip="filled circle tool"
+                                        buttonGroupType="DesktopModePanel">
                                         <Viewbox>
-                                            <fa:ImageAwesome x:Name="DM_ToolIcon_CircleFill"
-                                                             Icon="Circle" 
-                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                            <customcontrols:CustomIcon  
+                                                x:Name="DM_ToolIcon_CircleFill"
+                                                Icon="Circle" 
+                                                Style="{StaticResource DMP_buttonIcon}"
+                                                themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </Button>
-                                    <Button x:Name="DMP_btn_ArrowTool"
+                                    </customcontrols:CustomButton>
+                                    <customcontrols:CustomButton 
+                                        x:Name="DMP_btn_ArrowTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="4"
-                                        Grid.Column="1" Click="DMP_btn_Tools_Click">
+                                        Grid.Column="1" 
+                                        Click="DMP_btn_Tools_Click"
+                                        ToolTip="arrow tool"
+                                        buttonGroupType="DesktopModePanel">
                                         <Viewbox>
-                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Arrow"
-                                                             Icon="ArrowRight" 
-                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                            <customcontrols:CustomIcon 
+                                                x:Name="DM_ToolIcon_Arrow"
+                                                Icon="ArrowRight" 
+                                                Style="{StaticResource DMP_buttonIcon}"
+                                                themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </Button>
-                                    <Button x:Name="DMP_btn_LineTool"
+                                    </customcontrols:CustomButton>
+                                    <customcontrols:CustomButton 
+                                        x:Name="DMP_btn_LineTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="4"
-                                        Grid.Column="0" Click="DMP_btn_Tools_Click">
+                                        Grid.Column="0" 
+                                        Click="DMP_btn_Tools_Click"
+                                        ToolTip="line tool"
+                                        buttonGroupType="DesktopModePanel">
                                         <Viewbox>
-                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Line"
-                                                             Icon="Minus" 
-                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                            <customcontrols:CustomIcon  
+                                                x:Name="DM_ToolIcon_Line"
+                                                Icon="Minus" 
+                                                Style="{StaticResource DMP_buttonIcon}" 
+                                                themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </Button>
+                                    </customcontrols:CustomButton>
 
-                                    <Button x:Name="DMP_btn_Clear"
+                                    <customcontrols:CustomButton 
+                                        x:Name="DMP_btn_Clear"
                                             Style="{StaticResource DMP_button}"
                                             Grid.Row="6"
                                             Grid.Column="1" 
                                             Click="DMP_btn_Clear_Click"
-                                            ToolTip="Clear all elements">
+                                            ToolTip="Clear all elements"
+                                            buttonGroupType="DesktopModePanel">
                                         <Viewbox>
-                                            <fa:ImageAwesome x:Name="DM_ToolIcon_Clear"
-                                                             Icon="Trash" 
-                                                             Style="{StaticResource DMP_buttonIcon}"/>
+                                            <customcontrols:CustomIcon 
+                                                x:Name="DM_ToolIcon_Clear"
+                                                Icon="Trash" 
+                                                Style="{StaticResource DMP_buttonIcon}"
+                                                themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </Button>
+                                    </customcontrols:CustomButton>
                                 </Grid>
-                                <Button Grid.Row="1"
-                                        Grid.Column="0"
-                                        Margin="15,10,15,15"
-                                        Background="#FFED4D4D"
-                                        Style="{StaticResource Rounded Button}" Click="DMP_Close_Click"
-                                        ToolTip="exit desktop mode">
+                                <customcontrols:CustomButton 
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="15,10,15,15"
+                                    Background="#FFED4D4D"
+                                    Style="{StaticResource Rounded Button}"
+                                    Click="DMP_Close_Click"
+                                    ToolTip="exit desktop mode"
+                                    buttonGroupType="DesktopModePanelQuit">
                                     <Viewbox Margin="5">
-                                        <fa:ImageAwesome Icon="Close" 
-                                                     Foreground="#ff333333"/>
+                                        <fa:ImageAwesome 
+                                            Icon="Close" 
+                                            Foreground="#ff333333"/>
                                     </Viewbox>
-                                </Button>
+                                </customcontrols:CustomButton>
 
-                                <Grid x:Name="DMP_grid_Extended"
-                                      Grid.Row="0"
-                                      Grid.Column="1"
-                                      Opacity="0"
-                                      IsHitTestVisible="False">
+                                <Grid 
+                                    x:Name="DMP_grid_Extended"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Opacity="0"
+                                    IsHitTestVisible="False">
                                     <Grid.RowDefinitions>
                                         <RowDefinition/>
                                         <RowDefinition/>
@@ -666,49 +768,58 @@
 
                                     <Viewbox Grid.Row="0"
                                          Grid.Column="0">
-                                        <Label x:Name="DM_lbl_brushSize"
-                                           Style="{StaticResource DMP_Label}"
-                                           Content="brush size:"/>
+                                        <customcontrols:CustomLabel 
+                                            x:Name="DM_lbl_brushSize"
+                                            themeColorType="DesktopModePanelText"
+                                            Style="{StaticResource DMP_Label}"
+                                            Content="brush size:"/>
                                     </Viewbox>
-                                    <Slider x:Name="DMP_slider_brushSize"
-                                            Grid.Row="0"
-                                            Grid.Column="1" 
-                                            Style="{StaticResource DMP_Slider}"
-                                            Minimum="1"
-                                            Maximum="100"
-                                            Value="10"
-                                            ValueChanged="DMP_slider_brushSize_ValueChanged"/>
-
+                                    <Slider 
+                                        x:Name="DMP_slider_brushSize"
+                                        Grid.Row="0"
+                                        Grid.Column="1" 
+                                        Style="{StaticResource DMP_Slider}"
+                                        Minimum="1"
+                                        Maximum="100"
+                                        Value="10"
+                                        ValueChanged="DMP_slider_brushSize_ValueChanged"/>
                                     <Viewbox Grid.Row="1"
                                          Grid.Column="0">
-                                        <Label x:Name="DM_lbl_eraserSize"
-                                           Style="{StaticResource DMP_Label}"
-                                           Content="eraser size:"/>
+                                        <customcontrols:CustomLabel 
+                                            x:Name="DM_lbl_eraserSize"
+                                            themeColorType="DesktopModePanelText"
+                                            Style="{StaticResource DMP_Label}"
+                                            Content="eraser size:"/>
                                     </Viewbox>
-                                    <Slider x:Name="DMP_slider_eraserSize"
-                                            Grid.Row="1"
-                                            Grid.Column="1" 
-                                            Style="{StaticResource DMP_Slider}"
-                                            Minimum="1"
-                                            Maximum="200"
-                                            Value="50" ValueChanged="DMP_slider_eraserSize_ValueChanged"/>
-
+                                    <Slider 
+                                        x:Name="DMP_slider_eraserSize"
+                                        Grid.Row="1"
+                                        Grid.Column="1" 
+                                        Style="{StaticResource DMP_Slider}"
+                                        Minimum="1"
+                                        Maximum="200"
+                                        Value="50" ValueChanged="DMP_slider_eraserSize_ValueChanged"/>
                                     <Viewbox Grid.Row="2"
                                          Grid.Column="0">
-                                        <Label x:Name="DM_lbl_Color"
-                                           Style="{StaticResource DMP_Label}"
-                                           Content="color:"/>
+                                        <customcontrols:CustomLabel 
+                                            x:Name="DM_lbl_Color"
+                                            themeColorType="DesktopModePanelText"
+                                            Style="{StaticResource DMP_Label}"
+                                            Content="color:"/>
                                     </Viewbox>
-                                    <xctk:ColorPicker x:Name="DMP_colorPicker"
-                                                  Grid.Row="2"
-                                                  Grid.Column="1"
-                                                  Style="{StaticResource DMP_ColorPicker}" SelectedColorChanged="DMP_colorPicker_SelectedColorChanged"/>
+                                    <customcontrols:CustomColorPicker
+                                        x:Name="DMP_colorPicker"
+                                        colorPickerType="DesktopModePanel"
+                                        Grid.Row="2"
+                                        Grid.Column="1"
+                                        Style="{StaticResource DMP_ColorPicker}" 
+                                        SelectedColorChanged="DMP_colorPicker_SelectedColorChanged"/>
                                 </Grid>
 
                             </Grid>
                         </Grid>
 
-                    </Border>
+                    </customcontrols:CustomBorder>
                 </local:PaintCanvas>
                 <!--<Canvas x:Name="DM_canvas"
                         IsHitTestVisible="False"
@@ -933,11 +1044,15 @@
                 </Canvas>-->
 
                 <!--~~~~~~~~~~~~~~~ Top bar ~~~~~~~~~~~~~~~~-->
-                <customcontrols:CustomBorder x:Name="upBar" Background="#FFDADADA" Grid.ColumnSpan="2" Height="32" VerticalAlignment="Top" Grid.RowSpan="2" MouseLeftButtonDown="DragWindow" CornerRadius="15,15,0,0" themeColorType="TopBarBackground">
-                    <Border.Effect>
-                        <DropShadowEffect BlurRadius="14.8" Opacity="0.09"/>
-                    </Border.Effect>
-                    <Grid x:Name="upBar_grid">
+                <customcontrols:CustomBorder 
+                    x:Name="upBar" 
+                    Background="#FFDADADA" 
+                    Height="34" 
+                    VerticalAlignment="Top" 
+                    MouseLeftButtonDown="DragWindow" 
+                    CornerRadius="15,15,0,0" 
+                    themeColorType="TopBarBackground">
+                    <Grid x:Name="upBar_grid" Margin="0,1,0,1">
                         <Slider x:Name="slider_winOpacity" HorizontalAlignment="Left" Margin="13,0,0,0" VerticalAlignment="Center" Width="176" AllowDrop="True" Background="{x:Null}" Foreground="#FFD05B5B" BorderBrush="Black" Value="5" Maximum="255" ValueChanged="Slider_ValueChanged" ToolTip="window's opacity"/>
                         <customcontrols:CustomButton x:Name="btn_quit" buttonGroupType="TopBarButtonClose" Margin="0,5,10,5"  Background="#FFED4D4D" BorderBrush="#FF272727" Click="btn_quit_Click" Cursor="Hand" Content="X" FontSize="18" FontFamily="Tw Cen MT" FontWeight="Bold" Foreground="#FF171717" Style="{StaticResource UpRightButtonStyle}" HorizontalAlignment="Right" Width="22">
                             <Button.Resources>
@@ -988,5 +1103,5 @@
             </Grid>
             <local:PaintCanvas/>
         </Grid>
-    </Border>
+    </customcontrols:CustomBorder>
 </Window>

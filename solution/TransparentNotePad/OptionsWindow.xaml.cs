@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 
 namespace TransparentNotePad
 {
@@ -45,29 +33,25 @@ namespace TransparentNotePad
             theme_initialized = false;
             cmbbox_Theme.Items.Clear();
 
-            if (Manager.TryGetThemeFromXMLFile(out List<ThemeOLD> tlist))
+            foreach (Theme theme in ThemeManager.AllThemesFiles)
             {
-                foreach (ThemeOLD t in tlist)
-                {
-                    CreateThemeButton(t);
-                }
+                CreateThemeButton(theme);
             }
 
             theme_initialized = true;
         }
-        private void CreateThemeButton(ThemeOLD theme)
+        private void CreateThemeButton(Theme theme)
         {
-            ThemeBtn btn = new ThemeBtn();
-            btn.theme = theme;
-            btn.Style = ThemeButtonStyle;
-            btn.Content = theme.Theme_Name;
+            ThemeBtn theme_button = new ThemeBtn();
+            theme_button.theme = theme;
+            theme_button.Style = ThemeButtonStyle;
+            theme_button.Content = theme.ThemeName;
 
-            cmbbox_Theme.Items.Add(btn);
+            cmbbox_Theme.Items.Add(theme_button);
 
-            if (theme.Theme_Name == Manager.CurrentThemeName)
+            if (theme.ThemeName == ThemeManager.CurrentTheme.ThemeName)
             {
-                Console.WriteLine($"CURRENT THEME FOUNDED: {theme.Theme_Name}");
-                cmbbox_Theme.SelectedItem = btn;
+                cmbbox_Theme.SelectedItem = theme_button;
             }
                 
             theme_initialized = true;
@@ -76,7 +60,7 @@ namespace TransparentNotePad
         public void OnOpen()
         {
             Init_Theme();
-            Topmost = Manager.MainWindow.Topmost;
+            Topmost = Manager.InstanceOfMainWindow.Topmost;
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -104,7 +88,8 @@ namespace TransparentNotePad
         {
             if (theme_initialized)
             {
-                Manager.SetTheme((cmbbox_Theme.SelectedItem as ThemeBtn).theme, true);
+                var theme = ((ThemeBtn)cmbbox_Theme.SelectedItem).theme;
+                ThemeManager.SetSelectedTheme(theme, true);
             }
         }
     }

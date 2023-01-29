@@ -47,97 +47,95 @@ namespace TransparentNotePad
         {
             this.Topmost = true;
             rowAnim1 = baseGrid.RowDefinitions[0];
-
-            Manager.Instance.onThemeChanged += this.SetTheme;
-
-            SetTheme(Manager.CurrentTheme);
+            ThemeManager.LoadTheme(ThemeManager.CurrentTheme);
+            Manager.NotesInstances.Add(this);
             RefreshDefaultValue();
         }
 
         public void UpdateTheme()
         {
-            this.currentTheme = Manager.CurrentTheme;
+            //this.currentTheme = Manager.CurrentTheme;
             
-            Manager.TryGetObjectFromResource(this, "Header_Button", out Style? baseBtnStyle);
-            Manager.TryGetObjectFromResource(this, "Header_Btn_Text", out Style? baseBtnstextStyle);
-            Manager.TryGetObjectFromResource(this, "Options_lbl", out Style? baseLabeltextStyle);
-            Manager.TryGetObjectFromResource(this, "Header_Button_Icon", out Style? baseIconStyle);
+            //Manager.TryGetObjectFromResource(this, "Header_Button", out Style? baseBtnStyle);
+            //Manager.TryGetObjectFromResource(this, "Header_Btn_Text", out Style? baseBtnstextStyle);
+            //Manager.TryGetObjectFromResource(this, "Options_lbl", out Style? baseLabeltextStyle);
+            //Manager.TryGetObjectFromResource(this, "Header_Button_Icon", out Style? baseIconStyle);
 
-            SolidColorBrush textColor = new SolidColorBrush(Manager.GetColorFromThemeFileString(currentTheme.Value.Color_Text_Panel_Btns_Text));
-            SolidColorBrush panelColor = new SolidColorBrush(Manager.GetColorFromThemeFileString(currentTheme.Value.Color_Panel));
+            //SolidColorBrush textColor = new SolidColorBrush(Manager.GetColorFromThemeFileString(currentTheme.Value.Color_Text_Panel_Btns_Text));
+            //SolidColorBrush panelColor = new SolidColorBrush(Manager.GetColorFromThemeFileString(currentTheme.Value.Color_Panel));
 
-            SetterBase BtnBgColor = new Setter(Button.BackgroundProperty,
-                new SolidColorBrush(Manager.GetColorFromThemeFileString(currentTheme.Value.Color_Text_Panel_Btns_Bg)));
-            SetterBase SetterTextColor = new Setter(Label.ForegroundProperty, textColor);
-            SetterBase iconColor = new Setter(FontAwesome.WPF.ImageAwesome.ForegroundProperty,
-                new SolidColorBrush(Manager.GetColorFromThemeFileString(currentTheme.Value.Color_Text_Panel_Btns_Text)));
+            //SetterBase BtnBgColor = new Setter(Button.BackgroundProperty,
+            //    new SolidColorBrush(Manager.GetColorFromThemeFileString(currentTheme.Value.Color_Text_Panel_Btns_Bg)));
+            //SetterBase SetterTextColor = new Setter(Label.ForegroundProperty, textColor);
+            //SetterBase iconColor = new Setter(FontAwesome.WPF.ImageAwesome.ForegroundProperty,
+            //    new SolidColorBrush(Manager.GetColorFromThemeFileString(currentTheme.Value.Color_Text_Panel_Btns_Text)));
 
-            Style buttonStyle = new Style(typeof(Button), baseBtnStyle);
-            buttonStyle.Setters.Add(BtnBgColor);
+            //Style buttonStyle = new Style(typeof(Button), baseBtnStyle);
+            //buttonStyle.Setters.Add(BtnBgColor);
 
-            Style btnTextStyle = new Style(typeof(Label), baseBtnstextStyle);
-            btnTextStyle.Setters.Add(SetterTextColor);
+            //Style btnTextStyle = new Style(typeof(Label), baseBtnstextStyle);
+            //btnTextStyle.Setters.Add(SetterTextColor);
 
-            Style lblTextStyle = new Style(typeof(Label), baseLabeltextStyle);
-            lblTextStyle.Setters.Add(SetterTextColor);
+            //Style lblTextStyle = new Style(typeof(Label), baseLabeltextStyle);
+            //lblTextStyle.Setters.Add(SetterTextColor);
 
-            Style IconStyle = new Style(typeof(FontAwesome.WPF.ImageAwesome), baseIconStyle);
-            IconStyle.Setters.Add(iconColor);
+            //Style IconStyle = new Style(typeof(FontAwesome.WPF.ImageAwesome), baseIconStyle);
+            //IconStyle.Setters.Add(iconColor);
 
 
-            IEnumerable<Button> headerBtns =
-                Manager.FindVisualChilds<Button>(Header_Border)
-                .Where(x => x.Tag != null && x.Tag.ToString() == "header_btn");
+            //IEnumerable<Button> headerBtns =
+            //    Manager.FindVisualChilds<Button>(Header_Border)
+            //    .Where(x => x.Tag != null && x.Tag.ToString() == "header_btn");
 
-            IEnumerable<Label> btnsTexts =
-                Manager.FindVisualChilds<Label>(Header_Border)
-                .Where(x => x.Tag != null && x.Tag.ToString() == "btn_text");
+            //IEnumerable<Label> btnsTexts =
+            //    Manager.FindVisualChilds<Label>(Header_Border)
+            //    .Where(x => x.Tag != null && x.Tag.ToString() == "btn_text");
 
-            IEnumerable<Label> lblTexts =
-                Manager.FindVisualChilds<Label>(Header_Border)
-                .Where(x => x.Tag != null && x.Tag.ToString() == "lbl_text");
+            //IEnumerable<Label> lblTexts =
+            //    Manager.FindVisualChilds<Label>(Header_Border)
+            //    .Where(x => x.Tag != null && x.Tag.ToString() == "lbl_text");
 
-            IEnumerable<FontAwesome.WPF.ImageAwesome> Icon =
-                Manager.FindVisualChilds<FontAwesome.WPF.ImageAwesome>(Header_Border)
-                .Where(x => x.Tag != null && x.Tag.ToString() == "header_button_icon");
+            //IEnumerable<FontAwesome.WPF.ImageAwesome> Icon =
+            //    Manager.FindVisualChilds<FontAwesome.WPF.ImageAwesome>(Header_Border)
+            //    .Where(x => x.Tag != null && x.Tag.ToString() == "header_button_icon");
 
-            foreach (var item in headerBtns)
-            {
-                Console.WriteLine($"headerBtns : {item.Tag}");
-                item.Style = buttonStyle;
-            }
-            foreach (var item in btnsTexts)
-            {
-                Console.WriteLine($"btnsTexts : {item.Tag}");
-                item.Style = btnTextStyle;
-            }
-            foreach (var item in lblTexts)
-            {
-                Console.WriteLine($"lblTexts : {item.Tag}");
-                item.Style = lblTextStyle;
-            }
-            foreach (var item in Icon)
-            {
-                Console.WriteLine($"Icon : {item.Tag}");
-                item.Style = IconStyle;
-            }
+            //foreach (var item in headerBtns)
+            //{
+            //    Console.WriteLine($"headerBtns : {item.Tag}");
+            //    item.Style = buttonStyle;
+            //}
+            //foreach (var item in btnsTexts)
+            //{
+            //    Console.WriteLine($"btnsTexts : {item.Tag}");
+            //    item.Style = btnTextStyle;
+            //}
+            //foreach (var item in lblTexts)
+            //{
+            //    Console.WriteLine($"lblTexts : {item.Tag}");
+            //    item.Style = lblTextStyle;
+            //}
+            //foreach (var item in Icon)
+            //{
+            //    Console.WriteLine($"Icon : {item.Tag}");
+            //    item.Style = IconStyle;
+            //}
 
-            Header_Border.Background = panelColor;
+            //Header_Border.Background = panelColor;
 
-            tbox_mainText.Foreground = textColor;
-            lbl_Title.Foreground = textColor;
-            lbl_Options_Title.Foreground = textColor;
+            //tbox_mainText.Foreground = textColor;
+            //lbl_Title.Foreground = textColor;
+            //lbl_Options_Title.Foreground = textColor;
 
-            header_btn_Save_Icon.Foreground = textColor;
-            header_btn_Minimize_Icon.Foreground = textColor;
-            header_btn_Quit_Icon.Foreground = textColor;
+            //header_btn_Save_Icon.Foreground = textColor;
+            //header_btn_Minimize_Icon.Foreground = textColor;
+            //header_btn_Quit_Icon.Foreground = textColor;
 
-            Header_btn_Option_text.Foreground = textColor;
-            Options_Btn_Back_text.Foreground = textColor;
-            Options_lblOfBtn_Top.Foreground = textColor;
-            Options_Btn_SetDefault_Text.Foreground = textColor;
+            //Header_btn_Option_text.Foreground = textColor;
+            //Options_Btn_Back_text.Foreground = textColor;
+            //Options_lblOfBtn_Top.Foreground = textColor;
+            //Options_Btn_SetDefault_Text.Foreground = textColor;
 
-            SetWindowOpacity(Convert.ToByte(Options_slider_winOpacity.Value));
+            //SetWindowOpacity(Convert.ToByte(Options_slider_winOpacity.Value));
         }
         public void SetTheme(ThemeOLD theme)
         {
@@ -146,26 +144,19 @@ namespace TransparentNotePad
         }
         public void RefreshDefaultValue()
         {
-            if (Manager.TryGetStoredFile(out StoredDataFile storedFile))
-            {
-                byte opacity = Convert.ToByte(storedFile.NoteWin_Default_WindowOpacity);
+            var option_file = OptionsManager.CurrentOptionFile;
+            byte opacity = Convert.ToByte(option_file.NoteWin_Default_WindowOpacity);
 
-                SetTextFont(storedFile.NoteWin_Default_Font);
-                SetWindowOpacity(opacity);
-            }
+            SetTextFont(option_file.NoteWin_Default_Font);
+            SetWindowOpacity(opacity);
         }
         public void SetWindowOpacity(byte opacity, bool setValueInSlider = true)
         {
-            if (border_main != null && currentTheme != null)
+            if (border_main != null)
             {
-                Color color = 
-                    Manager.GetColorFromThemeFileString(currentTheme.Value.Color_TextArea);
-
-                border_main.Background = new SolidColorBrush(Color.FromArgb(
-                    opacity,
-                    color.R,
-                    color.G,
-                    color.B));
+                Color color = ThemeManager.CurrentTheme.NoteEditorBackgroundColor.ToColor();
+                Color new_color = Color.FromArgb(opacity, color.R, color.G, color.B);
+                border_main.Background = new SolidColorBrush(new_color);
 
                 if (setValueInSlider) Options_slider_winOpacity.Value = opacity;
             }
@@ -212,7 +203,7 @@ namespace TransparentNotePad
             //SaveFileDialog dialog = new SaveFileDialog();
             SaveFileDialog dialog = new SaveFileDialog
             {
-                InitialDirectory = Manager.LastTextFileSaveDirectory,
+                InitialDirectory = OptionsManager.CurrentOptionFile.FileSavePath,
                 Title = "Save text to file",
 
                 CheckFileExists = false,
@@ -229,7 +220,7 @@ namespace TransparentNotePad
                 File.WriteAllText(dialog.FileName, tbox_mainText.Text);
 
                 currentTextDocPath = dialog.FileName;
-                Manager.SetLastSaveEmplacement(currentTextDocPath);
+                OptionsManager.SetFileSaveEmplacement(currentTextDocPath);
                 fileSaved = true;
             }
         }
@@ -288,7 +279,7 @@ namespace TransparentNotePad
         }
         private void Header_btn_Quit_Click(object sender, RoutedEventArgs e)
         {
-            Manager.Instance.onThemeChanged -= SetTheme;
+            Manager.NotesInstances.Remove(this);
             this.Close();
         }
         private void Header_btn_Minimize_Click(object sender, RoutedEventArgs e)
@@ -341,17 +332,14 @@ namespace TransparentNotePad
         }
         private void Options_Btn_SetDefault_Click(object sender, RoutedEventArgs e)
         {
-            if (Manager.TryGetStoredFile(out StoredDataFile storedFile))
-            {
-                FontFamily font = (FontFamily)cmbbox_Panels_FontSelector.SelectedItem;
-                int win_opacity = Convert.ToInt32(Options_slider_winOpacity.Value);
-                
-                storedFile.NoteWin_Default_Font = font.Source;
-                storedFile.NoteWin_Default_WindowOpacity = win_opacity;
-                
-                Manager.SaveStoredData(storedFile);
-            }
+            var option_file = OptionsManager.CurrentOptionFile;
+            var font_name = ((FontFamily)cmbbox_Panels_FontSelector.SelectedItem).Source;
+            var win_opacity = Convert.ToInt32(Options_slider_winOpacity.Value);
 
+            option_file.NoteWin_Default_Font = font_name;
+            option_file.NoteWin_Default_WindowOpacity = win_opacity;
+
+            OptionsManager.SaveOptions(option_file);
         }
 
         private void Header_Border_MouseDown(object sender, MouseButtonEventArgs e)
@@ -373,7 +361,7 @@ namespace TransparentNotePad
             {
                 if (e.Key == Key.O) OpenOption(!inOption);
                 if (e.Key == Key.T) Options_Btn_Top_Click(this, null);
-                if (e.Key == Key.N) Manager.MainWindow.btn_note_Click_1(this, null);
+                if (e.Key == Key.N) Manager.InstanceOfMainWindow.btn_note_Click_1(this, null);
 
                 if (e.Key == Key.Add)
                 {
