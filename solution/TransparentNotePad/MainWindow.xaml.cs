@@ -60,6 +60,7 @@ namespace TransparentNotePad
         private bool isTop = true;
         private bool fontBox_initalized = false;
         private bool crtl_pressed = false;
+        private bool isResizePanel = false;
 
         private byte lastWinOpacityBeforeDM = 0xff;
         private byte lastWinOppacity = 0x4a;
@@ -906,7 +907,6 @@ namespace TransparentNotePad
         {
             if (Keyboard.IsKeyDown(Key.LeftCtrl)) Zoom(e.Delta > 0);
         }
-
         private void btn_top_Click(object sender, RoutedEventArgs e)
         {
             if (!isTop)
@@ -923,7 +923,6 @@ namespace TransparentNotePad
             }
 
         }
-
         private void btn_fullscreen_Click(object sender, RoutedEventArgs e)
         {
             if (WindowState == WindowState.Maximized)
@@ -952,22 +951,18 @@ namespace TransparentNotePad
             DisplayPanel(!panel_displaying);
 
         }
-
         private void btn_option_Click(object sender, RoutedEventArgs e)
         {
             OpenOptions();
         }
-
         private void btn_option_Click_1(object sender, RoutedEventArgs e)
         {
             OpenOptions();
         }
-
         private void btn_switchMode_Click(object sender, RoutedEventArgs e)
         {
             SetMode(CurrentMode == AppMode.Text ? AppMode.Draw : AppMode.Text);
         }
-
         private void OnPanelTextInit(object sender, EventArgs e)
         {
             
@@ -1126,10 +1121,21 @@ namespace TransparentNotePad
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
+                isResizePanel = true;
+                tbox_mainText.IsHitTestVisible = false;
                 panel_drag_data = new DataObject(panel);
                 DragDrop.DoDragDrop(panel, panel_drag_data, DragDropEffects.None);
             }
         }
+        private void Window_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (isResizePanel)
+            {
+                tbox_mainText.IsHitTestVisible = true;
+                isResizePanel = false;
+            }
+        }
+
 
         private void On_DropOnWindow(object sender, DragEventArgs e)
         {
@@ -1148,11 +1154,10 @@ namespace TransparentNotePad
                 //DMP_drag_origineY_distance = mousePos.Y - (pos_top - brd_DesktopModePanel.Height);
 
                 dmp_drag_data = new DataObject(brd_DesktopModePanel);
-
                 DragDrop.DoDragDrop(brd_DesktopModePanel, dmp_drag_data, DragDropEffects.Move);
             }
         }
-
+        
 
         #region Desktop Mode (DOM)
 
@@ -1509,6 +1514,9 @@ namespace TransparentNotePad
             OptionsManager.SetDefaultZoom(zoomValue);
         }
 
+
+
         #endregion
+
     }
 }

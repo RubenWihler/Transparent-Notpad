@@ -24,7 +24,7 @@
         SizeChanged="OnWinResize"
         AllowDrop="True"
         ResizeMode="CanResizeWithGrip" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" 
-        PreviewKeyDown="PreviewKeyDow">
+        PreviewKeyDown="PreviewKeyDow" MouseUp="Window_MouseUp">
     <Window.Resources>
         <CollectionViewSource 
             Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}" 
@@ -281,9 +281,13 @@
                     </Border.Effect>
                 </customcontrols:CustomBorder>
                 <Grid x:Name="panel" Background="#00000000" MinWidth="150" MouseLeftButtonDown="DragWindow" AllowDrop="True" Margin="618,0,0,0">
-                    <customcontrols:CustomBorder x:Name="panel_border" CornerRadius="0,15,15,0" BorderBrush="Black" BorderThickness="0" Background="#FFBFBFBF" Drop="On_DropOnWindow" themeColorType="PanelBackground"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="273*"/>
+                        <RowDefinition Height="176*"/>
+                    </Grid.RowDefinitions>
+                    <customcontrols:CustomBorder x:Name="panel_border" CornerRadius="0,15,15,0" BorderBrush="Black" BorderThickness="0" Background="#FFBFBFBF" themeColorType="PanelBackground" Grid.RowSpan="2"/>
                     <!--~~~~~~~~ Text Mode Panel ~~~~~~~-->
-                    <ItemsControl x:Name="Panel_Items_textMode" Style="{StaticResource Panel_Grid}" Margin="10,32,10,0">
+                    <ItemsControl x:Name="Panel_Items_textMode" Style="{StaticResource Panel_Grid}" Margin="10,32,10,0" Grid.RowSpan="2">
                         <customcontrols:CustomButton x:Name="btn_panel_text_openAsNoteWindow" buttonGroupType="Panel" Grid.Column="0" Grid.Row="0" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_note_Click_1" Cursor="Hand" ToolTip="Create new Note [Ctr+N]">
                             <Button.ContentTemplate>
                                 <DataTemplate>
@@ -383,7 +387,7 @@
                         </customcontrols:CustomButton>
                     </ItemsControl>
                     <!--~~~~~~~~ Paint Mode Panel ~~~~~~~-->
-                    <ItemsControl x:Name="Panel_Items_drawMode" Style="{StaticResource Panel_Grid}" Margin="10,32,10,0">
+                    <ItemsControl x:Name="Panel_Items_drawMode" Style="{StaticResource Panel_Grid}" Margin="10,32,10,0" Grid.RowSpan="2">
                         <customcontrols:CustomButton x:Name="btn_panel_draw_openAsNoteWindow" buttonGroupType="Panel" Grid.Column="0" Grid.Row="0" Content="Option" Style="{DynamicResource PanelButton}" Click="btn_note_Click_1" Cursor="Hand" ToolTip="Create new Note [Ctr+N]">
                             <Button.ContentTemplate>
                                 <DataTemplate>
