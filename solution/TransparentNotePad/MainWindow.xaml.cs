@@ -6,25 +6,16 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Printing;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using System.Xml;
-using TransparentNotePad.CustomControls;
 using TransparentNotePad.SaveSystem;
-using Xceed.Wpf.AvalonDock.Themes;
+
 using Brush = System.Windows.Media.Brush;
 using Color = System.Windows.Media.Color;
 using FontFamily = System.Windows.Media.FontFamily;
@@ -58,43 +49,43 @@ namespace TransparentNotePad
         }
 
         /*---------- Fields ----------*/
+        private static CancellationTokenSource? _zoomTimerToken;
+
+        private AppMode currentMode = AppMode.Text;
+        private PaintCanvas.PaintBrush currentBrush;
+
         private bool win_transparent = true;
         private bool canFullTransparent = true;
         private bool panel_displaying = true;
         private bool isTop = true;
-        private int current_zoom = 20;
         private bool fontBox_initalized = false;
-        private List<Task> zoomTimers = new List<Task>();
-        private static CancellationTokenSource? _zoomTimerToken;
         private bool crtl_pressed = false;
-        private PaintCanvas.PaintBrush currentBrush;
-        private bool inDisplayMoving = false;
 
         private byte lastWinOpacityBeforeDM = 0xff;
         private byte lastWinOppacity = 0x4a;
-        private AppMode currentMode = AppMode.Text;
+
+        private int current_zoom = 20;
 
         private bool fileSaved = false;
         private string currentTextDocPath;
         
-
         DispatcherTimer dispatcherTimer;
         DispatcherTimer screenShotTimer;
         DispatcherTimer dmp_snappingTimer;
-
-        private double DMP_drag_origineX_distance = 0;
-        private double DMP_drag_origineY_distance = 0;
+        private List<Task> zoomTimers = new List<Task>();
 
         private DataObject dmp_drag_data;
         private DataObject panel_drag_data;
 
+        //Desktop Mode (DM)
+        private AppMode lastAppModeBeforeCurrent;
         private DMTools currentDMTools = DMTools.Cursor;
         private WindowState lastWinStateBeforeDM = WindowState.Normal;
-        private AppMode lastAppModeBeforeCurrent;
         private ImageAwesome currentDMTool_Icon;
+
         private bool dmp_extended = false;
-        private Brush? lastWinOpacityBeforeDMPDrag;
-        private bool lastWinOpacityBeforeDMPFrag_Saved;
+        
+        
 
         #region /*------------- Proprety --------------*/
 
@@ -104,7 +95,7 @@ namespace TransparentNotePad
             {
                 object o = Resources["PanelButton"];
                 if (o.GetType() == typeof(Style)) return o as Style;
-                return null;
+                return null!;
             }
         }
         public Style Panel_ButtonsTextBloc_Style
@@ -112,8 +103,8 @@ namespace TransparentNotePad
             get
             {
                 object o = Resources["PanelButtonText"];
-                if (o.GetType() == typeof(Style)) return o as Style;
-                return null;
+                if (o.GetType() == typeof(Style)) return (Style)o;
+                return null!;
             }
         }
         
@@ -201,11 +192,10 @@ namespace TransparentNotePad
             Manager.SetAssociationWithExtension(
                 ".tntxt",
                 ".tntxt", 
-                System.Reflection.Assembly.GetEntryAssembly().Location,
+                System.Reflection.Assembly.GetEntryAssembly()!.Location,
                 "TNTXTX (same as .txt files, but opens by default with Transparent Notpad)");
 
             Init_Field();
-            Init_Event();
             //temp
             SetMode(AppMode.Text);
 
@@ -221,10 +211,6 @@ namespace TransparentNotePad
                 }
             }
             catch (Exception) { }
-        }
-        private void Init_Event()
-        {
-            
         }
         private void Init_Field()
         {
@@ -458,62 +444,6 @@ namespace TransparentNotePad
             ResetAllDMToolsIconColor();
         }
         
-        private void SetDMPExtended(bool value)
-        {
-            const int MOVE_X_PANEL = 244;
-
-            double newPanelPos;
-            GridLength extendGridDef;
-
-            if (value)
-            {
-                brd_DesktopModePanel.Width = 339;
-                DMP_grid_Extended.IsHitTestVisible = true;
-                DMP_grid_Extended.Opacity = 1;
-                DMP_icon_Extend.Icon = FontAwesome.WPF.FontAwesomeIcon.ArrowCircleLeft;
-                DMP_btn_Extend.ToolTip = "Reduce panel";
-
-                newPanelPos = Canvas.GetLeft(brd_DesktopModePanel) - MOVE_X_PANEL;
-                extendGridDef = new GridLength(81, GridUnitType.Star);
-            }
-            else
-            {
-                brd_DesktopModePanel.Width = 95;
-                DMP_grid_Extended.IsHitTestVisible = true;
-                DMP_grid_Extended.Opacity = 0;
-                DMP_icon_Extend.Icon = FontAwesome.WPF.FontAwesomeIcon.ArrowCircleRight;
-                DMP_btn_Extend.ToolTip = "Expand panel";
-
-                newPanelPos = Canvas.GetLeft(brd_DesktopModePanel) + MOVE_X_PANEL;
-                extendGridDef = new GridLength(0, GridUnitType.Pixel);
-                
-            }
-            
-            dmp_extended = value;
-            DMP_gridDef_Extend.Width = extendGridDef;
-            DMP_gridDef_Base.Width = new GridLength(32, GridUnitType.Star);
-
-            if (Canvas.GetLeft(brd_DesktopModePanel) > 300)
-                Canvas.SetLeft(brd_DesktopModePanel, newPanelPos);
-        }
-
-        private void SetCurrentDMTool(DMTools tool)
-        {
-            var theme = ThemeManager.CurrentTheme;
-            Brush selected_brush = theme.DesktopModePanelToolButtonIcon.Variants[1].ToBrush();
-            Brush unselected_brush = theme.DesktopModePanelToolButtonIcon.Variants[0].ToBrush();
-
-            if (currentDMTool_Icon != null)
-                currentDMTool_Icon.Foreground = unselected_brush;
-
-            if (TryGetDMToolIcon(tool, out ImageAwesome icon))
-            {
-                icon.Foreground = selected_brush;
-                currentDMTool_Icon = icon;
-            }
-
-            currentDMTools = tool;
-        }
         private void ResetAllDMToolsIconColor()
         {
             var theme = ThemeManager.CurrentTheme;
@@ -638,162 +568,6 @@ namespace TransparentNotePad
 
             if (currentMode == AppMode.DesktopMode)
                 brd_DesktopModePanel.Opacity = 1;
-        }
-
-        private void DMP_Snaping(object sender, EventArgs args)
-        {
-            dmp_snappingTimer.Stop();
-            const int SNAP_FORCE = 150;
-
-            double top = Canvas.GetTop(brd_DesktopModePanel);
-            double left = Canvas.GetLeft(brd_DesktopModePanel);
-
-            //right middle snap
-            double right_middle_x = SystemParameters.PrimaryScreenWidth - 130;
-            double right_middle_y = (SystemParameters.PrimaryScreenHeight / 2) - (brd_DesktopModePanel.Height / 2);
-
-            //left middle snap
-            double left_middle_x = 30;
-            
-
-            if (left >= right_middle_x - SNAP_FORCE
-                && left <= right_middle_x + SNAP_FORCE
-                && top >= right_middle_y - SNAP_FORCE
-                && top <= right_middle_y + SNAP_FORCE)
-            {
-                Canvas.SetLeft(brd_DesktopModePanel, right_middle_x);
-                Canvas.SetTop(brd_DesktopModePanel, right_middle_y);
-            }
-            else if (left >= left_middle_x - SNAP_FORCE
-                && left <= left_middle_x + SNAP_FORCE
-                && top >= right_middle_y - SNAP_FORCE
-                && top <= right_middle_y + SNAP_FORCE)
-            {
-                Canvas.SetLeft(brd_DesktopModePanel, left_middle_x);
-                Canvas.SetTop(brd_DesktopModePanel, right_middle_y);
-            }
-        }
-
-        #endregion
-
-        #region /*---------- Public Methods -----------*/
-
-        public void SaveAs()
-        {
-            SaveFileDialog dialog = new SaveFileDialog
-            {
-                InitialDirectory = OptionsManager.CurrentOptionFile.FileSavePath,
-                Title = "Save text to file",
-
-                CheckFileExists = false,
-                CheckPathExists = true,
-
-                DefaultExt = "txt",
-                Filter = "Text Files(*.txt)|*.txt|All(*.*)|*.tntxt|transparent notpad file(*.tntxt*)|*",
-                FilterIndex = 2,
-                RestoreDirectory = true
-            };
-
-            if (dialog.ShowDialog() == true)
-            {
-                File.WriteAllText(dialog.FileName, tbox_mainText.Text);
-
-                currentTextDocPath = dialog.FileName;
-                OptionsManager.SetFileSaveEmplacement(currentTextDocPath);
-                fileSaved = true;
-            }
-        }
-        public void Save()
-        {
-            if (!fileSaved)
-            {
-                SaveAs();
-            }
-            else
-            {
-                if (File.Exists(currentTextDocPath))
-                {
-                    File.WriteAllText(currentTextDocPath, tbox_mainText.Text);
-                }
-                else
-                {
-                    SaveAs();
-                }
-            }
-        }
-
-        public ImageAwesome GetDMToolIcon(DMTools tool)
-        {
-            switch (tool)
-            {
-                case DMTools.Pen: return DM_ToolIcon_Pencil;
-                case DMTools.Eraser: return DM_ToolIcon_Eraser;
-                case DMTools.Cursor: return DM_ToolIcon_Cursor;
-                case DMTools.Text: return DM_ToolIcon_Text;
-                case DMTools.RectBorder: return DM_ToolIcon_RectBorder;
-                case DMTools.RectFill: return DM_ToolIcon_RectFill;
-                case DMTools.CircleBorder: return DM_ToolIcon_CircleBorder;
-                case DMTools.CircleFill: return DM_ToolIcon_CircleFill;
-                case DMTools.Arrow: return DM_ToolIcon_Arrow;
-                case DMTools.Line: return DM_ToolIcon_Line;
-            }
-
-            throw new Exception($"Tool: {tool} hasn't icon !");
-        }
-        public ImageAwesome[] GetAllDMToolIcons()
-        {
-            return new ImageAwesome[]
-            {
-                DM_ToolIcon_Pencil,
-                DM_ToolIcon_Eraser,
-                DM_ToolIcon_Cursor,
-                DM_ToolIcon_Text,
-                DM_ToolIcon_RectBorder,
-                DM_ToolIcon_RectFill,
-                DM_ToolIcon_CircleBorder,
-                DM_ToolIcon_CircleFill,
-                DM_ToolIcon_Arrow,
-                DM_ToolIcon_Line
-            };
-        }
-        public bool TryGetDMToolIcon(DMTools tool, out ImageAwesome icon)
-        {
-            switch (tool)
-            {
-                case DMTools.Pen: 
-                    icon = DM_ToolIcon_Pencil;
-                    return true;
-                case DMTools.Eraser: 
-                    icon = DM_ToolIcon_Eraser; 
-                    return true;
-                case DMTools.Cursor: 
-                    icon = DM_ToolIcon_Cursor; 
-                    return true;
-                case DMTools.Text: 
-                    icon = DM_ToolIcon_Text; 
-                    return true;
-                case DMTools.RectBorder: 
-                    icon = DM_ToolIcon_RectBorder; 
-                    return true;
-                case DMTools.RectFill: 
-                    icon = DM_ToolIcon_RectFill; 
-                    return true;
-                case DMTools.CircleBorder: 
-                    icon = DM_ToolIcon_CircleBorder; 
-                    return true;
-                case DMTools.CircleFill: 
-                    icon = DM_ToolIcon_CircleFill;
-                    return true;
-                case DMTools.Arrow:
-                    icon = DM_ToolIcon_Arrow;
-                    return true;
-                case DMTools.Line:
-                    icon = DM_ToolIcon_Line;
-                    return true;
-            }
-
-            icon = null!;
-            return false;
         }
 
         #endregion
@@ -1100,13 +874,6 @@ namespace TransparentNotePad
                     panel.Margin.Bottom);
             }
         }
-        private void Resizer_MouseMove(object sender, MouseEventArgs e)
-        {
-            //if (e.LeftButton == MouseButtonState.Pressed)
-            //{
-            //    DragDrop.DoDragDrop(panel, panel, DragDropEffects.None);
-            //}
-        }
         private void DragWindow(object sender, MouseButtonEventArgs e)
         {
             if (e.ButtonState == MouseButtonState.Pressed)
@@ -1122,14 +889,6 @@ namespace TransparentNotePad
         {
             byte value = Convert.ToByte(e.NewValue);
             SetWindowOpacity(value, false);
-        }
-        private void Border_MouseDown(object sender, MouseEventArgs e)
-        {
-            //if (e.LeftButton == MouseButtonState.Pressed)
-            //{
-            //    DragDrop.DoDragDrop(panel, panel, DragDropEffects.Move);
-            //}
-
         }
         private void btn_quit_Click(object sender, RoutedEventArgs e)
         {
@@ -1217,13 +976,13 @@ namespace TransparentNotePad
         {
             if (fontBox_initalized)
             {
-                var font_name = ((FontFamily)((ComboBox)sender).SelectedItem).Source;
+                var font = ((FontFamily)((ComboBox)sender).SelectedItem);
+                var font_name = font.Source;
                 OptionsManager.SetDefaultFont(font_name);
+                tbox_mainText.FontFamily = font;
             }
             
         }
-
-
 
         #endregion
 
@@ -1239,7 +998,7 @@ namespace TransparentNotePad
 
         private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
-            paint_area.CurrentColor = e.NewValue.Value;
+            paint_area.CurrentColor = e.NewValue!.Value;
         }
 
         private void OnPenButtonClick(object sender, RoutedEventArgs e)
@@ -1278,13 +1037,13 @@ namespace TransparentNotePad
             {
                 btn.BorderBrush = Brush_Button_Active;
                 var icon = Manager.FindVisualChilds<FontAwesome.WPF.ImageAwesome>(btn);
-                icon.FirstOrDefault().Foreground = Brush_Button_Active;
+                icon.FirstOrDefault()!.Foreground = Brush_Button_Active;
             }
             else
             {
                 btn.BorderBrush = Brush_Button_Disable;
                 var icon = Manager.FindVisualChilds<FontAwesome.WPF.ImageAwesome>(btn);
-                icon.FirstOrDefault().Foreground = Brush_Button_Disable;
+                icon.FirstOrDefault()!.Foreground = Brush_Button_Disable;
             }
         }
 
@@ -1302,7 +1061,7 @@ namespace TransparentNotePad
         {
             if (fileSaved)
             {
-                string path = System.IO.Path.GetDirectoryName(currentTextDocPath);
+                string path = System.IO.Path.GetDirectoryName(currentTextDocPath)!;
                 
                 if (Directory.Exists(path))
                 {
@@ -1372,26 +1131,6 @@ namespace TransparentNotePad
             }
         }
 
-        private void tbox_mainText_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
-        }
-
-        private void display_panel_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            
-        }
-
-        private void panel_DragLeave(object sender, DragEventArgs e)
-        {
-            
-        }
-
-        private void Window_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            
-        }
-
         private void On_DropOnWindow(object sender, DragEventArgs e)
         {
             On_WinDrop(sender, e);
@@ -1401,12 +1140,12 @@ namespace TransparentNotePad
         {
             if (e.ButtonState == MouseButtonState.Pressed)
             {
-                Point mousePos = e.GetPosition(dm_PaintCanvas);
-                double pos_left = Canvas.GetLeft(brd_DesktopModePanel);
-                double pos_top = Canvas.GetTop(brd_DesktopModePanel);
+                //Point mousePos = e.GetPosition(dm_PaintCanvas);
+                //double pos_left = Canvas.GetLeft(brd_DesktopModePanel);
+                //double pos_top = Canvas.GetTop(brd_DesktopModePanel);
                 
-                DMP_drag_origineX_distance = mousePos.X - (pos_left - (brd_DesktopModePanel.Width));
-                DMP_drag_origineY_distance = mousePos.Y - (pos_top - brd_DesktopModePanel.Height);
+                //DMP_drag_origineX_distance = mousePos.X - (pos_left - (brd_DesktopModePanel.Width));
+                //DMP_drag_origineY_distance = mousePos.Y - (pos_top - brd_DesktopModePanel.Height);
 
                 dmp_drag_data = new DataObject(brd_DesktopModePanel);
 
@@ -1414,11 +1153,171 @@ namespace TransparentNotePad
             }
         }
 
-        private void DM_canvas_DragOver(object sender, DragEventArgs e)
+
+        #region Desktop Mode (DOM)
+
+        public ImageAwesome GetDMToolIcon(DMTools tool)
         {
-            
+            switch (tool)
+            {
+                case DMTools.Pen: return DM_ToolIcon_Pencil;
+                case DMTools.Eraser: return DM_ToolIcon_Eraser;
+                case DMTools.Cursor: return DM_ToolIcon_Cursor;
+                case DMTools.Text: return DM_ToolIcon_Text;
+                case DMTools.RectBorder: return DM_ToolIcon_RectBorder;
+                case DMTools.RectFill: return DM_ToolIcon_RectFill;
+                case DMTools.CircleBorder: return DM_ToolIcon_CircleBorder;
+                case DMTools.CircleFill: return DM_ToolIcon_CircleFill;
+                case DMTools.Arrow: return DM_ToolIcon_Arrow;
+                case DMTools.Line: return DM_ToolIcon_Line;
+            }
+
+            throw new Exception($"Tool: {tool} hasn't icon !");
+        }
+        public ImageAwesome[] GetAllDMToolIcons()
+        {
+            return new ImageAwesome[]
+            {
+                DM_ToolIcon_Pencil,
+                DM_ToolIcon_Eraser,
+                DM_ToolIcon_Cursor,
+                DM_ToolIcon_Text,
+                DM_ToolIcon_RectBorder,
+                DM_ToolIcon_RectFill,
+                DM_ToolIcon_CircleBorder,
+                DM_ToolIcon_CircleFill,
+                DM_ToolIcon_Arrow,
+                DM_ToolIcon_Line
+            };
+        }
+        public bool TryGetDMToolIcon(DMTools tool, out ImageAwesome icon)
+        {
+            switch (tool)
+            {
+                case DMTools.Pen:
+                    icon = DM_ToolIcon_Pencil;
+                    return true;
+                case DMTools.Eraser:
+                    icon = DM_ToolIcon_Eraser;
+                    return true;
+                case DMTools.Cursor:
+                    icon = DM_ToolIcon_Cursor;
+                    return true;
+                case DMTools.Text:
+                    icon = DM_ToolIcon_Text;
+                    return true;
+                case DMTools.RectBorder:
+                    icon = DM_ToolIcon_RectBorder;
+                    return true;
+                case DMTools.RectFill:
+                    icon = DM_ToolIcon_RectFill;
+                    return true;
+                case DMTools.CircleBorder:
+                    icon = DM_ToolIcon_CircleBorder;
+                    return true;
+                case DMTools.CircleFill:
+                    icon = DM_ToolIcon_CircleFill;
+                    return true;
+                case DMTools.Arrow:
+                    icon = DM_ToolIcon_Arrow;
+                    return true;
+                case DMTools.Line:
+                    icon = DM_ToolIcon_Line;
+                    return true;
+            }
+
+            icon = null!;
+            return false;
         }
 
+        private void SetCurrentDMTool(DMTools tool)
+        {
+            var theme = ThemeManager.CurrentTheme;
+            Brush selected_brush = theme.DesktopModePanelToolButtonIcon.Variants[1].ToBrush();
+            Brush unselected_brush = theme.DesktopModePanelToolButtonIcon.Variants[0].ToBrush();
+
+            if (currentDMTool_Icon != null)
+                currentDMTool_Icon.Foreground = unselected_brush;
+
+            if (TryGetDMToolIcon(tool, out ImageAwesome icon))
+            {
+                icon.Foreground = selected_brush;
+                currentDMTool_Icon = icon;
+            }
+
+            currentDMTools = tool;
+        }
+        private void DMP_Snaping(object sender, EventArgs args)
+        {
+            dmp_snappingTimer.Stop();
+            const int SNAP_FORCE = 150;
+
+            double top = Canvas.GetTop(brd_DesktopModePanel);
+            double left = Canvas.GetLeft(brd_DesktopModePanel);
+
+            //right middle snap
+            double right_middle_x = SystemParameters.PrimaryScreenWidth - 130;
+            double right_middle_y = (SystemParameters.PrimaryScreenHeight / 2) - (brd_DesktopModePanel.Height / 2);
+
+            //left middle snap
+            double left_middle_x = 30;
+
+
+            if (left >= right_middle_x - SNAP_FORCE
+                && left <= right_middle_x + SNAP_FORCE
+                && top >= right_middle_y - SNAP_FORCE
+                && top <= right_middle_y + SNAP_FORCE)
+            {
+                Canvas.SetLeft(brd_DesktopModePanel, right_middle_x);
+                Canvas.SetTop(brd_DesktopModePanel, right_middle_y);
+            }
+            else if (left >= left_middle_x - SNAP_FORCE
+                && left <= left_middle_x + SNAP_FORCE
+                && top >= right_middle_y - SNAP_FORCE
+                && top <= right_middle_y + SNAP_FORCE)
+            {
+                Canvas.SetLeft(brd_DesktopModePanel, left_middle_x);
+                Canvas.SetTop(brd_DesktopModePanel, right_middle_y);
+            }
+        }
+        private void SetDMPExtended(bool value)
+        {
+            const int MOVE_X_PANEL = 244;
+
+            double newPanelPos;
+            GridLength extendGridDef;
+
+            if (value)
+            {
+                brd_DesktopModePanel.Width = 339;
+                DMP_grid_Extended.IsHitTestVisible = true;
+                DMP_grid_Extended.Opacity = 1;
+                DMP_icon_Extend.Icon = FontAwesome.WPF.FontAwesomeIcon.ArrowCircleLeft;
+                DMP_btn_Extend.ToolTip = "Reduce panel";
+
+                newPanelPos = Canvas.GetLeft(brd_DesktopModePanel) - MOVE_X_PANEL;
+                extendGridDef = new GridLength(81, GridUnitType.Star);
+            }
+            else
+            {
+                brd_DesktopModePanel.Width = 95;
+                DMP_grid_Extended.IsHitTestVisible = true;
+                DMP_grid_Extended.Opacity = 0;
+                DMP_icon_Extend.Icon = FontAwesome.WPF.FontAwesomeIcon.ArrowCircleRight;
+                DMP_btn_Extend.ToolTip = "Expand panel";
+
+                newPanelPos = Canvas.GetLeft(brd_DesktopModePanel) + MOVE_X_PANEL;
+                extendGridDef = new GridLength(0, GridUnitType.Pixel);
+
+            }
+
+            dmp_extended = value;
+            DMP_gridDef_Extend.Width = extendGridDef;
+            DMP_gridDef_Base.Width = new GridLength(32, GridUnitType.Star);
+
+            if (Canvas.GetLeft(brd_DesktopModePanel) > 300)
+                Canvas.SetLeft(brd_DesktopModePanel, newPanelPos);
+        }
         private void DM_canvas_Drop(object sender, DragEventArgs e)
         {
             dmp_snappingTimer = new DispatcherTimer();
@@ -1429,8 +1328,6 @@ namespace TransparentNotePad
             //dm_PaintCanvas.Background = lastWinOpacityBeforeDMPDrag;
             //lastWinOpacityBeforeDMPFrag_Saved = false;
         }
-
-
 
         private void btn_desktopMode_Click(object sender, RoutedEventArgs e)
         {
@@ -1560,6 +1457,32 @@ namespace TransparentNotePad
                 dm_PaintCanvas.CurrentColor = e.NewValue!.Value;
         }
 
+        #endregion
+
+        #region Save
+
+        public void SaveAs()
+        {
+            if (SaveManager.TrySaveTextFileAs(tbox_mainText.Text, out SaveFileDialog dialog))
+            {
+                currentTextDocPath = dialog.FileName;
+                OptionsManager.SetFileSaveEmplacement(currentTextDocPath);
+                fileSaved = true;
+            }
+        }
+        public void Save()
+        {
+            if (!fileSaved || !File.Exists(currentTextDocPath))
+            {
+                SaveAs();
+                return;
+            }
+
+            File.WriteAllText(currentTextDocPath, tbox_mainText.Text);
+        }
+
+        #endregion
+
         #region Text Zoom Save Timer
 
         public void StartZoomTimer()
@@ -1569,8 +1492,10 @@ namespace TransparentNotePad
                 _zoomTimerToken?.Cancel();
             }
 
+            var font_size = tbox_mainText.FontSize;
+
             _zoomTimerToken = new CancellationTokenSource();
-            Task.Run(() => ZoomTimer(_zoomTimerToken.Token, tbox_mainText.FontSize));
+            Task.Run(() => ZoomTimer(_zoomTimerToken.Token, font_size));
         }
         private async Task ZoomTimer(CancellationToken cancellationToken, double zoomValue)
         {

@@ -1,24 +1,11 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Windows.Threading;
-using Xceed.Wpf.AvalonDock.Themes;
-using FontAwesome;
+using TransparentNotePad.SaveSystem;
 
 namespace TransparentNotePad
 {
@@ -28,8 +15,6 @@ namespace TransparentNotePad
     public partial class Postit : Window
     {
         private bool inOption;
-
-        private ThemeOLD? currentTheme;
 
         private RowDefinition rowAnim1;
 
@@ -52,96 +37,6 @@ namespace TransparentNotePad
             RefreshDefaultValue();
         }
 
-        public void UpdateTheme()
-        {
-            //this.currentTheme = Manager.CurrentTheme;
-            
-            //Manager.TryGetObjectFromResource(this, "Header_Button", out Style? baseBtnStyle);
-            //Manager.TryGetObjectFromResource(this, "Header_Btn_Text", out Style? baseBtnstextStyle);
-            //Manager.TryGetObjectFromResource(this, "Options_lbl", out Style? baseLabeltextStyle);
-            //Manager.TryGetObjectFromResource(this, "Header_Button_Icon", out Style? baseIconStyle);
-
-            //SolidColorBrush textColor = new SolidColorBrush(Manager.GetColorFromThemeFileString(currentTheme.Value.Color_Text_Panel_Btns_Text));
-            //SolidColorBrush panelColor = new SolidColorBrush(Manager.GetColorFromThemeFileString(currentTheme.Value.Color_Panel));
-
-            //SetterBase BtnBgColor = new Setter(Button.BackgroundProperty,
-            //    new SolidColorBrush(Manager.GetColorFromThemeFileString(currentTheme.Value.Color_Text_Panel_Btns_Bg)));
-            //SetterBase SetterTextColor = new Setter(Label.ForegroundProperty, textColor);
-            //SetterBase iconColor = new Setter(FontAwesome.WPF.ImageAwesome.ForegroundProperty,
-            //    new SolidColorBrush(Manager.GetColorFromThemeFileString(currentTheme.Value.Color_Text_Panel_Btns_Text)));
-
-            //Style buttonStyle = new Style(typeof(Button), baseBtnStyle);
-            //buttonStyle.Setters.Add(BtnBgColor);
-
-            //Style btnTextStyle = new Style(typeof(Label), baseBtnstextStyle);
-            //btnTextStyle.Setters.Add(SetterTextColor);
-
-            //Style lblTextStyle = new Style(typeof(Label), baseLabeltextStyle);
-            //lblTextStyle.Setters.Add(SetterTextColor);
-
-            //Style IconStyle = new Style(typeof(FontAwesome.WPF.ImageAwesome), baseIconStyle);
-            //IconStyle.Setters.Add(iconColor);
-
-
-            //IEnumerable<Button> headerBtns =
-            //    Manager.FindVisualChilds<Button>(Header_Border)
-            //    .Where(x => x.Tag != null && x.Tag.ToString() == "header_btn");
-
-            //IEnumerable<Label> btnsTexts =
-            //    Manager.FindVisualChilds<Label>(Header_Border)
-            //    .Where(x => x.Tag != null && x.Tag.ToString() == "btn_text");
-
-            //IEnumerable<Label> lblTexts =
-            //    Manager.FindVisualChilds<Label>(Header_Border)
-            //    .Where(x => x.Tag != null && x.Tag.ToString() == "lbl_text");
-
-            //IEnumerable<FontAwesome.WPF.ImageAwesome> Icon =
-            //    Manager.FindVisualChilds<FontAwesome.WPF.ImageAwesome>(Header_Border)
-            //    .Where(x => x.Tag != null && x.Tag.ToString() == "header_button_icon");
-
-            //foreach (var item in headerBtns)
-            //{
-            //    Console.WriteLine($"headerBtns : {item.Tag}");
-            //    item.Style = buttonStyle;
-            //}
-            //foreach (var item in btnsTexts)
-            //{
-            //    Console.WriteLine($"btnsTexts : {item.Tag}");
-            //    item.Style = btnTextStyle;
-            //}
-            //foreach (var item in lblTexts)
-            //{
-            //    Console.WriteLine($"lblTexts : {item.Tag}");
-            //    item.Style = lblTextStyle;
-            //}
-            //foreach (var item in Icon)
-            //{
-            //    Console.WriteLine($"Icon : {item.Tag}");
-            //    item.Style = IconStyle;
-            //}
-
-            //Header_Border.Background = panelColor;
-
-            //tbox_mainText.Foreground = textColor;
-            //lbl_Title.Foreground = textColor;
-            //lbl_Options_Title.Foreground = textColor;
-
-            //header_btn_Save_Icon.Foreground = textColor;
-            //header_btn_Minimize_Icon.Foreground = textColor;
-            //header_btn_Quit_Icon.Foreground = textColor;
-
-            //Header_btn_Option_text.Foreground = textColor;
-            //Options_Btn_Back_text.Foreground = textColor;
-            //Options_lblOfBtn_Top.Foreground = textColor;
-            //Options_Btn_SetDefault_Text.Foreground = textColor;
-
-            //SetWindowOpacity(Convert.ToByte(Options_slider_winOpacity.Value));
-        }
-        public void SetTheme(ThemeOLD theme)
-        {
-            this.currentTheme = theme;
-            UpdateTheme();
-        }
         public void RefreshDefaultValue()
         {
             var option_file = OptionsManager.CurrentOptionFile;
@@ -198,27 +93,13 @@ namespace TransparentNotePad
 
             inOption = value;
         }
+
+        #region Save
+
         private void SaveAs()
         {
-            //SaveFileDialog dialog = new SaveFileDialog();
-            SaveFileDialog dialog = new SaveFileDialog
+            if (SaveManager.TrySaveTextFileAs(tbox_mainText.Text, out SaveFileDialog dialog))
             {
-                InitialDirectory = OptionsManager.CurrentOptionFile.FileSavePath,
-                Title = "Save text to file",
-
-                CheckFileExists = false,
-                CheckPathExists = true,
-
-                DefaultExt = "txt",
-                Filter = "Text Files(*.txt)|*.txt|All(*.*)|*.tntxt|transparent notpad file(*.tntxt*)|*",
-                FilterIndex = 2,
-                RestoreDirectory = true
-            };
-
-            if (dialog.ShowDialog() == true)
-            {
-                File.WriteAllText(dialog.FileName, tbox_mainText.Text);
-
                 currentTextDocPath = dialog.FileName;
                 OptionsManager.SetFileSaveEmplacement(currentTextDocPath);
                 fileSaved = true;
@@ -226,22 +107,17 @@ namespace TransparentNotePad
         }
         private void Save()
         {
-            if (!fileSaved)
+            if (!fileSaved || !File.Exists(currentTextDocPath))
             {
                 SaveAs();
+                return;
             }
-            else
-            {
-                if (File.Exists(currentTextDocPath))
-                {
-                    File.WriteAllText(currentTextDocPath, tbox_mainText.Text);
-                }
-                else
-                {
-                    SaveAs();
-                }
-            }
+
+            File.WriteAllText(currentTextDocPath, tbox_mainText.Text);
         }
+
+        #endregion
+
         private void Zoom(bool up)
         {
             if (up)

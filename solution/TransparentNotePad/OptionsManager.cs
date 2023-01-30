@@ -1,19 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls.Primitives;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using TransparentNotePad.SaveSystem;
-using Xceed.Wpf.AvalonDock.Themes;
 
 namespace TransparentNotePad
 {
+    /// <summary>
+    /// Provide Static Methods and Propreties for managing options
+    /// </summary>
     public static class OptionsManager
     {
         private static OptionFile? _currentOptionFile;
 
+        /// <summary>
+        /// The current application option
+        /// </summary>
         public static OptionFile CurrentOptionFile
         {
             get
@@ -31,6 +30,11 @@ namespace TransparentNotePad
             }
         }
 
+        /// <summary>
+        /// Apply option and set it as current
+        /// </summary>
+        /// <param name="optionFile"></param>
+        /// <param name="openLastText">open the <see cref="OptionFile.LastTextFileSaved"/> in the main window</param>
         public static void LoadOptions(OptionFile optionFile, bool openLastText = false)
         {
             var fontFamilyConverter = new FontFamilyConverter();
@@ -56,6 +60,11 @@ namespace TransparentNotePad
 
             _currentOptionFile = optionFile;
         }
+        /// <summary>
+        /// Save the option in OptionFile and set it as current
+        /// </summary>
+        /// <param name="optionFile"></param>
+        /// <returns></returns>
         public static bool SaveOptions(OptionFile optionFile)
         {
             _currentOptionFile = optionFile;

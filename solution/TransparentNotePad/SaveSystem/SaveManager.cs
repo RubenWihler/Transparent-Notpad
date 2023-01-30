@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -6,6 +7,9 @@ using System.Text.Json;
 
 namespace TransparentNotePad.SaveSystem
 {
+    /// <summary>
+    /// Provide Static Methods and Propreties for saving or read file
+    /// </summary>
     public static class SaveManager
     {
         public const string APP_DIRECTORY_NAME = "Transparent-Notepad";
@@ -17,6 +21,9 @@ namespace TransparentNotePad.SaveSystem
 
         #region PATHS
 
+        /// <summary>
+        /// return appdata/roaming path
+        /// </summary>
         private static string AppDataPath
         {
             get
@@ -26,6 +33,9 @@ namespace TransparentNotePad.SaveSystem
                     APP_DIRECTORY_NAME);
             }
         }
+        /// <summary>
+        /// Return appdata/roaming/APP_DIRECTORY_NAME/THEMES_DIRECTORY_NAME
+        /// </summary>
         private static string ThemesPath
         {
             get
@@ -33,6 +43,9 @@ namespace TransparentNotePad.SaveSystem
                 return Path.Combine(AppDataPath, THEMES_DIRECTORY_NAME);
             }
         }
+        /// <summary>
+        /// return appdata/roaming/APP_DIRECTORY_NAME/OPTIONS_FILE_NAME
+        /// </summary>
         private static string OptionsFilePath
         {
             get
@@ -41,6 +54,9 @@ namespace TransparentNotePad.SaveSystem
             }
         }
 
+        /// <summary>
+        /// return appdata/roaming/TEMPORARY_DIRECTORY_NAME
+        /// </summary>
         private static string TemporaryDirectoryPath
         {
             get
@@ -48,6 +64,9 @@ namespace TransparentNotePad.SaveSystem
                 return Path.Combine(AppDataPath, TEMPORARY_DIRECTORY_NAME);
             }
         }
+        /// <summary>
+        /// return appdata/roaming/TEMPORARY_DIRECTORY_NAME/TEMPORARY_TEXT_DIRECTORY_NAME
+        /// </summary>
         private static string TemporaryTextDirectoryPath
         {
             get
@@ -58,6 +77,9 @@ namespace TransparentNotePad.SaveSystem
 
         #endregion
 
+        /// <summary>
+        /// Check all necessary files and create it if they not exists
+        /// </summary>
         public static void CheckFiles()
         {
             if (!Directory.Exists(AppDataPath))
@@ -87,6 +109,13 @@ namespace TransparentNotePad.SaveSystem
             }
         }
 
+        /// <summary>
+        /// Save a Serializable object in a file
+        /// </summary>
+        /// <typeparam name="T">Serializable object</typeparam>
+        /// <param name="t">object</param>
+        /// <param name="path">the file path</param>
+        /// <returns>the result of the opperation</returns>
         public static bool TrySaveToJsonFile<T>(T t, string path) where T : new()
         {
             try
@@ -104,6 +133,13 @@ namespace TransparentNotePad.SaveSystem
 
             return false;
         }
+        /// <summary>
+        /// Get an serializable object from a json file
+        /// </summary>
+        /// <typeparam name="T">the serializable object type</typeparam>
+        /// <param name="path">the json file path to get the object from</param>
+        /// <param name="t">the object</param>
+        /// <returns>the result of the opperation</returns>
         public static bool TryGetJsonFile<T>(string path, out T t) where T : new()
         {
             if (File.Exists(path))
@@ -124,6 +160,11 @@ namespace TransparentNotePad.SaveSystem
             return false;
         }
 
+        /// <summary>
+        /// Save an text to temporary text file [<see cref="TemporaryTextDirectoryPath"/>]
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="encoding"></param>
         public static void SaveTextToTemporaryFile(string text, Encoding encoding = null!)
         {
             if (text.Trim().Length < 1) return;
@@ -159,6 +200,70 @@ namespace TransparentNotePad.SaveSystem
             File.WriteAllText(path, text, encoding);
         }
 
+        /// <summary>
+        /// Save a text in a file
+        /// </summary>
+        /// <param name="text">the text to save</param>
+        /// <param name="path">the path of the file</param>
+        /// <param name="encoding">the encoding [default = <see cref="Encoding.UTF8"/>]</param>
+        /// <returns></returns>
+        public static bool TrySaveTextFile(string text, string path, Encoding encoding = null!)
+        {
+            encoding ??= Encoding.UTF8;
+
+            try
+            {
+                File.WriteAllText(text, path, encoding);
+                return true;
+            }
+            catch (Exception e)
+            {
+                #if DEBUG
+                $"error while save file at {path} \r\n error: {e}".LogError();
+                #endif
+            }
+
+            return false;
+        }
+        /// <summary>
+        /// Open a <see cref="SaveFileDialog "/> and save target text into selected file
+        /// </summary>
+        /// <param name="text">file content</param>
+        /// <param name="dialog">the dialog</param>
+        /// <param name="title">the dialog title</param>
+        /// <param name="defaultExtension">the dialog file extension</param>
+        /// <param name="filter">the dialog filter</param>
+        /// <returns>the result of the opperation</returns>
+        public static bool TrySaveTextFileAs(string text, out SaveFileDialog dialog,
+            string title = "Save text to a file", string defaultExtension = "tntxt",
+            string filter = "Text Files(*.txt)|*.txt|All(*.*)|*.tntxt|transparent notepad file(*.tntxt*)|*")
+        {
+            dialog = new SaveFileDialog
+            {
+                InitialDirectory = OptionsManager.CurrentOptionFile.FileSavePath,
+                Title = title,
+
+                CheckFileExists = false,
+                CheckPathExists = true,
+
+                DefaultExt = defaultExtension,
+                Filter = filter,
+                FilterIndex = 2,
+                RestoreDirectory = true
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                return TrySaveTextFile(text, dialog.FileName);
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Return all file content from temporary text file [<see cref="TemporaryTextDirectoryPath"/>]
+        /// </summary>
+        /// <returns></returns>
         public static List<TextFile> GetAllTemporaryTextFile()
         {
             var default_file_founded = false;
@@ -202,6 +307,10 @@ namespace TransparentNotePad.SaveSystem
             return text_files;
         }
 
+        /// <summary>
+        /// Return all theme from appdata file [<see cref="ThemesPath"/>]
+        /// </summary>
+        /// <returns></returns>
         public static List<Theme> GetAllThemeFromFiles()
         {
             CheckFiles();
@@ -218,6 +327,10 @@ namespace TransparentNotePad.SaveSystem
             
             return themeList;
         }
+        /// <summary>
+        /// Return an <see cref="OptionFile"/> from appdata file [<see cref="OptionsFilePath"/>]
+        /// </summary>
+        /// <returns></returns>
         public static OptionFile GetOptionFileFromFile()
         {
             if (TryGetJsonFile<OptionFile>(OptionsFilePath, out var sdFile))
@@ -229,23 +342,40 @@ namespace TransparentNotePad.SaveSystem
                 return GenerateDefaultOptionFile();
             }
         }
-
+        
+        /// <summary>
+        /// Save an <see cref="OptionFile"/> into a json file in appdata [<see cref="OptionsFilePath"/>]
+        /// </summary>
+        /// <param name="optionFile"></param>
+        /// <returns></returns>
         public static bool SaveOptionFile(OptionFile optionFile)
         {
             return TrySaveToJsonFile(optionFile, OptionsFilePath);
         }
+        /// <summary>
+        /// Create a new json file with the <see cref="Theme.ThemeName"/> as name that contain a <see cref="Theme"/>, in appdata [<see cref="ThemesPath"/>]
+        /// </summary>
+        /// <param name="theme"></param>
+        /// <returns></returns>
         public static bool SaveNewThemeFile(Theme theme)
         {
             var path = Path.Combine(ThemesPath, $"{theme.ThemeName}{THEME_FILE_EXTENSION}");
             return TrySaveToJsonFile(theme, path);
         }
 
+        /// <summary>
+        /// Create a file that contain <see cref="OptionFile.GetDefault()"/> in appdata [<see cref="OptionsFilePath"/>]
+        /// </summary>
+        /// <returns></returns>
         private static OptionFile GenerateDefaultOptionFile()
         {
             var defaultStoredDataFile = OptionFile.GetDefault();
             _ = TrySaveToJsonFile(defaultStoredDataFile, OptionsFilePath);
             return defaultStoredDataFile;
         }
+        /// <summary>
+        /// Create files for each theme from <see cref="Theme.GetDefaultThemes()"/> into appdata [<see cref="ThemesPath"/>]
+        /// </summary>
         private static void GenerateDefaultThemes()
         {
             var default_themes = Theme.GetDefaultThemes();

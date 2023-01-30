@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 
 namespace TransparentNotePad
 {
+    /// <summary>
+    /// Represent a <see cref="ThemeColor"/> of an <see cref="Theme"/>
+    /// </summary>
     public enum ThemeColorType
     {
         Primary, Secondary, Tertiary,
@@ -17,11 +15,17 @@ namespace TransparentNotePad
         EditorBackground,
         NoteEditorBackground, NoteHeaderBackground, NoteHeaderText
     }
+    /// <summary>
+    /// Represent a <see cref="VariableThemeColor"/> of an <see cref="Theme"/>
+    /// </summary>
     public enum VariableColorType
     {
         PanelBrushButtonIcon,
         DesktopModePanelToolButtonsIcon
     }
+    /// <summary>
+    /// Represent a <see cref="ButtonGroupThemeSettings"/> of an <see cref="Theme"/>
+    /// </summary>
     public enum ButtonGroupType
     {
         Panel, 
@@ -29,6 +33,9 @@ namespace TransparentNotePad
         TopBarButtonClose, TopBarButtonMinimise, TopBarButtonMaximize, TopBarButtonHidePanel, TopBarButtonTop,
         NoteHeader
     }
+    /// <summary>
+    /// Represent a <see cref="ColorPickerThemeSettings"/> of an <see cref="Theme"/>
+    /// </summary>
     public enum ColorPickerType
     {
         Panel,
@@ -36,6 +43,9 @@ namespace TransparentNotePad
         NotePanel
     }
 
+    /// <summary>
+    /// Data structure that represent theme's settings for a button
+    /// </summary>
     [System.Serializable]
     public struct ButtonGroupThemeSettings
     {
@@ -60,6 +70,9 @@ namespace TransparentNotePad
         public double GlowOpacity { get; set; }
     }
 
+    /// <summary>
+    /// Data structure that represent theme's settings for a color picker
+    /// </summary>
     [System.Serializable]
     public struct ColorPickerThemeSettings
     {
@@ -96,6 +109,9 @@ namespace TransparentNotePad
         public int GlowOpacity { get; set; }
     }
 
+    /// <summary>
+    /// Data structure that represent a Theme that store graphical setting like colors, fonts etc
+    /// </summary>
     [System.Serializable]
     public struct Theme
     {
@@ -1607,6 +1623,12 @@ namespace TransparentNotePad
 
     public static class ThemeExtension
     {
+        /// <summary>
+        /// Get the ThemeColor of an theme, represented by an ThemeColorType
+        /// </summary>
+        /// <param name="theme">the targeted theme</param>
+        /// <param name="colorType">the targeted ThemeColorTpe that going to define the ThemeColor to return</param>
+        /// <returns></returns>
         public static ThemeColor GetThemeColorOf(this Theme theme, ThemeColorType colorType)
         {
             switch (colorType)
@@ -1666,15 +1688,33 @@ namespace TransparentNotePad
                     return theme.PrimaryColor;
             }
         }
+        /// <summary>
+        /// Same as <see cref="GetThemeColorOf(Theme, ThemeColorType)"/> but convert the ThemeColor to a color
+        /// </summary>
+        /// <param name="theme">the targeted theme</param>
+        /// <param name="colorType">the targeted ThemeColorTpe that going to define the color to return</param>
+        /// <returns></returns>
         public static Color GetColorOf(this Theme theme, ThemeColorType colorType)
         {
             return theme.GetThemeColorOf(colorType).ToColor();
         }
+        /// <summary>
+        /// Same as <see cref="GetThemeColorOf(Theme, ThemeColorType)"/> but convert the ThemeColor to a brush
+        /// </summary>
+        /// <param name="theme">the targeted theme</param>
+        /// <param name="colorType">the targeted ThemeColorTpe that going to define the brush's color to return</param>
+        /// <returns></returns>
         public static SolidColorBrush GetBrushColorOf(this Theme theme, ThemeColorType colorType)
         {
             return theme.GetThemeColorOf(colorType).ToBrush();
         }
 
+        /// <summary>
+        /// Get the ButtonGroupThemeSettings of an theme, represented by an ButtonGroupType
+        /// </summary>
+        /// <param name="theme">the targeted theme</param>
+        /// <param name="buttonGroupType">the targeted ButtonGroupType that going to define the <see cref="ButtonGroupThemeSettings"/> to return</param>
+        /// <returns></returns>
         public static ButtonGroupThemeSettings GetButtonGroupThemeSettingsOf(this Theme theme, ButtonGroupType buttonGroupType)
         {
             switch (buttonGroupType)
@@ -1711,6 +1751,12 @@ namespace TransparentNotePad
             }
         }
 
+        /// <summary>
+        /// Get the <see cref="ColorPickerThemeSettings"/> of an theme, represented by an <see cref="ColorPickerType"/>
+        /// </summary>
+        /// <param name="theme">the targeted theme</param>
+        /// <param name="colorPickerType">the targeted <see cref="ColorPickerType"/> that going to define the <see cref="ColorPickerThemeSettings"/> to return</param>
+        /// <returns></returns>
         public static ColorPickerThemeSettings GetColorPickerThemeSettingsOf(this Theme theme, ColorPickerType colorPickerType)
         {
             switch (colorPickerType)
@@ -1729,6 +1775,11 @@ namespace TransparentNotePad
             }
         }
 
+        /// <summary>
+        /// Get the UI font family of an Theme
+        /// </summary>
+        /// <param name="theme">the targeted theme</param>
+        /// <returns></returns>
         public static FontFamily GetFontFamily(this Theme theme)
         {
             var fontFamilyConverter = new FontFamilyConverter();

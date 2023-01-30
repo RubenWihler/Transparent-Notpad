@@ -2,7 +2,10 @@
 
 namespace TransparentNotePad
 {
-    [System.Serializable]
+    /// <summary>
+    /// Data structure that represent application settings that store various things like: selected theme, editor font, default save directory etc
+    /// </summary>
+    [Serializable]
     public struct OptionFile
     {
         public OptionFile(
@@ -24,18 +27,45 @@ namespace TransparentNotePad
             NoteWin_Default_WindowOpacity = noteWin_Default_WindowOpacity;
             NoteWin_Default_Font = noteWin_Default_Font;
         }
-
+        /// <summary>
+        /// The path of the last none-saved text in appdata file
+        /// </summary>
         public string LastTextFileSaved { get; set; }
+        /// <summary>
+        /// The selected font
+        /// </summary>
         public string SelectedTheme { get ; set; }
+        /// <summary>
+        /// The editor font
+        /// </summary>
         public string EditorFont { get; set; }
+        /// <summary>
+        /// the editor zoom value
+        /// </summary>
         public double EditorZoom { get; set; }
 
+        /// <summary>
+        /// The default path when saving a file
+        /// </summary>
         public string FileSavePath { get; set; }
+        /// <summary>
+        /// If the icon text file as been initialized
+        /// </summary>
         public bool TntxtFileInitialized { get; set; }
 
+        /// <summary>
+        /// The default editor font of note window
+        /// </summary>
         public string NoteWin_Default_Font { get; set; }
+        /// <summary>
+        /// The default opacity of note window
+        /// </summary>
         public int NoteWin_Default_WindowOpacity { get; set; }
 
+        /// <summary>
+        /// Get the Default OptionFile
+        /// </summary>
+        /// <returns></returns>
         public static OptionFile GetDefault()
         {
             return new OptionFile()
@@ -46,7 +76,7 @@ namespace TransparentNotePad
                 EditorZoom = 24,
                 FileSavePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
                 TntxtFileInitialized = false,
-                NoteWin_Default_WindowOpacity = 255,
+                NoteWin_Default_WindowOpacity = 200,
                 NoteWin_Default_Font = "Cascadia Code"
             };
         }

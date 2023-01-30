@@ -1,28 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 using System.Windows;
 using System.IO;
-using System.Windows.Documents;
-using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Media;
-using System.Windows.Controls.Primitives;
-using System.Windows.Shapes;
-using System.Windows.Controls;
-using System.Threading;
-using System.Text.Json.Serialization;
-using System.Text.Json;
 using Microsoft.Win32;
-using System.Data;
-using System.Security.Permissions;
-using System.Runtime.CompilerServices;
-using FontFamily = System.Windows.Media.FontFamily;
-using Brush = System.Windows.Media.Brush;
 using TransparentNotePad.SaveSystem;
 
 namespace TransparentNotePad
@@ -216,7 +198,7 @@ namespace TransparentNotePad
                 }
                 catch (Exception e)
                 {
-                    $"Error while trying to setup '.tntxt' file icon ! error : {e}".LogError();
+                    //$"Error while trying to setup '.tntxt' file icon ! error : {e}".LogError();
                 }
             }
             #endif

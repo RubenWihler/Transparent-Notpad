@@ -18,10 +18,18 @@ namespace TransparentNotePad
             A = a;
         }
 
+        /// <summary>
+        /// Convert the ThemeColor to an color
+        /// </summary>
+        /// <returns></returns>
         public Color ToColor()
         {
             return Color.FromArgb(A, R, G, B);
         }
+        /// <summary>
+        /// Convert the ThemeColor to an Solid color brush
+        /// </summary>
+        /// <returns></returns>
         public SolidColorBrush ToBrush()
         {
             return new SolidColorBrush(ToColor());
@@ -35,7 +43,7 @@ namespace TransparentNotePad
         {
             Variants = variants;
         }
-
+        
         public ThemeColor[] Variants { get; set; }
     }
 }

@@ -1,19 +1,19 @@
 ﻿TransparentNotePad
 1.0.0.0
 
-winexe
+exe
 C#
 .cs
-D:\GitHub\Transparent-Notpad\solution\TransparentNotePad\obj\Release\net6.0-windows\
+C:\Users\Admin\Documents\GitHub\Transparent-Notpad\solution\TransparentNotePad\obj\Release\net6.0-windows\
 TransparentNotePad
 none
 false
 TRACE;RELEASE;NET;NET6_0;NETCOREAPP
-D:\GitHub\Transparent-Notpad\solution\TransparentNotePad\App.xaml
+C:\Users\Admin\Documents\GitHub\Transparent-Notpad\solution\TransparentNotePad\App.xaml
 3738310531
 1679540316
-25-1112271167
-2011841787236
+27-1802581382
+201-152476778
 MainWindow.xaml;OptionsWindow.xaml;Postit.xaml;
 
 True
