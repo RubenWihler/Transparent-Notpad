@@ -1102,6 +1102,10 @@
                         </customcontrols:CustomButton>
                     </Grid>
                 </customcontrols:CustomBorder>
+
+                <customcontrols:ImageBox Width="280" Height="380">
+                    
+                </customcontrols:ImageBox>
             </Grid>
             <local:PaintCanvas/>
         </Grid>

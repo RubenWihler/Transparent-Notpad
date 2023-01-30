@@ -184,3 +184,5 @@ D:\GitHub\Transparent-Notpad\solution\TransparentNotePad\obj\Debug\net6.0-window
 D:\GitHub\Transparent-Notpad\solution\TransparentNotePad\obj\Debug\net6.0-windows\TransparentNotePad.pdb
 D:\GitHub\Transparent-Notpad\solution\TransparentNotePad\obj\Debug\net6.0-windows\TransparentNotePad.genruntimeconfig.cache
 D:\GitHub\Transparent-Notpad\solution\TransparentNotePad\obj\Debug\net6.0-windows\ref\TransparentNotePad.dll
+D:\GitHub\Transparent-Notpad\solution\TransparentNotePad\obj\Debug\net6.0-windows\CustomControls\ImageBoxStyle.baml
+D:\GitHub\Transparent-Notpad\solution\TransparentNotePad\obj\Debug\net6.0-windows\Themes\Generic.baml
