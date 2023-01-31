@@ -49,6 +49,7 @@ namespace TransparentNotePad
         }
 
         /*---------- Fields ----------*/
+        public static event Action onWindowResize;
         private static CancellationTokenSource? _zoomTimerToken;
 
         private AppMode currentMode = AppMode.Text;
@@ -874,6 +875,8 @@ namespace TransparentNotePad
                     panel.Margin.Right,
                     panel.Margin.Bottom);
             }
+
+            onWindowResize?.Invoke();
         }
         private void DragWindow(object sender, MouseButtonEventArgs e)
         {

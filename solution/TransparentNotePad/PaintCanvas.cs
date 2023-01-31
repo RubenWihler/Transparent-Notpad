@@ -473,10 +473,6 @@ namespace TransparentNotePad
         }
         private void Draw(double x, double y)
         {
-            //x -= (Radius / 2);
-            //y -= (Radius / 2);
-
-            //PaintCircle(new Point(Convert.ToInt32(x), Convert.ToInt32(y)));
             PaintLine(new Point(Convert.ToInt32(x), Convert.ToInt32(y)));
         }
         

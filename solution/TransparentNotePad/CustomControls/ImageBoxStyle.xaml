@@ -5,20 +5,27 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:ImageBox">
-                    <Border x:Name="border" Background="#FF8D8D8D">
+                    <Border x:Name="border" Background="#00000000">
                         <Grid x:Name="grid_main">
-                            <Grid.RowDefinitions>
+                            <!--<Grid.RowDefinitions>
                                 <RowDefinition Height="20"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
+                            </Grid.ColumnDefinitions>-->
+                            <Image 
+                                x:Name="image" 
+                                Stretch="Fill"
+                                AllowDrop="True">
+                            </Image>
                             <StackPanel 
                                 x:Name="header_stack_panel"
+                                Height="20"
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Right"
-                                Background="#FF8D8D8D">
+                                Background="#FF8D8D8D" 
+                                VerticalAlignment="Top">
                                 <local:CustomButton
                                     x:Name="btn_remove"
                                     buttonGroupType="DesktopModePanel">
@@ -32,13 +39,7 @@
                                     </Viewbox>
                                 </local:CustomButton>
                             </StackPanel>
-                            <Image 
-                                x:Name="image" 
-                                Stretch="Uniform"
-                                Grid.Row="1"
-                                AllowDrop="True">
-                                
-                            </Image>
+                            
                         </Grid>
                         
                     </Border>

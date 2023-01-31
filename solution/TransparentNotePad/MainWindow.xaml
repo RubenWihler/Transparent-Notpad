@@ -494,6 +494,7 @@
                     IsHitTestVisible="False"
                     AllowDrop="True"
                     Drop="DM_canvas_Drop">
+
                     <customcontrols:CustomBorder 
                         x:Name="brd_DesktopModePanel"
                         themeColorType="DesktopModePanelBackground"
@@ -1104,7 +1105,7 @@
                 </customcontrols:CustomBorder>
 
                 <customcontrols:ImageBox Width="280" Height="380">
-                    
+
                 </customcontrols:ImageBox>
             </Grid>
             <local:PaintCanvas/>

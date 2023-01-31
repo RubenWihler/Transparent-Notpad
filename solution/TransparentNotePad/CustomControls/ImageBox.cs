@@ -4,13 +4,17 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Image = System.Windows.Controls.Image;
+using Point = System.Windows.Point;
 
 namespace TransparentNotePad.CustomControls
 {
@@ -22,7 +26,15 @@ namespace TransparentNotePad.CustomControls
         private CustomButton _button_remove = null!;
         private Image _image = null!;
 
+        private ResizeAdorner _resizeAdorner = null!;
         private Bitmap _bitmap = null!;
+
+        private bool _isMoving;
+        private bool _moveFirstClick = true;
+        private double _moveStartX;
+        private double _moveStartY;
+        private double _moveRelativeX;
+        private double _moveRelativeY;
 
         public Bitmap Bitmap
         {
@@ -46,6 +58,21 @@ namespace TransparentNotePad.CustomControls
             }
         }
 
+        private ResizeAdorner _ResizeAdorner
+        {
+            get
+            {
+                if (_resizeAdorner == null)
+                {
+                    _resizeAdorner = new ResizeAdorner(this);
+                    _resizeAdorner.onResized += () => { UpdateMoveStartPoint(); };
+                }
+
+                _resizeAdorner.ApplyTheme(ThemeManager.CurrentTheme);
+                return _resizeAdorner;
+            }
+        }
+
         static ImageBox()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ImageBox),
@@ -60,13 +87,107 @@ namespace TransparentNotePad.CustomControls
             _button_remove = (CustomButton)Template.FindName("btn_remove", this);
             _image = (Image)Template.FindName("image", this);
 
-            _image.Drop += OnImageDrop;
+            this.RenderTransform = new TranslateTransform();
 
-            _button_remove.Click += _button_remove_Click;
+            MainWindow.onWindowResize += MainWindow_onWindowResize;
+
+            this.Drop += OnImageDrop;
+            this._button_remove.Click += _button_remove_Click;
+            this.MouseDown += OnMouseDown;
+            this.MouseUp += OnMouseUp;
+            this.GotFocus += OnGotFocus;
+            this.LostFocus += OnLostFocus;
+            this.MouseMove += OnMouseMove;
+            this.MouseLeave += OnMouseLeave;
 
             base.OnApplyTemplate();
         }
 
+        private void MainWindow_onWindowResize()
+        {
+            UpdateMoveStartPoint();
+        }
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (_isMoving)
+            {
+                //Get the position of the mouse relative to the controls parent              
+                Point MousePoint = Mouse.GetPosition(this.Parent as IInputElement);
+
+                if ((MousePoint.X + this.Width - _moveRelativeX > (Parent as FrameworkElement).ActualWidth) ||
+                    MousePoint.Y + this.Height - _moveRelativeY > (Parent as FrameworkElement).ActualHeight ||
+                    MousePoint.X - _moveRelativeX < 0 ||
+                    MousePoint.Y - _moveRelativeY < 0)
+                {
+                    return;
+                }
+
+                //set the distance from the original position
+                var distance_from_start_x = MousePoint.X - _moveStartX - _moveRelativeX;
+                var distance_from_start_y = MousePoint.Y - _moveStartY - _moveRelativeY;
+                //Set the X and Y coordinates of the RenderTransform to be the Distance from original position. This will move the control
+                TranslateTransform MoveTransform = base.RenderTransform as TranslateTransform;
+                MoveTransform.X = distance_from_start_x;
+                MoveTransform.Y = distance_from_start_y;
+
+
+                var element = this.Parent as Visual;
+                AdornerLayer.GetAdornerLayer(element).Remove(_ResizeAdorner);
+                AdornerLayer.GetAdornerLayer(element).Add(_ResizeAdorner);
+            }
+        }
+        private void OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            this._isMoving = false;
+            //_moveFirstClick = true;
+        }
+        private void OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            this._isMoving = false;
+            //_moveFirstClick = true;
+        }
+        private void OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!this.IsFocused)
+            {
+                this.Focus();
+            }
+
+            if (e.ButtonState == MouseButtonState.Pressed)
+            {
+                if (_moveFirstClick)
+                {
+                    GeneralTransform transform = this.TransformToAncestor(this.Parent as Visual);
+                    Point start_point = transform.Transform(new Point(0, 0));
+                    _moveStartX = start_point.X;
+                    _moveStartY = start_point.Y;
+                    _moveFirstClick = false;
+                }
+
+                _isMoving = true;
+
+                Point RelativeMousePoint = Mouse.GetPosition(this);
+                _moveRelativeX = RelativeMousePoint.X;
+                _moveRelativeY = RelativeMousePoint.Y;
+            }
+        }
+        private void OnGotFocus(object sender, RoutedEventArgs e)
+        {
+            var element = this.Parent as Visual;
+            try
+            {
+                AdornerLayer.GetAdornerLayer(element).Remove(_ResizeAdorner);
+            }
+            catch (Exception) {}
+
+            AdornerLayer.GetAdornerLayer(element).Add(_ResizeAdorner);
+        }
+        private void OnLostFocus(object sender, RoutedEventArgs e)
+        {
+            var element = this.Parent as Visual;
+            AdornerLayer.GetAdornerLayer(element).Remove(_ResizeAdorner);
+        }
         private void OnImageDrop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -97,10 +218,27 @@ namespace TransparentNotePad.CustomControls
             }
         }
 
+        private void UpdateMoveStartPoint()
+        {
+            var transform = ((TranslateTransform)this.RenderTransform);
+            GeneralTransform ref_transform = this.TransformToAncestor(this.Parent as Visual);
+            Point start_point = ref_transform.Transform(new Point(0, 0));
+            _moveStartX = start_point.X - transform.X;
+            _moveStartY = start_point.Y - transform.Y;
+        }
         private void UpdateSize()
         {
-            this.Width = this._bitmap.Width;
-            this.Height = this._bitmap.Height;
+            var scaleHeight = (float)this.Width / this._bitmap.Width;
+            var scaleWidth = (float)this.Height / this._bitmap.Height;
+            var scale = Math.Min(scaleHeight, scaleWidth);
+
+            //this.Width = this.;
+            //this.Height = this._bitmap.Height;
+
+            this.Height = _bitmap.Height * scale;
+            this.Width = _bitmap.Width * scale;
+
+            UpdateMoveStartPoint();
         }
         private void _button_remove_Click(object sender, RoutedEventArgs e)
         {
@@ -111,7 +249,5 @@ namespace TransparentNotePad.CustomControls
                 Bitmap = new Bitmap(openFileDialog.FileName);
             }
         }
-
-        
     }
 }
