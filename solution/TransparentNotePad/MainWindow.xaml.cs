@@ -223,8 +223,7 @@ namespace TransparentNotePad
         }
         private void Init_DesktopMode()
         {
-            brd_DesktopModePanel.RenderTransform = new TranslateTransform();
-
+            
         }
         private void RetardedCall(object? sender, EventArgs args)
         {
@@ -447,6 +446,11 @@ namespace TransparentNotePad
             lastWinOpacityBeforeDM = lastWinOppacity;
 
             this.WindowState = WindowState.Maximized;
+
+            var middle_y = this.ActualHeight / 3.25;
+            brd_DesktopModePanel.AddSnapPoint(new Point(50, middle_y), Key.Left);
+            brd_DesktopModePanel.AddSnapPoint(new Point(this.ActualWidth - 120, middle_y), Key.Right);
+
             SetWindowOpacity(0x01, true);
             DisplayPanel(false);
             ResetAllDMToolsIconColor();
@@ -1257,36 +1261,36 @@ namespace TransparentNotePad
         }
         private void DMP_Snaping(object sender, EventArgs args)
         {
-            dmp_snappingTimer.Stop();
-            const int SNAP_FORCE = 150;
+            //dmp_snappingTimer.Stop();
+            //const int SNAP_FORCE = 150;
 
-            double top = Canvas.GetTop(brd_DesktopModePanel);
-            double left = Canvas.GetLeft(brd_DesktopModePanel);
+            //double top = Canvas.GetTop(brd_DesktopModePanel);
+            //double left = Canvas.GetLeft(brd_DesktopModePanel);
 
-            //right middle snap
-            double right_middle_x = SystemParameters.PrimaryScreenWidth - 130;
-            double right_middle_y = (SystemParameters.PrimaryScreenHeight / 2) - (brd_DesktopModePanel.Height / 2);
+            ////right middle snap
+            //double right_middle_x = SystemParameters.PrimaryScreenWidth - 130;
+            //double right_middle_y = (SystemParameters.PrimaryScreenHeight / 2) - (brd_DesktopModePanel.Height / 2);
 
-            //left middle snap
-            double left_middle_x = 30;
+            ////left middle snap
+            //double left_middle_x = 30;
 
 
-            if (left >= right_middle_x - SNAP_FORCE
-                && left <= right_middle_x + SNAP_FORCE
-                && top >= right_middle_y - SNAP_FORCE
-                && top <= right_middle_y + SNAP_FORCE)
-            {
-                Canvas.SetLeft(brd_DesktopModePanel, right_middle_x);
-                Canvas.SetTop(brd_DesktopModePanel, right_middle_y);
-            }
-            else if (left >= left_middle_x - SNAP_FORCE
-                && left <= left_middle_x + SNAP_FORCE
-                && top >= right_middle_y - SNAP_FORCE
-                && top <= right_middle_y + SNAP_FORCE)
-            {
-                Canvas.SetLeft(brd_DesktopModePanel, left_middle_x);
-                Canvas.SetTop(brd_DesktopModePanel, right_middle_y);
-            }
+            //if (left >= right_middle_x - SNAP_FORCE
+            //    && left <= right_middle_x + SNAP_FORCE
+            //    && top >= right_middle_y - SNAP_FORCE
+            //    && top <= right_middle_y + SNAP_FORCE)
+            //{
+            //    Canvas.SetLeft(brd_DesktopModePanel, right_middle_x);
+            //    Canvas.SetTop(brd_DesktopModePanel, right_middle_y);
+            //}
+            //else if (left >= left_middle_x - SNAP_FORCE
+            //    && left <= left_middle_x + SNAP_FORCE
+            //    && top >= right_middle_y - SNAP_FORCE
+            //    && top <= right_middle_y + SNAP_FORCE)
+            //{
+            //    Canvas.SetLeft(brd_DesktopModePanel, left_middle_x);
+            //    Canvas.SetTop(brd_DesktopModePanel, right_middle_y);
+            //}
         }
         private void SetDMPExtended(bool value)
         {
@@ -1325,12 +1329,7 @@ namespace TransparentNotePad
             if (brd_DesktopModePanel.Position.X > 300)
             {
                 brd_DesktopModePanel.Translate(new_pos_delta, 0);
-                Console.WriteLine($"Oui brd_DesktopModePanel > 300\r\n   {brd_DesktopModePanel.Position}");
-            }
-            else
-            {
-                brd_DesktopModePanel.Translate(-new_pos_delta, 0);
-                Console.WriteLine($"non brd_DesktopModePanel > 300\r\n   {brd_DesktopModePanel.Position}");
+                //Console.WriteLine($"Oui brd_DesktopModePanel > 300\r\n   {brd_DesktopModePanel.Position}");
             }
         }
         private void DM_canvas_Drop(object sender, DragEventArgs e)
