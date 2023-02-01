@@ -495,14 +495,13 @@
                     AllowDrop="True"
                     Drop="DM_canvas_Drop">
 
-                    <customcontrols:CustomBorder 
+                    <customcontrols:MovablePanel 
                         x:Name="brd_DesktopModePanel"
                         themeColorType="DesktopModePanelBackground"
                         Background="#FF444444"
                         Width="95"
                         Height="384"
                         CornerRadius="10" 
-                        MouseDown="brd_DesktopModePanel_MouseDown" 
                         HorizontalAlignment="Left" 
                         VerticalAlignment="Center"
                         IsHitTestVisible="True"
@@ -822,7 +821,7 @@
                             </Grid>
                         </Grid>
 
-                    </customcontrols:CustomBorder>
+                    </customcontrols:MovablePanel>
                 </local:PaintCanvas>
                 <!--<Canvas x:Name="DM_canvas"
                         IsHitTestVisible="False"

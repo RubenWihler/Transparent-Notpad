@@ -198,6 +198,7 @@ namespace TransparentNotePad
                 "TNTXTX (same as .txt files, but opens by default with Transparent Notpad)");
 
             Init_Field();
+            Init_DesktopMode();
             //temp
             SetMode(AppMode.Text);
 
@@ -219,6 +220,11 @@ namespace TransparentNotePad
             //text_area_color = Color.FromArgb(0xff, 0xff, 0xff, 0xff);
             slider_winOpacity.Value = lastWinOppacity;
             SetWindowOpacity(lastWinOppacity);
+        }
+        private void Init_DesktopMode()
+        {
+            brd_DesktopModePanel.RenderTransform = new TranslateTransform();
+
         }
         private void RetardedCall(object? sender, EventArgs args)
         {
@@ -1145,21 +1151,6 @@ namespace TransparentNotePad
             On_WinDrop(sender, e);
         }
 
-        private void brd_DesktopModePanel_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ButtonState == MouseButtonState.Pressed)
-            {
-                //Point mousePos = e.GetPosition(dm_PaintCanvas);
-                //double pos_left = Canvas.GetLeft(brd_DesktopModePanel);
-                //double pos_top = Canvas.GetTop(brd_DesktopModePanel);
-                
-                //DMP_drag_origineX_distance = mousePos.X - (pos_left - (brd_DesktopModePanel.Width));
-                //DMP_drag_origineY_distance = mousePos.Y - (pos_top - brd_DesktopModePanel.Height);
-
-                dmp_drag_data = new DataObject(brd_DesktopModePanel);
-                DragDrop.DoDragDrop(brd_DesktopModePanel, dmp_drag_data, DragDropEffects.Move);
-            }
-        }
         
 
         #region Desktop Mode (DOM)
@@ -1238,6 +1229,15 @@ namespace TransparentNotePad
             return false;
         }
 
+        private void brd_DesktopModePanel_MouseLeave(object sender, MouseEventArgs e)
+        {
+            dm_PaintCanvas.ShowEraserPreview = true;
+        }
+        private void brd_DesktopModePanel_MouseEnter(object sender, MouseEventArgs e)
+        {
+            dm_PaintCanvas.ShowEraserPreview = false;
+            dm_PaintCanvas.StopPaint();
+        }
         private void SetCurrentDMTool(DMTools tool)
         {
             var theme = ThemeManager.CurrentTheme;
@@ -1292,39 +1292,46 @@ namespace TransparentNotePad
         {
             const int MOVE_X_PANEL = 244;
 
-            double newPanelPos;
+            double new_pos_delta;
             GridLength extendGridDef;
 
             if (value)
             {
-                brd_DesktopModePanel.Width = 339;
+                brd_DesktopModePanel.Resize(339);
                 DMP_grid_Extended.IsHitTestVisible = true;
                 DMP_grid_Extended.Opacity = 1;
-                DMP_icon_Extend.Icon = FontAwesome.WPF.FontAwesomeIcon.ArrowCircleLeft;
+                DMP_icon_Extend.Icon = FontAwesomeIcon.ArrowCircleLeft;
                 DMP_btn_Extend.ToolTip = "Reduce panel";
 
-                newPanelPos = Canvas.GetLeft(brd_DesktopModePanel) - MOVE_X_PANEL;
+                new_pos_delta = -MOVE_X_PANEL;
                 extendGridDef = new GridLength(81, GridUnitType.Star);
             }
             else
             {
-                brd_DesktopModePanel.Width = 95;
+                brd_DesktopModePanel.Resize(95);
                 DMP_grid_Extended.IsHitTestVisible = true;
                 DMP_grid_Extended.Opacity = 0;
-                DMP_icon_Extend.Icon = FontAwesome.WPF.FontAwesomeIcon.ArrowCircleRight;
+                DMP_icon_Extend.Icon = FontAwesomeIcon.ArrowCircleRight;
                 DMP_btn_Extend.ToolTip = "Expand panel";
 
-                newPanelPos = Canvas.GetLeft(brd_DesktopModePanel) + MOVE_X_PANEL;
+                new_pos_delta = MOVE_X_PANEL;
                 extendGridDef = new GridLength(0, GridUnitType.Pixel);
-
             }
 
             dmp_extended = value;
             DMP_gridDef_Extend.Width = extendGridDef;
             DMP_gridDef_Base.Width = new GridLength(32, GridUnitType.Star);
 
-            if (Canvas.GetLeft(brd_DesktopModePanel) > 300)
-                Canvas.SetLeft(brd_DesktopModePanel, newPanelPos);
+            if (brd_DesktopModePanel.Position.X > 300)
+            {
+                brd_DesktopModePanel.Translate(new_pos_delta, 0);
+                Console.WriteLine($"Oui brd_DesktopModePanel > 300\r\n   {brd_DesktopModePanel.Position}");
+            }
+            else
+            {
+                brd_DesktopModePanel.Translate(-new_pos_delta, 0);
+                Console.WriteLine($"non brd_DesktopModePanel > 300\r\n   {brd_DesktopModePanel.Position}");
+            }
         }
         private void DM_canvas_Drop(object sender, DragEventArgs e)
         {
@@ -1448,17 +1455,7 @@ namespace TransparentNotePad
             dm_PaintCanvas.Clear();
         }
 
-        private void brd_DesktopModePanel_MouseEnter(object sender, MouseEventArgs e)
-        {
-            dm_PaintCanvas.ShowEraserPreview = false;
-            dm_PaintCanvas.StopPaint();
-        }
-
-        private void brd_DesktopModePanel_MouseLeave(object sender, MouseEventArgs e)
-        {
-            dm_PaintCanvas.ShowEraserPreview = true;
-        }
-
+        
         private void DMP_colorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
             if (dm_PaintCanvas != null)
@@ -1519,7 +1516,9 @@ namespace TransparentNotePad
 
 
 
+
         #endregion
 
+        
     }
 }

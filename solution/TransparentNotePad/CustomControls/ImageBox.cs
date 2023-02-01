@@ -3,10 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -23,9 +19,11 @@ namespace TransparentNotePad.CustomControls
         private Border _border = null!;
         private Grid _main_grid = null!;
         private StackPanel _header_stack_panel = null!;
+        private CustomButton _button_open_image = null!;
         private CustomButton _button_remove = null!;
         private Image _image = null!;
 
+        private bool _isBeingDestroy = false;
         private ResizeAdorner _resizeAdorner = null!;
         private Bitmap _bitmap = null!;
 
@@ -84,6 +82,7 @@ namespace TransparentNotePad.CustomControls
             _border = (Border)Template.FindName("border", this);
             _main_grid = (Grid)Template.FindName("grid_main", this);
             _header_stack_panel = (StackPanel)Template.FindName("header_stack_panel", this);
+            _button_open_image = (CustomButton)Template.FindName("btn_open_image", this);
             _button_remove = (CustomButton)Template.FindName("btn_remove", this);
             _image = (Image)Template.FindName("image", this);
 
@@ -92,13 +91,18 @@ namespace TransparentNotePad.CustomControls
             MainWindow.onWindowResize += MainWindow_onWindowResize;
 
             this.Drop += OnImageDrop;
-            this._button_remove.Click += _button_remove_Click;
             this.MouseDown += OnMouseDown;
             this.MouseUp += OnMouseUp;
             this.GotFocus += OnGotFocus;
             this.LostFocus += OnLostFocus;
             this.MouseMove += OnMouseMove;
             this.MouseLeave += OnMouseLeave;
+            this._button_remove.Click += _button_remove_Click;
+            this._button_open_image.Click += _button_open_image_Click;
+
+            var current_theme = ThemeManager.CurrentTheme;
+            _button_open_image.ApplyTheme(current_theme);
+            _button_remove.ApplyTheme(current_theme);
 
             base.OnApplyTemplate();
         }
@@ -185,8 +189,11 @@ namespace TransparentNotePad.CustomControls
         }
         private void OnLostFocus(object sender, RoutedEventArgs e)
         {
-            var element = this.Parent as Visual;
-            AdornerLayer.GetAdornerLayer(element).Remove(_ResizeAdorner);
+            if (!_isBeingDestroy)
+            {
+                var element = this.Parent as Visual;
+                AdornerLayer.GetAdornerLayer(element).Remove(_ResizeAdorner);
+            }
         }
         private void OnImageDrop(object sender, DragEventArgs e)
         {
@@ -218,6 +225,7 @@ namespace TransparentNotePad.CustomControls
             }
         }
 
+
         private void UpdateMoveStartPoint()
         {
             var transform = ((TranslateTransform)this.RenderTransform);
@@ -232,15 +240,21 @@ namespace TransparentNotePad.CustomControls
             var scaleWidth = (float)this.Height / this._bitmap.Height;
             var scale = Math.Min(scaleHeight, scaleWidth);
 
-            //this.Width = this.;
-            //this.Height = this._bitmap.Height;
-
             this.Height = _bitmap.Height * scale;
             this.Width = _bitmap.Width * scale;
 
             UpdateMoveStartPoint();
         }
         private void _button_remove_Click(object sender, RoutedEventArgs e)
+        {
+            _isBeingDestroy = true;
+
+            MainWindow.onWindowResize -= MainWindow_onWindowResize;
+
+            DependencyObject parent = VisualTreeHelper.GetParent(this);
+            (parent as Panel).Children.Remove(this);
+        }
+        private void _button_open_image_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)

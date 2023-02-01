@@ -539,6 +539,7 @@ namespace TransparentNotePad
             if (isMouseDown)
             {
                 //if (alt_resize_basePoint != null) alt_resize_basePoint = null;
+                if (!CanPaint) return;
 
                 if (SelectedBrush == PaintBrush.Eraser)
                 {
