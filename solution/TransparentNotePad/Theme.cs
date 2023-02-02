@@ -1137,7 +1137,7 @@ namespace TransparentNotePad
                     TopBarButtonMaximise = new ButtonGroupThemeSettings()
                     {
                         BackgroundColor = tcolor_mat_red,
-                        HoverColor = new ThemeColor(0x93, 0xFF, 0x7C, 0xFF),
+                        HoverColor = new ThemeColor(0xFF, 0x59, 0x59, 0xFF),
                         BorderColor = tcolor_clear,
                         BorderThickness = 0,
                         ContentColor = tcolor_light_black,

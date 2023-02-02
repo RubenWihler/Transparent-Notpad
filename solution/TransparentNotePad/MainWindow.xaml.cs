@@ -223,7 +223,14 @@ namespace TransparentNotePad
         }
         private void Init_DesktopMode()
         {
-            
+            brd_DesktopModePanel.onStartMoving += () =>
+            {
+                SetWindowOpacity(0x01, false);
+            };
+            brd_DesktopModePanel.onEndMoving += () =>
+            {
+                SetWindowOpacity(lastWinOppacity, false);
+            };
         }
         private void RetardedCall(object? sender, EventArgs args)
         {
@@ -237,7 +244,7 @@ namespace TransparentNotePad
             DMP_slider_brushSize.Value = 7;
             DMP_slider_eraserSize.Value = 50;
             SetCurrentDMTool(DMTools.Pen);
-            dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Defautl;
+            dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Pen;
             dm_PaintCanvas.CanPaint = true;
 
             Canvas.SetLeft(brd_DesktopModePanel, SystemParameters.PrimaryScreenWidth - 130);
@@ -1011,7 +1018,7 @@ namespace TransparentNotePad
 
         private void OnPenButtonClick(object sender, RoutedEventArgs e)
         {
-            currentBrush = PaintCanvas.PaintBrush.Defautl;
+            currentBrush = PaintCanvas.PaintBrush.Pen;
             paint_area.SelectedBrush = currentBrush;
             UpdateBrushButtons();
         }
@@ -1027,7 +1034,7 @@ namespace TransparentNotePad
         {
             switch (currentBrush)
             {
-                case PaintCanvas.PaintBrush.Defautl:
+                case PaintCanvas.PaintBrush.Pen:
                     SetBrushButtonActive(btn_panel_draw_NormalBrush, true);
                     SetBrushButtonActive(btn_panel_draw_EraseBrush, false);
                     break;
@@ -1149,13 +1156,10 @@ namespace TransparentNotePad
             }
         }
 
-
         private void On_DropOnWindow(object sender, DragEventArgs e)
         {
             On_WinDrop(sender, e);
         }
-
-        
 
         #region Desktop Mode (DOM)
 
@@ -1373,7 +1377,7 @@ namespace TransparentNotePad
             if ((Button)sender == DMP_btn_DrawTool)
             {
                 SetCurrentDMTool(DMTools.Pen);
-                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Defautl;
+                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Pen;
                 dm_PaintCanvas.CanPaint = true;
             }
 
@@ -1388,9 +1392,8 @@ namespace TransparentNotePad
             {
                 SetWindowOpacity(0x00);
                 dm_PaintCanvas.CanPaint = false;
-                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Defautl;
-                dm_PaintCanvas.Background
-                    = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.None;
+                dm_PaintCanvas.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
                 SetCurrentDMTool(DMTools.Cursor);
             }
 
@@ -1518,6 +1521,5 @@ namespace TransparentNotePad
 
         #endregion
 
-        
     }
 }

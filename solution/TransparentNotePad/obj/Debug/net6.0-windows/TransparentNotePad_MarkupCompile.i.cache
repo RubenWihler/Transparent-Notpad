@@ -4,17 +4,17 @@
 exe
 C#
 .cs
-D:\GitHub\Transparent-Notpad\solution\TransparentNotePad\obj\Debug\net6.0-windows\
+C:\Users\Admin\Documents\GitHub\Transparent-Notpad\solution\TransparentNotePad\obj\Debug\net6.0-windows\
 TransparentNotePad
 none
 false
 TRACE;DEBUG;NET;NET6_0;NETCOREAPP
-D:\GitHub\Transparent-Notpad\solution\TransparentNotePad\App.xaml
+C:\Users\Admin\Documents\GitHub\Transparent-Notpad\solution\TransparentNotePad\App.xaml
 51424419587
 1679540316
 29-2119333744
-2011841787236
+201-152476778
 CustomControls\ImageBoxStyle.xaml;MainWindow.xaml;OptionsWindow.xaml;Postit.xaml;Themes\Generic.xaml;
 
-True
+False
 

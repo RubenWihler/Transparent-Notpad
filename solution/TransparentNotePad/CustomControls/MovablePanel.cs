@@ -351,16 +351,14 @@ namespace TransparentNotePad.CustomControls
         {
             var parent = this.Parent as IInputElement;
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
                     return;
                 }
 
-                var pos = Mouse.GetPosition(parent);
-                MoveTo(pos.X, pos.Y);
-                await Task.Delay(TimeSpan.FromMilliseconds(0.1));
+                await Task.Delay(TimeSpan.FromMilliseconds(1));
             }
 
             this._IsMoving = false;

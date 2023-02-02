@@ -27,7 +27,8 @@ namespace TransparentNotePad
 
         public enum PaintBrush
         {
-            Defautl,
+            None,
+            Pen,
             Eraser,
             Arrow,
             Line,
@@ -506,7 +507,7 @@ namespace TransparentNotePad
         private void Init_DefaultValues()
         {
             this.Cursor = Cursors.Cross;
-            SelectedBrush = PaintBrush.Defautl;
+            SelectedBrush = PaintBrush.Pen;
             CurrentColor = Color.FromArgb(0xff, 0xff, 0xff, 0xff);
             Init_ErasePreview();
         }
@@ -545,7 +546,7 @@ namespace TransparentNotePad
                 {
                     Erase(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y));
                 }
-                else if (SelectedBrush == PaintBrush.Defautl)
+                else if (SelectedBrush == PaintBrush.Pen)
                 {
                     Draw(e.GetPosition(this).X, e.GetPosition(this).Y);
                 }
@@ -577,7 +578,6 @@ namespace TransparentNotePad
                 {
                     DrawTextBox(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y), tbox_outline, tbox_fill);
                 }
-
             }
             
         }
@@ -628,7 +628,7 @@ namespace TransparentNotePad
         {
             isMouseDown = true;
 
-            if (SelectedBrush == PaintBrush.Defautl)
+            if (SelectedBrush == PaintBrush.Pen)
                 Draw(e.GetPosition(this).X, e.GetPosition(this).Y);
         }
         private void OnMouseLefButtonUp(object sender, MouseEventArgs e)
@@ -670,7 +670,7 @@ namespace TransparentNotePad
                 brush = new SolidColorBrush(Colors.Bisque);
                 return true;
             }
-            if (SelectedBrush == PaintBrush.Defautl)
+            if (SelectedBrush == PaintBrush.Pen)
             {
                 brush = new SolidColorBrush(CurrentColor);
                 return true;
