@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -40,17 +41,12 @@ namespace TransparentNotePad.CustomControls
                 current_theme_tcolor.R, current_theme_tcolor.G, current_theme_tcolor.B));
 
             _adornerVisuals = new VisualCollection(this);
-            _thumb1 = new Thumb()
-            {
-                Background = bg_brush,
-                Height = thumbs_height,
-                Width = thumbs_width
-            };
             _thumb2 = new Thumb() 
             { 
                 Background = bg_brush,
                 Height = thumbs_height,
-                Width = thumbs_width
+                Width = thumbs_width,
+                Cursor = Cursors.SizeNWSE
             };
 
             _rectangle = new Rectangle() 
@@ -61,12 +57,27 @@ namespace TransparentNotePad.CustomControls
                 StrokeLineJoin = new PenLineJoin()
             };
 
-            _thumb1.DragDelta += Thumb1_DragDelta;
+            //_thumb1.DragDelta += Thumb1_DragDelta;
             _thumb2.DragDelta += Thumb2_DragDelta;
 
             _adornerVisuals.Add(_rectangle);
-            _adornerVisuals.Add(_thumb1);
             _adornerVisuals.Add(_thumb2);
+
+            if (!((FrameworkElement)AdornedElement).Parent.GetType().IsAssignableFrom(typeof(PaintCanvas)))
+            {
+                _thumb1 = new Thumb()
+                {
+                    Background = bg_brush,
+                    Height = thumbs_height,
+                    Width = thumbs_width,
+                    Cursor = Cursors.SizeNWSE
+                };
+
+                _thumb1.DragDelta += Thumb1_DragDelta;
+                _adornerVisuals.Add(_thumb1);
+            }
+
+            ApplyTheme(ThemeManager.CurrentTheme);
         }
 
         public void ApplyTheme(Theme theme)
@@ -76,7 +87,8 @@ namespace TransparentNotePad.CustomControls
             var stroke_brush = new SolidColorBrush(Color.FromArgb(200,
                 current_theme_tcolor.R, current_theme_tcolor.G, current_theme_tcolor.B));
 
-            this._thumb1.Background = bg_brush;
+            if (_thumb1 != null) this._thumb1.Background = bg_brush;
+
             this._thumb2.Background = bg_brush;
             this._rectangle.Stroke = stroke_brush;
         }
@@ -89,7 +101,7 @@ namespace TransparentNotePad.CustomControls
         protected override Size ArrangeOverride(Size finalSize)
         {
             _rectangle.Arrange(new Rect(-2.5, -2.5, AdornedElement.DesiredSize.Width + 5, AdornedElement.DesiredSize.Height + 5));
-            _thumb1.Arrange(new Rect(-5, -5, 10, 10));
+            _thumb1?.Arrange(new Rect(-5, -5, 10, 10));
             _thumb2.Arrange(new Rect(AdornedElement.DesiredSize.Width - 5, AdornedElement.DesiredSize.Height - 5, 10, 10));
 
             return base.ArrangeOverride(finalSize);
@@ -107,8 +119,8 @@ namespace TransparentNotePad.CustomControls
         private void Resize(double verticalChange, double horizontalChange, bool fromUp = false)
         {
             var target = (FrameworkElement)AdornedElement;
-            double result_height = 0;
-            double result_width = 0;
+            double result_height;
+            double result_width;
 
             if (fromUp)
             {

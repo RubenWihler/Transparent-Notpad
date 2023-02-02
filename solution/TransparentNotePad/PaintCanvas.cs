@@ -11,7 +11,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TransparentNotePad.CustomControls;
 using Brush = System.Windows.Media.Brush;
 using Color = System.Windows.Media.Color;
 using Point = System.Drawing.Point;
@@ -36,10 +38,58 @@ namespace TransparentNotePad
             Rectangle_Outline,
             Circle_Filled,
             Circle_Outline,
-            Text
+            Text,
+            ImageBox
         }
 
-        public bool CanPaint { get; set; }
+        private bool _canPaint;
+        private double radius;
+        private double eraser_radius;
+        private bool rectangle_Rounded = false;
+        private bool tbox_outline = true;
+        private bool tbox_fill = true;
+        private string tbox_defaultValue = "type text...";
+        private Ellipse? erase_cursor_preview = null;
+        private bool isMouseDown = false;
+        private Point? currentPoint = null;
+        private PaintBrush selectedBrush;
+        private System.Windows.Point? alt_resize_basePoint;
+        private bool showEraserPreview = true;
+
+        private Arrow? currentDrawingArrow;
+        private Line? currentDrawingLine;
+        private System.Windows.Shapes.Rectangle? currentDrawingRectangle;
+        private System.Windows.Shapes.Ellipse? currentDrawingCircle;
+        private TextBox? currentDrawingTbox;
+        private ImageBox? currentDrawingImagebox;
+
+        private System.Windows.Point? initalPointCurrentDrawingRectangle;
+        private System.Windows.Point? initalPointCurrentDrawingCircle;
+        private System.Windows.Point? initalPointCurrentDrawingTbox;
+        private System.Windows.Point? initalPointCurrentDrawingImagebox;
+
+        private List<DependencyObject> foundControls = new List<DependencyObject>();
+
+        //bool -> has been created
+        //      true:  created
+        //      false: deleted
+
+        private List<Dictionary<UIElement, bool>> undo_Elements = new List<Dictionary<UIElement, bool>>();
+        private List<Dictionary<UIElement, bool>> redo_Elements = new List<Dictionary<UIElement, bool>>();
+        private Dictionary<UIElement, bool> dic_futureUndoElements = new Dictionary<UIElement, bool>();
+
+        public bool CanPaint
+        {
+            get
+            {
+                return this._canPaint && CanPaintFunc.Invoke();
+            }
+            set
+            {
+                this._canPaint = value;
+            }
+        }
+        public Func<bool> CanPaintFunc { get; set; } = () => true;
         public double Radius
         {
             get
@@ -48,7 +98,7 @@ namespace TransparentNotePad
             }
             set
             {
-                radius = value;        
+                radius = value;
             }
         }
         public double EraseRadius
@@ -60,7 +110,7 @@ namespace TransparentNotePad
             set
             {
                 if (value < 0) value = 0;
-                
+
                 eraser_radius = value;
 
                 if (erase_cursor_preview != null)
@@ -84,11 +134,11 @@ namespace TransparentNotePad
                 if (erase_cursor_preview != null)
                 {
                     erase_cursor_preview!.Visibility =
-                            (selectedBrush == PaintBrush.Eraser) 
+                            (selectedBrush == PaintBrush.Eraser)
                             && value ?
                             Visibility.Visible : Visibility.Hidden;
                 }
-                    
+
             }
         }
         public bool RectangleRounded
@@ -138,47 +188,14 @@ namespace TransparentNotePad
                 if (erase_cursor_preview != null)
                 {
                     erase_cursor_preview!.Visibility =
-                        selectedBrush == PaintBrush.Eraser 
-                        && showEraserPreview ? 
+                        selectedBrush == PaintBrush.Eraser
+                        && showEraserPreview ?
                         Visibility.Visible : Visibility.Hidden;
                 }
-                    
+
             }
         }
         public Color CurrentColor { get; set; }
-
-        private double radius;
-        private double eraser_radius;
-        private bool rectangle_Rounded = false;
-        private bool tbox_outline = true;
-        private bool tbox_fill = true;
-        private string tbox_defaultValue = "type text...";
-        private Ellipse? erase_cursor_preview = null;
-        private bool isMouseDown = false;
-        private Point? currentPoint = null;
-        private PaintBrush selectedBrush;
-        private System.Windows.Point? alt_resize_basePoint;
-        private bool showEraserPreview = true;
-
-        private Arrow? currentDrawingArrow;
-        private Line? currentDrawingLine;
-        private System.Windows.Shapes.Rectangle? currentDrawingRectangle;
-        private System.Windows.Shapes.Ellipse? currentDrawingCircle;
-        private TextBox? currentDrawingTbox;
-
-        private System.Windows.Point? initalPointCurrentDrawingRectangle;
-        private System.Windows.Point? initalPointCurrentDrawingCircle;
-        private System.Windows.Point? initalPointCurrentDrawingTbox;
-
-        private List<DependencyObject> foundControls = new List<DependencyObject>();
-
-        //bool -> has been created
-        //      true:  created
-        //      false: deleted
-
-        private List<Dictionary<UIElement, bool>> undo_Elements = new List<Dictionary<UIElement, bool>>();
-        private List<Dictionary<UIElement, bool>> redo_Elements = new List<Dictionary<UIElement, bool>>();
-        private Dictionary<UIElement, bool> dic_futureUndoElements = new Dictionary<UIElement, bool>();
 
         public void Undo()
         {
@@ -472,6 +489,43 @@ namespace TransparentNotePad
                 }
             }
         }
+        private void DrawImageBox(System.Windows.Point pos)
+        {
+            if (currentDrawingImagebox == null)
+            {
+                initalPointCurrentDrawingImagebox = pos;
+                currentDrawingImagebox = new ImageBox();
+
+                currentDrawingImagebox.IsHitTestVisible = true;
+                Children.Add(currentDrawingImagebox);
+                SetLeft(currentDrawingImagebox, pos.X);
+                SetTop(currentDrawingImagebox, pos.Y);
+                dic_futureUndoElements.Add(currentDrawingImagebox, true);
+            }
+            else
+            {
+                double newWidth = pos.X - initalPointCurrentDrawingImagebox!.Value.X;
+                double newHeight = pos.Y - initalPointCurrentDrawingImagebox!.Value.Y;
+
+                if (newWidth >= 0) currentDrawingImagebox.Width = newWidth;
+                else
+                {
+                    SetLeft(currentDrawingImagebox, pos.X);
+
+                    currentDrawingImagebox.Width = initalPointCurrentDrawingImagebox!.Value.X - pos.X;
+                }
+
+                if (newHeight >= 0) currentDrawingImagebox.Height = newHeight;
+                else
+                {
+                    SetTop(currentDrawingImagebox, pos.Y);
+                    currentDrawingImagebox.Height = initalPointCurrentDrawingImagebox!.Value.Y - pos.Y;
+                }
+
+                if (!currentDrawingImagebox.Highlighted) currentDrawingImagebox.Highlight();
+
+            }
+        }
         private void Draw(double x, double y)
         {
             PaintLine(new Point(Convert.ToInt32(x), Convert.ToInt32(y)));
@@ -507,7 +561,7 @@ namespace TransparentNotePad
         private void Init_DefaultValues()
         {
             this.Cursor = Cursors.Cross;
-            SelectedBrush = PaintBrush.Pen;
+            SelectedBrush = PaintBrush.None;
             CurrentColor = Color.FromArgb(0xff, 0xff, 0xff, 0xff);
             Init_ErasePreview();
         }
@@ -542,46 +596,52 @@ namespace TransparentNotePad
                 //if (alt_resize_basePoint != null) alt_resize_basePoint = null;
                 if (!CanPaint) return;
 
-                if (SelectedBrush == PaintBrush.Eraser)
+                switch (SelectedBrush)
                 {
-                    Erase(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y));
-                }
-                else if (SelectedBrush == PaintBrush.Pen)
-                {
-                    Draw(e.GetPosition(this).X, e.GetPosition(this).Y);
-                }
-                else if (SelectedBrush == PaintBrush.Arrow)
-                {
-                    DrawArrow(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y));
-                }
-                else if (SelectedBrush == PaintBrush.Line)
-                {
-                    DrawStraightLine(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y));
-                }
-                else if (SelectedBrush == PaintBrush.Rectangle_Filled)
-                {
-                    DrawRectangle(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y), true);
-                }
-                else if (SelectedBrush == PaintBrush.Rectangle_Outline)
-                {
-                    DrawRectangle(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y), false);
-                }
-                else if (SelectedBrush == PaintBrush.Circle_Filled)
-                {
-                    DrawCircle(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y), true);
-                }
-                else if (SelectedBrush == PaintBrush.Circle_Outline)
-                {
-                    DrawCircle(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y), false);
-                }
-                else if (SelectedBrush == PaintBrush.Text)
-                {
-                    DrawTextBox(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y), tbox_outline, tbox_fill);
+                    case PaintBrush.Eraser:
+                        Erase(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y));
+                        break;
+
+                    case PaintBrush.Pen:
+                        Draw(e.GetPosition(this).X, e.GetPosition(this).Y);
+                        break;
+
+                    case PaintBrush.Arrow:
+                        DrawArrow(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y));
+                        break;
+
+                    case PaintBrush.Line:
+                        DrawStraightLine(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y));
+                        break;
+
+                    case PaintBrush.Rectangle_Filled:
+                        DrawRectangle(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y), true);
+                        break;
+
+                    case PaintBrush.Rectangle_Outline:
+                        DrawRectangle(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y), false);
+                        break;
+
+                    case PaintBrush.Circle_Filled:
+                        DrawCircle(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y), true);
+                        break;
+
+                    case PaintBrush.Circle_Outline:
+                        DrawCircle(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y), false);
+                        break;
+
+                    case PaintBrush.Text:
+                        DrawTextBox(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y), tbox_outline, tbox_fill);
+                        break;
+
+                    case PaintBrush.ImageBox:
+                        DrawImageBox(new System.Windows.Point(e.GetPosition(this).X, e.GetPosition(this).Y));
+                        break;
                 }
             }
-            
+
         }
-        
+
 
         private void Erase(System.Windows.Point point)
         {
@@ -628,7 +688,7 @@ namespace TransparentNotePad
         {
             isMouseDown = true;
 
-            if (SelectedBrush == PaintBrush.Pen)
+            if (SelectedBrush == PaintBrush.Pen && CanPaint)
                 Draw(e.GetPosition(this).X, e.GetPosition(this).Y);
         }
         private void OnMouseLefButtonUp(object sender, MouseEventArgs e)
@@ -651,6 +711,14 @@ namespace TransparentNotePad
             if (currentDrawingRectangle != null) currentDrawingRectangle = null;
             if (currentDrawingCircle != null) currentDrawingCircle = null;
             if (currentDrawingTbox != null) currentDrawingTbox = null;
+            if (currentDrawingImagebox != null)
+            {
+                currentDrawingImagebox.UnHighlight();
+                currentDrawingImagebox.UpdateSize();
+                currentDrawingImagebox.Focus();
+                currentDrawingImagebox = null;
+            }
+
         }
 
         private void SaveToUndo()

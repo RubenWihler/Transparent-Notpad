@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Image = System.Windows.Controls.Image;
 using Point = System.Windows.Point;
+using Color = System.Windows.Media.Color;
 
 namespace TransparentNotePad.CustomControls
 {
@@ -21,6 +22,8 @@ namespace TransparentNotePad.CustomControls
         private StackPanel _header_stack_panel = null!;
         private CustomButton _button_open_image = null!;
         private CustomButton _button_remove = null!;
+        private CustomIcon _icon_button_open_image = null!;
+        private CustomIcon _icon_button_remove = null!;
         private Image _image = null!;
 
         private bool _isBeingDestroy = false;
@@ -52,10 +55,14 @@ namespace TransparentNotePad.CustomControls
 
                 _image.Source = bitmapImage;
                 this._bitmap = value;
+
+                if (!Highlighted)
+                    SetBackgroundOpacity(0x01);
+
                 UpdateSize();
             }
         }
-
+        public bool Highlighted { get; protected set; }
         private ResizeAdorner _ResizeAdorner
         {
             get
@@ -84,6 +91,8 @@ namespace TransparentNotePad.CustomControls
             _header_stack_panel = (StackPanel)Template.FindName("header_stack_panel", this);
             _button_open_image = (CustomButton)Template.FindName("btn_open_image", this);
             _button_remove = (CustomButton)Template.FindName("btn_remove", this);
+            _icon_button_open_image = (CustomIcon)Template.FindName("btn_open_image_icon", this);
+            _icon_button_remove = (CustomIcon)Template.FindName("btn_remove_icon", this);
             _image = (Image)Template.FindName("image", this);
 
             this.RenderTransform = new TranslateTransform();
@@ -101,8 +110,15 @@ namespace TransparentNotePad.CustomControls
             this._button_open_image.Click += _button_open_image_Click;
 
             var current_theme = ThemeManager.CurrentTheme;
+            var bg_color = current_theme.GlobalTextColor;
+
             _button_open_image.ApplyTheme(current_theme);
             _button_remove.ApplyTheme(current_theme);
+            _icon_button_open_image.ApplyTheme(current_theme);
+            _icon_button_remove.ApplyTheme(current_theme);
+
+            _border.Background = new SolidColorBrush(
+                System.Windows.Media.Color.FromArgb(50, bg_color.R, bg_color.G, bg_color.B));
 
             base.OnApplyTemplate();
         }
@@ -189,10 +205,10 @@ namespace TransparentNotePad.CustomControls
         }
         private void OnLostFocus(object sender, RoutedEventArgs e)
         {
-            if (!_isBeingDestroy)
+            if (!_isBeingDestroy && this.Visibility == Visibility.Visible && _resizeAdorner != null)
             {
                 var element = this.Parent as Visual;
-                AdornerLayer.GetAdornerLayer(element).Remove(_ResizeAdorner);
+                AdornerLayer.GetAdornerLayer(element)?.Remove(_ResizeAdorner);
             }
         }
         private void OnImageDrop(object sender, DragEventArgs e)
@@ -228,22 +244,51 @@ namespace TransparentNotePad.CustomControls
 
         private void UpdateMoveStartPoint()
         {
+            if (_isBeingDestroy || this.Parent == null) return;
+
             var transform = ((TranslateTransform)this.RenderTransform);
             GeneralTransform ref_transform = this.TransformToAncestor(this.Parent as Visual);
             Point start_point = ref_transform.Transform(new Point(0, 0));
             _moveStartX = start_point.X - transform.X;
             _moveStartY = start_point.Y - transform.Y;
         }
-        private void UpdateSize()
+        public void UpdateSize()
         {
-            var scaleHeight = (float)this.Width / this._bitmap.Width;
-            var scaleWidth = (float)this.Height / this._bitmap.Height;
-            var scale = Math.Min(scaleHeight, scaleWidth);
+            if (_bitmap != null)
+            {
+                var scaleHeight = (float)this.Width / this._bitmap.Width;
+                var scaleWidth = (float)this.Height / this._bitmap.Height;
+                var scale = Math.Min(scaleHeight, scaleWidth);
 
-            this.Height = _bitmap.Height * scale;
-            this.Width = _bitmap.Width * scale;
+                this.Height = _bitmap.Height * scale;
+                this.Width = _bitmap.Width * scale;
+            }
 
             UpdateMoveStartPoint();
+        }
+        public void Highlight(byte opacity = 0x64)
+        {
+            SetBackgroundOpacity(opacity, ThemeManager.CurrentTheme.GlobalTextColor.ToColor());
+            Highlighted = true;
+        }
+        public void UnHighlight()
+        {
+            Highlighted = false;
+
+            if (_bitmap == null)
+            {
+                SetBackgroundOpacity(0x32, ThemeManager.CurrentTheme.GlobalTextColor.ToColor());
+                return;
+            }
+
+            SetBackgroundOpacity(0x01);
+        }
+        private void SetBackgroundOpacity(byte opacity, Color? color = null)
+        {
+            color ??= Color.FromArgb(0xFF,0xFF, 0xFF, 0xFF);
+
+            _border.Background = new SolidColorBrush(
+                Color.FromArgb(opacity, color.Value.R, color.Value.G, color.Value.B));
         }
         private void _button_remove_Click(object sender, RoutedEventArgs e)
         {

@@ -528,6 +528,7 @@
                             </customcontrols:CustomButton>
                             <Grid Margin="8,25,8,25">
                                 <Grid.RowDefinitions>
+                                    <RowDefinition Height="5*"/>
                                     <RowDefinition Height="41*"/>
                                     <RowDefinition Height="7*"/>
                                 </Grid.RowDefinitions>
@@ -536,33 +537,61 @@
                                     <ColumnDefinition Width="0" x:Name="DMP_gridDef_Extend"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Grid 
+                                <customcontrols:DesktopModeToolButton 
+                                    x:Name="DMP_btn_PointerTool"
+                                    Style="{StaticResource DMP_button}"
+                                    Height="25"
+                                    Width="70"
                                     Grid.Row="0"
+                                    Grid.Column="0" 
+                                    Click="DMP_btn_Tools_Click"
+                                    ToolTip="desktop cursor"
+                                    Tool="Cursor"
+                                    HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center" 
+                                    Margin="0,0,0,0"
+                                    MaxWidth="70"
+                                    MaxHeight="25">
+                                    <Viewbox>
+                                        <customcontrols:CustomIcon  
+                                                x:Name="DM_ToolIcon_Cursor"
+                                                Icon="MousePointer" 
+                                                Style="{StaticResource DMP_buttonIcon}"
+                                                themeColorType="DesktopModePanelText"/>
+                                    </Viewbox>
+                                </customcontrols:DesktopModeToolButton>
+
+                                <Grid 
+                                    Grid.Row="1"
                                     Grid.Column="0"
                                     MaxWidth="79"
                                     MinWidth="79">
                                     <Grid.RowDefinitions>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
-                                        <RowDefinition/>
+                                        <RowDefinition Height="1*"/>
+                                        <RowDefinition Height="1*"/>
+                                        <RowDefinition Height="1*"/>
+                                        <RowDefinition Height="1*"/>
+                                        <RowDefinition Height="1*"/>
+                                        <RowDefinition Height="1*"/>
+                                        <RowDefinition Height="1*"/>
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition/>
                                         <ColumnDefinition/>
                                     </Grid.ColumnDefinitions>
 
-                                    <customcontrols:CustomButton 
+                                    <customcontrols:DesktopModeToolButton 
                                         x:Name="DMP_btn_DrawTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="0"
                                         Grid.Column="0" 
                                         Click="DMP_btn_Tools_Click"
                                         ToolTip="draw tool"
-                                        buttonGroupType="DesktopModePanel">
+                                        Tool="Pen"
+                                        Width="25"
+                                        Height="25" 
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center">
                                         <Viewbox>
                                             <customcontrols:CustomIcon
                                                 x:Name="DM_ToolIcon_Pencil"
@@ -570,14 +599,18 @@
                                                 Style="{StaticResource DMP_buttonIcon}"
                                                 themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </customcontrols:CustomButton>
-                                    <customcontrols:CustomButton 
+                                    </customcontrols:DesktopModeToolButton>
+                                    <customcontrols:DesktopModeToolButton 
                                         x:Name="DMP_btn_EraseTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="0"
                                         Grid.Column="1" 
                                         Click="DMP_btn_Tools_Click"
-                                        buttonGroupType="DesktopModePanel">
+                                        Tool="Eraser"
+                                        Width="25"
+                                        Height="25" 
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center">
                                         <Viewbox>
                                             <customcontrols:CustomIcon
                                                 x:Name="DM_ToolIcon_Eraser" 
@@ -585,31 +618,39 @@
                                                 Style="{StaticResource DMP_buttonIcon}"
                                                 themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </customcontrols:CustomButton>
-                                    <customcontrols:CustomButton 
-                                        x:Name="DMP_btn_PointerTool"
+                                    </customcontrols:DesktopModeToolButton>
+                                    <customcontrols:DesktopModeToolButton 
+                                        x:Name="DMP_btn_ImageBoxTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="1"
                                         Grid.Column="0" 
                                         Click="DMP_btn_Tools_Click"
-                                        ToolTip="desktop cursor"
-                                        buttonGroupType="DesktopModePanel">
+                                        ToolTip="image box tool"
+                                        Tool="ImageBox"
+                                        Width="25"
+                                        Height="25" 
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center">
                                         <Viewbox>
                                             <customcontrols:CustomIcon  
-                                                x:Name="DM_ToolIcon_Cursor"
-                                                Icon="MousePointer" 
+                                                x:Name="DM_ToolIcon_ImageBox"
+                                                Icon="Image" 
                                                 Style="{StaticResource DMP_buttonIcon}"
                                                 themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </customcontrols:CustomButton>
-                                    <customcontrols:CustomButton 
+                                    </customcontrols:DesktopModeToolButton>
+                                    <customcontrols:DesktopModeToolButton 
                                         x:Name="DMP_btn_TextTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="1"
                                         Grid.Column="1" 
                                         Click="DMP_btn_Tools_Click"
                                         ToolTip="text box tool"
-                                        buttonGroupType="DesktopModePanel">
+                                        Tool="Text"
+                                        Width="25"
+                                        Height="25" 
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center">
                                         <Viewbox>
                                             <customcontrols:CustomIcon 
                                                 x:Name="DM_ToolIcon_Text"
@@ -617,15 +658,19 @@
                                                 Style="{StaticResource DMP_buttonIcon}"
                                                 themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </customcontrols:CustomButton>
-                                    <customcontrols:CustomButton 
+                                    </customcontrols:DesktopModeToolButton>
+                                    <customcontrols:DesktopModeToolButton 
                                         x:Name="DMP_btn_RectBorderTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="2"
                                         Grid.Column="0" 
                                         Click="DMP_btn_Tools_Click"
                                         ToolTip="rectangle tool"
-                                        buttonGroupType="DesktopModePanel">
+                                        Tool="RectBorder"
+                                        Width="25"
+                                        Height="25" 
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center">
                                         <Viewbox>
                                             <customcontrols:CustomIcon 
                                                 x:Name="DM_ToolIcon_RectBorder"
@@ -633,15 +678,19 @@
                                                 Style="{StaticResource DMP_buttonIcon}"
                                                 themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </customcontrols:CustomButton>
-                                    <customcontrols:CustomButton 
+                                    </customcontrols:DesktopModeToolButton>
+                                    <customcontrols:DesktopModeToolButton 
                                         x:Name="DMP_btn_RectFillTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="2"
                                         Grid.Column="1" 
                                         Click="DMP_btn_Tools_Click"
                                         ToolTip="filled rectangle tool"
-                                        buttonGroupType="DesktopModePanel">
+                                        Tool="RectFill"
+                                        Width="25"
+                                        Height="25" 
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center">
                                         <Viewbox>
                                             <customcontrols:CustomIcon  
                                                 x:Name="DM_ToolIcon_RectFill"
@@ -649,15 +698,19 @@
                                                 Style="{StaticResource DMP_buttonIcon}"
                                                 themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </customcontrols:CustomButton>
-                                    <customcontrols:CustomButton 
+                                    </customcontrols:DesktopModeToolButton>
+                                    <customcontrols:DesktopModeToolButton 
                                         x:Name="DMP_btn_CircleBorderTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="3"
                                         Grid.Column="0" 
                                         Click="DMP_btn_Tools_Click"
                                         ToolTip="circle tool"
-                                        buttonGroupType="DesktopModePanel">
+                                        Tool="CircleBorder"
+                                        Width="25"
+                                        Height="25" 
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center">
                                         <Viewbox>
                                             <customcontrols:CustomIcon 
                                                 x:Name="DM_ToolIcon_CircleBorder"
@@ -665,15 +718,19 @@
                                                 Style="{StaticResource DMP_buttonIcon}"
                                                 themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </customcontrols:CustomButton>
-                                    <customcontrols:CustomButton 
+                                    </customcontrols:DesktopModeToolButton>
+                                    <customcontrols:DesktopModeToolButton 
                                         x:Name="DMP_btn_CircleFillTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="3"
                                         Grid.Column="1" 
                                         Click="DMP_btn_Tools_Click"
                                         ToolTip="filled circle tool"
-                                        buttonGroupType="DesktopModePanel">
+                                        Tool="CircleFill"
+                                        Width="25"
+                                        Height="25" 
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center">
                                         <Viewbox>
                                             <customcontrols:CustomIcon  
                                                 x:Name="DM_ToolIcon_CircleFill"
@@ -681,15 +738,19 @@
                                                 Style="{StaticResource DMP_buttonIcon}"
                                                 themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </customcontrols:CustomButton>
-                                    <customcontrols:CustomButton 
+                                    </customcontrols:DesktopModeToolButton>
+                                    <customcontrols:DesktopModeToolButton 
                                         x:Name="DMP_btn_ArrowTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="4"
                                         Grid.Column="1" 
                                         Click="DMP_btn_Tools_Click"
                                         ToolTip="arrow tool"
-                                        buttonGroupType="DesktopModePanel">
+                                        Tool="Arrow"
+                                        Width="25"
+                                        Height="25" 
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center">
                                         <Viewbox>
                                             <customcontrols:CustomIcon 
                                                 x:Name="DM_ToolIcon_Arrow"
@@ -697,15 +758,19 @@
                                                 Style="{StaticResource DMP_buttonIcon}"
                                                 themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </customcontrols:CustomButton>
-                                    <customcontrols:CustomButton 
+                                    </customcontrols:DesktopModeToolButton>
+                                    <customcontrols:DesktopModeToolButton 
                                         x:Name="DMP_btn_LineTool"
                                         Style="{StaticResource DMP_button}"
                                         Grid.Row="4"
                                         Grid.Column="0" 
                                         Click="DMP_btn_Tools_Click"
                                         ToolTip="line tool"
-                                        buttonGroupType="DesktopModePanel">
+                                        Tool="Line"
+                                        Width="25"
+                                        Height="25" 
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center">
                                         <Viewbox>
                                             <customcontrols:CustomIcon  
                                                 x:Name="DM_ToolIcon_Line"
@@ -713,16 +778,21 @@
                                                 Style="{StaticResource DMP_buttonIcon}" 
                                                 themeColorType="DesktopModePanelText"/>
                                         </Viewbox>
-                                    </customcontrols:CustomButton>
+                                    </customcontrols:DesktopModeToolButton>
+                                    
 
                                     <customcontrols:CustomButton 
                                         x:Name="DMP_btn_Clear"
-                                            Style="{StaticResource DMP_button}"
-                                            Grid.Row="6"
-                                            Grid.Column="1" 
-                                            Click="DMP_btn_Clear_Click"
-                                            ToolTip="Clear all elements"
-                                            buttonGroupType="DesktopModePanel">
+                                        Style="{StaticResource DMP_button}"
+                                        Grid.Row="6"
+                                        Grid.Column="1" 
+                                        Click="DMP_btn_Clear_Click"
+                                        ToolTip="Clear all elements"
+                                        buttonGroupType="DesktopModePanel"
+                                        Width="25"
+                                        Height="25" 
+                                        HorizontalAlignment="Center" 
+                                        VerticalAlignment="Center">
                                         <Viewbox>
                                             <customcontrols:CustomIcon 
                                                 x:Name="DM_ToolIcon_Clear"
@@ -732,15 +802,19 @@
                                         </Viewbox>
                                     </customcontrols:CustomButton>
                                 </Grid>
+                                
                                 <customcontrols:CustomButton 
-                                    Grid.Row="1"
+                                    Grid.Row="2"
                                     Grid.Column="0"
-                                    Margin="15,10,15,15"
+                                    Height="25"
+                                    Width="70"
                                     Background="#FFED4D4D"
                                     Style="{StaticResource Rounded Button}"
                                     Click="DMP_Close_Click"
                                     ToolTip="exit desktop mode"
-                                    buttonGroupType="DesktopModePanelQuit">
+                                    buttonGroupType="DesktopModePanelQuit" 
+                                    HorizontalAlignment="Center" 
+                                    VerticalAlignment="Center">
                                     <Viewbox Margin="5">
                                         <fa:ImageAwesome 
                                             Icon="Close" 
@@ -750,7 +824,7 @@
 
                                 <Grid 
                                     x:Name="DMP_grid_Extended"
-                                    Grid.Row="0"
+                                    Grid.Row="1"
                                     Grid.Column="1"
                                     Opacity="0"
                                     IsHitTestVisible="False">
@@ -1102,10 +1176,6 @@
                         </customcontrols:CustomButton>
                     </Grid>
                 </customcontrols:CustomBorder>
-
-                <customcontrols:ImageBox Width="280" Height="380">
-
-                </customcontrols:ImageBox>
             </Grid>
             <local:PaintCanvas/>
         </Grid>

@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using TransparentNotePad.CustomControls;
 using TransparentNotePad.SaveSystem;
 
 using Brush = System.Windows.Media.Brush;
@@ -45,7 +46,8 @@ namespace TransparentNotePad
             CircleBorder,
             CircleFill,
             Arrow,
-            Line
+            Line,
+            ImageBox
         }
 
         /*---------- Fields ----------*/
@@ -84,7 +86,7 @@ namespace TransparentNotePad
         private DMTools currentDMTools = DMTools.Cursor;
         private WindowState lastWinStateBeforeDM = WindowState.Normal;
         private ImageAwesome currentDMTool_Icon;
-
+        private bool isDesktopModePanelMoving = false;
         private bool dmp_extended = false;
         
         
@@ -223,13 +225,20 @@ namespace TransparentNotePad
         }
         private void Init_DesktopMode()
         {
+            dm_PaintCanvas.CanPaintFunc = () =>
+            {
+                return !isDesktopModePanelMoving;
+            };
+
             brd_DesktopModePanel.onStartMoving += () =>
             {
+                isDesktopModePanelMoving = true;
                 SetWindowOpacity(0x01, false);
             };
             brd_DesktopModePanel.onEndMoving += () =>
             {
-                SetWindowOpacity(lastWinOppacity, false);
+                isDesktopModePanelMoving = false;
+                SetWindowOpacity(0x00, false);
             };
         }
         private void RetardedCall(object? sender, EventArgs args)
@@ -243,7 +252,7 @@ namespace TransparentNotePad
             dispatcherTimer = null!;
             DMP_slider_brushSize.Value = 7;
             DMP_slider_eraserSize.Value = 50;
-            SetCurrentDMTool(DMTools.Pen);
+            SetCurrentDMToolIcon(DMTools.Pen);
             dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Pen;
             dm_PaintCanvas.CanPaint = true;
 
@@ -474,7 +483,7 @@ namespace TransparentNotePad
                 tools_icon[i].Foreground = unselected_brush;
             }
 
-            SetCurrentDMTool(currentDMTools);
+            SetCurrentDMToolIcon(currentDMTools);
         }
         private void ExportToPng(Canvas surface)
         {
@@ -1161,7 +1170,7 @@ namespace TransparentNotePad
             On_WinDrop(sender, e);
         }
 
-        #region Desktop Mode (DOM)
+        #region Desktop Mode (DM)
 
         public ImageAwesome GetDMToolIcon(DMTools tool)
         {
@@ -1177,6 +1186,7 @@ namespace TransparentNotePad
                 case DMTools.CircleFill: return DM_ToolIcon_CircleFill;
                 case DMTools.Arrow: return DM_ToolIcon_Arrow;
                 case DMTools.Line: return DM_ToolIcon_Line;
+                case DMTools.ImageBox: return DM_ToolIcon_ImageBox;
             }
 
             throw new Exception($"Tool: {tool} hasn't icon !");
@@ -1194,7 +1204,8 @@ namespace TransparentNotePad
                 DM_ToolIcon_CircleBorder,
                 DM_ToolIcon_CircleFill,
                 DM_ToolIcon_Arrow,
-                DM_ToolIcon_Line
+                DM_ToolIcon_Line,
+                DM_ToolIcon_ImageBox
             };
         }
         public bool TryGetDMToolIcon(DMTools tool, out ImageAwesome icon)
@@ -1231,6 +1242,9 @@ namespace TransparentNotePad
                 case DMTools.Line:
                     icon = DM_ToolIcon_Line;
                     return true;
+                case DMTools.ImageBox:
+                    icon = DM_ToolIcon_ImageBox;
+                    return true;
             }
 
             icon = null!;
@@ -1246,7 +1260,7 @@ namespace TransparentNotePad
             dm_PaintCanvas.ShowEraserPreview = false;
             dm_PaintCanvas.StopPaint();
         }
-        private void SetCurrentDMTool(DMTools tool)
+        private void SetCurrentDMToolIcon(DMTools tool)
         {
             var theme = ThemeManager.CurrentTheme;
             Brush selected_brush = theme.DesktopModePanelToolButtonIcon.Variants[1].ToBrush();
@@ -1263,6 +1277,7 @@ namespace TransparentNotePad
 
             currentDMTools = tool;
         }
+        
         private void DMP_Snaping(object sender, EventArgs args)
         {
             //dmp_snappingTimer.Stop();
@@ -1369,75 +1384,77 @@ namespace TransparentNotePad
             SetDMPExtended(!dmp_extended);
         }
 
+        private void SetCurrentDMTool(DMTools tool)
+        {
+            switch (tool)
+            {
+                case DMTools.Pen:
+                    dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Pen;
+                    dm_PaintCanvas.CanPaint = true;
+                    break;
+
+                case DMTools.Eraser:
+                    dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Eraser;
+                    dm_PaintCanvas.CanPaint = true;
+                    break;
+
+                case DMTools.Cursor:
+                    SetWindowOpacity(0x00);
+                    dm_PaintCanvas.CanPaint = false;
+                    dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.None;
+                    dm_PaintCanvas.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+                    break;
+
+                case DMTools.Text:
+                    dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Text;
+                    dm_PaintCanvas.CanPaint = true;
+                    break;
+
+                case DMTools.RectBorder:
+                    dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Rectangle_Outline;
+                    dm_PaintCanvas.CanPaint = true;
+                    break;
+
+                case DMTools.RectFill:
+                    dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Rectangle_Filled;
+                    dm_PaintCanvas.CanPaint = true;
+                    break;
+
+                case DMTools.CircleBorder:
+                    dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Circle_Outline;
+                    dm_PaintCanvas.CanPaint = true;
+                    break;
+
+                case DMTools.CircleFill:
+                    dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Circle_Filled;
+                    dm_PaintCanvas.CanPaint = true;
+                    break;
+
+                case DMTools.Arrow:
+                    dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Arrow;
+                    dm_PaintCanvas.CanPaint = true;
+                    break;
+
+                case DMTools.Line:
+                    dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Line;
+                    dm_PaintCanvas.CanPaint = true;
+                    break;
+
+                case DMTools.ImageBox:
+                    dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.ImageBox;
+                    dm_PaintCanvas.CanPaint = true;
+                    break;
+            }
+
+            SetCurrentDMToolIcon(tool);
+        }
+
         private void DMP_btn_Tools_Click(object sender, RoutedEventArgs e)
         {
             SetWindowOpacity(0x01);
             dm_PaintCanvas.Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
 
-            if ((Button)sender == DMP_btn_DrawTool)
-            {
-                SetCurrentDMTool(DMTools.Pen);
-                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Pen;
-                dm_PaintCanvas.CanPaint = true;
-            }
-
-            else if ((Button)sender == DMP_btn_EraseTool)
-            {
-                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Eraser;
-                dm_PaintCanvas.CanPaint = true;
-                SetCurrentDMTool(DMTools.Eraser);
-            }
-
-            else if ((Button)sender == DMP_btn_PointerTool)
-            {
-                SetWindowOpacity(0x00);
-                dm_PaintCanvas.CanPaint = false;
-                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.None;
-                dm_PaintCanvas.Background = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
-                SetCurrentDMTool(DMTools.Cursor);
-            }
-
-            else if ((Button)sender == DMP_btn_TextTool)
-            {
-                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Text;
-                SetCurrentDMTool(DMTools.Text);
-            }
-
-            else if ((Button)sender == DMP_btn_RectBorderTool)
-            {
-                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Rectangle_Outline;
-                SetCurrentDMTool(DMTools.RectBorder);
-            }
-
-            else if ((Button)sender == DMP_btn_RectFillTool)
-            {
-                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Rectangle_Filled;
-                SetCurrentDMTool(DMTools.RectFill);
-            }
-
-            else if ((Button)sender == DMP_btn_CircleBorderTool)
-            {
-                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Circle_Outline;
-                SetCurrentDMTool(DMTools.CircleBorder);
-            }
-
-            else if ((Button)sender == DMP_btn_CircleFillTool)
-            {
-                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Circle_Filled;
-                SetCurrentDMTool(DMTools.CircleFill);
-            }
-
-            else if ((Button)sender == DMP_btn_ArrowTool)
-            {
-                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Arrow;
-                SetCurrentDMTool(DMTools.Arrow);
-            }
-
-            else if ((Button)sender == DMP_btn_LineTool)
-            {
-                dm_PaintCanvas.SelectedBrush = PaintCanvas.PaintBrush.Line;
-                SetCurrentDMTool(DMTools.Line);
-            }
+            SetCurrentDMTool(((DesktopModeToolButton)sender).Tool);
         }
 
         private void DMP_slider_brushSize_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

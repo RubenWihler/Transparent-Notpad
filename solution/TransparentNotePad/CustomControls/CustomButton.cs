@@ -30,13 +30,17 @@ namespace TransparentNotePad.CustomControls
         public override void EndInit()
         {
             base.EndInit();
+            InitEvents();
+        }
+
+        protected virtual void InitEvents()
+        {
             ThemeManager.onThemeChanged += ApplyTheme;
             this.Unloaded += (object sender, RoutedEventArgs e) =>
             {
                 ThemeManager.onThemeChanged -= this.ApplyTheme;
             };
         }
-
         public void ApplyTheme(Theme theme)
         {
             buttonGroupSettings = theme.GetButtonGroupThemeSettingsOf(buttonGroupType);
