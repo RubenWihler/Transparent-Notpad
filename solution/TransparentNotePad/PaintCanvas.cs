@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TransparentNotePad.CustomControls;
+using TransparentNotePad.Commands;
 using Brush = System.Windows.Media.Brush;
 using Color = System.Windows.Media.Color;
 using Point = System.Drawing.Point;
+using CommandManager = TransparentNotePad.Commands.CommandManager;
 
 namespace TransparentNotePad
 {
@@ -41,6 +37,11 @@ namespace TransparentNotePad
             Text,
             ImageBox
         }
+
+        //undo/redo system
+        private CommandManager _commandManager = new CommandManager();
+        private List<UIElement> _pendingDisplayCommandElements = new List<UIElement>();
+        private List<UIElement> _pendingHideCommandElements = new List<UIElement>();
 
         private bool _canPaint;
         private double radius;
@@ -69,14 +70,6 @@ namespace TransparentNotePad
         private System.Windows.Point? initalPointCurrentDrawingImagebox;
 
         private List<DependencyObject> foundControls = new List<DependencyObject>();
-
-        //bool -> has been created
-        //      true:  created
-        //      false: deleted
-
-        private List<Dictionary<UIElement, bool>> undo_Elements = new List<Dictionary<UIElement, bool>>();
-        private List<Dictionary<UIElement, bool>> redo_Elements = new List<Dictionary<UIElement, bool>>();
-        private Dictionary<UIElement, bool> dic_futureUndoElements = new Dictionary<UIElement, bool>();
 
         public bool CanPaint
         {
@@ -199,43 +192,11 @@ namespace TransparentNotePad
 
         public void Undo()
         {
-            if (undo_Elements.Count <= 0) return;
-
-            Dictionary<UIElement, bool> dic = undo_Elements[undo_Elements.Count - 1];
-            Dictionary<UIElement, bool> dic_for_redo = new Dictionary<UIElement, bool>();
-
-            foreach (var item in dic)
-            {
-                if (item.Value) this.Children.Remove(item.Key);
-                else
-                {
-                    this.Children.Add(item.Key);
-                }
-
-                dic_for_redo.Add(item.Key, !item.Value);
-            }
-
-            if (redo_Elements.Count > MAX_UNDO_REDO - 1) redo_Elements.RemoveAt(0);
-            redo_Elements.Add(dic_for_redo);
-            undo_Elements.Remove(dic);
+            _commandManager.Undo();
         }
         public void Redo()
         {
-            if (redo_Elements.Count <= 0) return;
-            Dictionary<UIElement, bool> dic = redo_Elements[redo_Elements.Count - 1];
-            Dictionary<UIElement, bool> dic_for_undo = new Dictionary<UIElement, bool>();
-
-            foreach (var item in dic)
-            {
-                if (item.Value) this.Children.Remove(item.Key);
-                else this.Children.Add(item.Key);
-
-                dic_for_undo.Add(item.Key, !item.Value);
-            }
-
-            if (undo_Elements.Count > MAX_UNDO_REDO - 1) undo_Elements.RemoveAt(0);
-            undo_Elements.Add(dic_for_undo);
-            redo_Elements.Remove(dic);
+            _commandManager.Redo();
         }
         public void Clear()
         {
@@ -252,42 +213,28 @@ namespace TransparentNotePad
         }
         public void PaintLine(Point pos)
         {
-            if (TryGetBrush(out Brush brush))
-            {
-                Line line = new Line();
-                line.Stroke = brush;
-                line.StrokeThickness = Radius;
+            if (!TryGetBrush(out Brush brush)) return;
 
-                if (currentPoint == null) currentPoint = pos;
+            Line line = new Line();
+            line.Stroke = brush;
+            line.StrokeThickness = Radius;
 
-                line.X1 = currentPoint.Value.X;
-                line.Y1 = currentPoint.Value.Y;
-                line.X2 = pos.X;
-                line.Y2 = pos.Y;
-                line.StrokeDashCap = PenLineCap.Round;
-                line.StrokeStartLineCap = PenLineCap.Round;
-                line.StrokeEndLineCap = PenLineCap.Round;
-                line.IsHitTestVisible = false;
+            if (currentPoint == null) currentPoint = pos;
 
-                currentPoint = pos;
+            line.X1 = currentPoint.Value.X;
+            line.Y1 = currentPoint.Value.Y;
+            line.X2 = pos.X;
+            line.Y2 = pos.Y;
+            line.StrokeDashCap = PenLineCap.Round;
+            line.StrokeStartLineCap = PenLineCap.Round;
+            line.StrokeEndLineCap = PenLineCap.Round;
+            line.IsHitTestVisible = false;
 
-                this.Children.Add(line);
-                dic_futureUndoElements.Add(line, true);
-            }
-        }
-        public void PaintCircle(Point posistion)
-        {
-            Ellipse elipse = new Ellipse();
+            currentPoint = pos;
 
-            if (TryGetBrush(out Brush brush))
-            {
-                elipse.Fill = brush;
-                elipse.Width = Radius;
-                elipse.Height = Radius;
-                SetTop(elipse, posistion.Y);
-                SetLeft(elipse, posistion.X);
-                this.Children.Add(elipse);
-            }
+            this.Children.Add(line);
+            _pendingDisplayCommandElements.Add(line);
+            //_commandManager.AddCommand(new DisplayUiElementCommand(line));
         }
         
         private void DrawArrow(System.Windows.Point pos)
@@ -305,7 +252,7 @@ namespace TransparentNotePad
                 currentDrawingArrow.Y2 = pos.Y;
                 currentDrawingArrow.IsHitTestVisible = false;
                 this.Children.Add(currentDrawingArrow);
-                dic_futureUndoElements.Add(currentDrawingArrow, true);
+                _commandManager.AddCommand(new DisplayUiElementCommand(currentDrawingArrow));
             }
             else
             {
@@ -326,7 +273,7 @@ namespace TransparentNotePad
                 currentDrawingLine.Y2 = pos.Y;
                 currentDrawingLine.IsHitTestVisible = false;
                 this.Children.Add(currentDrawingLine);
-                dic_futureUndoElements.Add(currentDrawingLine, true);
+                _commandManager.AddCommand(new DisplayUiElementCommand(currentDrawingLine));
             }
             else
             {
@@ -361,7 +308,7 @@ namespace TransparentNotePad
                 Children.Add(currentDrawingRectangle);
                 SetLeft(currentDrawingRectangle, pos.X);
                 SetTop(currentDrawingRectangle, pos.Y);
-                dic_futureUndoElements.Add(currentDrawingRectangle, true);
+                _commandManager.AddCommand(new DisplayUiElementCommand(currentDrawingRectangle));
             }
             else
             {
@@ -405,7 +352,7 @@ namespace TransparentNotePad
                 Children.Add(currentDrawingCircle);
                 SetLeft(currentDrawingCircle, pos.X);
                 SetTop(currentDrawingCircle, pos.Y);
-                dic_futureUndoElements.Add(currentDrawingCircle, true);
+                _commandManager.AddCommand(new DisplayUiElementCommand(currentDrawingCircle));
             }
             else
             {
@@ -466,7 +413,7 @@ namespace TransparentNotePad
                 Children.Add(currentDrawingTbox);
                 SetLeft(currentDrawingTbox, pos.X);
                 SetTop(currentDrawingTbox, pos.Y);
-                dic_futureUndoElements.Add(currentDrawingTbox, true);
+                _commandManager.AddCommand(new DisplayUiElementCommand(currentDrawingTbox));
             }
             else
             {
@@ -500,7 +447,7 @@ namespace TransparentNotePad
                 Children.Add(currentDrawingImagebox);
                 SetLeft(currentDrawingImagebox, pos.X);
                 SetTop(currentDrawingImagebox, pos.Y);
-                dic_futureUndoElements.Add(currentDrawingImagebox, true);
+                _commandManager.AddCommand(new DisplayUiElementCommand(currentDrawingImagebox));
             }
             else
             {
@@ -523,7 +470,6 @@ namespace TransparentNotePad
                 }
 
                 if (!currentDrawingImagebox.Highlighted) currentDrawingImagebox.Highlight();
-
             }
         }
         private void Draw(double x, double y)
@@ -660,8 +606,10 @@ namespace TransparentNotePad
                     if (foundControls[i] != this 
                         && !((UIElement)foundControls[i]).Uid.Contains("DO_NOT_REMOVE"))
                     {
-                        dic_futureUndoElements.Add((UIElement)foundControls[i], false);
-                        this.Children.Remove((UIElement)foundControls[i]);
+                        //dic_futureUndoElements.Add((UIElement)foundControls[i], false);
+                        //this._commandManager.AddCommand(new HideUiElementCommand(foundControls[i]));
+                        this._pendingHideCommandElements.Add((UIElement)foundControls[i]);
+                        //this.Children.Remove((UIElement)foundControls[i]);
                     }
                 }
                 catch (Exception) { }
@@ -723,12 +671,19 @@ namespace TransparentNotePad
 
         private void SaveToUndo()
         {
-            if (dic_futureUndoElements.Count <= 0) return;
-            undo_Elements.Add(new Dictionary<UIElement, bool>(dic_futureUndoElements));
-            if (undo_Elements.Count > MAX_UNDO_REDO) undo_Elements.RemoveAt(0);
+            if (_pendingDisplayCommandElements.Count > 0)
+            {
+                var command = new DisplayMultipleUiElementsCommand(_pendingDisplayCommandElements.ToArray());
+                _commandManager.AddCommand(command);
+                _pendingDisplayCommandElements.Clear();
+            }
 
-            redo_Elements.Clear();
-            dic_futureUndoElements.Clear();
+            if (_pendingHideCommandElements.Count > 0)
+            {
+                var command = new HideMultipleUiElementsCommand(_pendingHideCommandElements.ToArray());
+                _commandManager.AddCommand(command);
+                _pendingHideCommandElements.Clear();
+            }
         }
 
         private bool TryGetBrush(out Brush brush)

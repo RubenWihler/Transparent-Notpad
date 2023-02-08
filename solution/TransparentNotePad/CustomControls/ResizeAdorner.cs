@@ -109,14 +109,14 @@ namespace TransparentNotePad.CustomControls
 
         private void Thumb2_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            Resize(e.VerticalChange, e.HorizontalChange);
+            Resize(e.VerticalChange, e.HorizontalChange, false, Keyboard.IsKeyDown(Key.LeftShift));
         }
         private void Thumb1_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            Resize(e.VerticalChange, e.HorizontalChange, true);
+            Resize(e.VerticalChange, e.HorizontalChange, true, Keyboard.IsKeyDown(Key.LeftShift));
         }
 
-        private void Resize(double verticalChange, double horizontalChange, bool fromUp = false)
+        public void Resize(double verticalChange, double horizontalChange, bool fromUp = false, bool keepAspectRatio = false)
         {
             var target = (FrameworkElement)AdornedElement;
             double result_height;
@@ -124,16 +124,22 @@ namespace TransparentNotePad.CustomControls
 
             if (fromUp)
             {
-                result_height = target.Height - verticalChange < 0 ? 0 : target.Height - verticalChange;
-                result_width = target.Width - horizontalChange < 0 ? 0 : target.Width - horizontalChange;
+                result_height = target.Height - verticalChange < 0 ?
+                    0 : target.Height - verticalChange;
+
+                result_width = target.Width - horizontalChange < 0 ?
+                    0 : target.Width - horizontalChange;
             }
             else
             {
-                result_height = target.Height + verticalChange < 0 ? 0 : target.Height + verticalChange;
-                result_width = target.Width + horizontalChange < 0 ? 0 : target.Width + horizontalChange;
+                result_height = target.Height + verticalChange < 0 ?
+                    0 : target.Height + verticalChange;
+
+                result_width = target.Width + horizontalChange < 0 ?
+                    0 : target.Width + horizontalChange;
             }
 
-            if (Keyboard.IsKeyDown(Key.LeftShift))
+            if (keepAspectRatio)
             {
                 var scaleHeight = (float)result_height / (float)target.Height;
                 var scaleWidth = (float)result_width / (float)target.Width;

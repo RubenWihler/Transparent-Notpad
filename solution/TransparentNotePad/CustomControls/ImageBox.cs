@@ -29,6 +29,11 @@ namespace TransparentNotePad.CustomControls
         private bool _isBeingDestroy = false;
         private ResizeAdorner _resizeAdorner = null!;
         private Bitmap _bitmap = null!;
+        private double _margingAddition = 5;
+
+        //cache for optimisation
+        private double _margingLeftRight = 0;
+        private double _margingTopBottom = 0;
 
         private bool _isMoving;
         private bool _moveFirstClick = true;
@@ -36,6 +41,12 @@ namespace TransparentNotePad.CustomControls
         private double _moveStartY;
         private double _moveRelativeX;
         private double _moveRelativeY;
+
+        static ImageBox()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ImageBox),
+                new FrameworkPropertyMetadata(typeof(ImageBox)));
+        }
 
         public Bitmap Bitmap
         {
@@ -45,6 +56,16 @@ namespace TransparentNotePad.CustomControls
             }
             set
             {
+                if (value == null)
+                {
+                    if (!Highlighted) SetBackgroundOpacity(0x01);
+                    else SetBackgroundOpacity(0x32);
+
+                    _image.Source = null;
+
+                    return;
+                }
+
                 MemoryStream ms = new MemoryStream();
                 value.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
                 ms.Position = 0;
@@ -62,7 +83,39 @@ namespace TransparentNotePad.CustomControls
                 UpdateSize();
             }
         }
+        public Point Position
+        {
+            get
+            {
+                var transform = this.TransformToAncestor(this.Parent as Visual);
+                return transform.Transform(new Point(0, 0));
+            }
+            set
+            {
+                this.MoveTo(value);
+            }
+        }
+        public Point Size
+        {
+            get
+            {
+                return new Point(this.Width, this.Height);
+            }
+        }
         public bool Highlighted { get; protected set; }
+        public double MargingAddition
+        {
+            get
+            {
+                return this._margingAddition;
+            }
+            set
+            {
+                this._margingAddition = value;
+                UpdateMarging();
+            }
+        }
+
         private ResizeAdorner _ResizeAdorner
         {
             get
@@ -77,11 +130,29 @@ namespace TransparentNotePad.CustomControls
                 return _resizeAdorner;
             }
         }
-
-        static ImageBox()
+        private double _MargingLeftRight
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(ImageBox),
-                new FrameworkPropertyMetadata(typeof(ImageBox)));
+            get
+            {
+                if (this._margingLeftRight < 1)
+                {
+                    UpdateMarging();
+                }
+
+                return this._margingLeftRight;
+            }
+        }
+        private double _MargingTopBottom
+        {
+            get
+            {
+                if (this._margingTopBottom < 1)
+                {
+                    UpdateMarging();
+                }
+
+                return this._margingTopBottom;
+            }
         }
 
         public override void OnApplyTemplate()
@@ -127,7 +198,6 @@ namespace TransparentNotePad.CustomControls
         {
             UpdateMoveStartPoint();
         }
-
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
             if (_isMoving)
@@ -241,7 +311,6 @@ namespace TransparentNotePad.CustomControls
             }
         }
 
-
         private void UpdateMoveStartPoint()
         {
             if (_isBeingDestroy || this.Parent == null) return;
@@ -251,37 +320,6 @@ namespace TransparentNotePad.CustomControls
             Point start_point = ref_transform.Transform(new Point(0, 0));
             _moveStartX = start_point.X - transform.X;
             _moveStartY = start_point.Y - transform.Y;
-        }
-        public void UpdateSize()
-        {
-            if (_bitmap != null)
-            {
-                var scaleHeight = (float)this.Width / this._bitmap.Width;
-                var scaleWidth = (float)this.Height / this._bitmap.Height;
-                var scale = Math.Min(scaleHeight, scaleWidth);
-
-                this.Height = _bitmap.Height * scale;
-                this.Width = _bitmap.Width * scale;
-            }
-
-            UpdateMoveStartPoint();
-        }
-        public void Highlight(byte opacity = 0x64)
-        {
-            SetBackgroundOpacity(opacity, ThemeManager.CurrentTheme.GlobalTextColor.ToColor());
-            Highlighted = true;
-        }
-        public void UnHighlight()
-        {
-            Highlighted = false;
-
-            if (_bitmap == null)
-            {
-                SetBackgroundOpacity(0x32, ThemeManager.CurrentTheme.GlobalTextColor.ToColor());
-                return;
-            }
-
-            SetBackgroundOpacity(0x01);
         }
         private void SetBackgroundOpacity(byte opacity, Color? color = null)
         {
@@ -307,6 +345,81 @@ namespace TransparentNotePad.CustomControls
                 //Uri fileUri = new Uri();
                 Bitmap = new Bitmap(openFileDialog.FileName);
             }
+        }
+        private void UpdateMarging()
+        {
+            this._margingLeftRight = (this.Width  / 2) + this._margingAddition;
+            this._margingTopBottom = (this.Height / 2) + this._margingAddition;
+        }
+
+        public void UpdateSize()
+        {
+            if (_bitmap != null)
+            {
+                var scaleHeight = (float)this.Width / this._bitmap.Width;
+                var scaleWidth = (float)this.Height / this._bitmap.Height;
+                var scale = Math.Min(scaleHeight, scaleWidth);
+
+                this.Height = _bitmap.Height * scale;
+                this.Width = _bitmap.Width * scale;
+            }
+
+            UpdateMoveStartPoint();
+        }
+        public void Resize(Point dimensions, bool keepAspectRatio = false)
+        {
+            var new_width  = dimensions.X;
+            var new_height = dimensions.Y;
+
+            if (keepAspectRatio)
+            {
+                var scaleHeight = (float)new_width / this.Width;
+                var scaleWidth = (float)new_height / this.Height;
+                var scale = Math.Min(scaleHeight, scaleWidth);
+
+                new_height = this.Height * scale;
+                new_width  = this.Width * scale;
+            }
+
+            this.Width = new_width;
+            this.Height = new_height;
+
+            UpdateMoveStartPoint();
+        }
+        public void Highlight(byte opacity = 0x64)
+        {
+            SetBackgroundOpacity(opacity, ThemeManager.CurrentTheme.GlobalTextColor.ToColor());
+            Highlighted = true;
+        }
+        public void UnHighlight()
+        {
+            Highlighted = false;
+
+            if (_bitmap == null)
+            {
+                SetBackgroundOpacity(0x32, ThemeManager.CurrentTheme.GlobalTextColor.ToColor());
+                return;
+            }
+
+            SetBackgroundOpacity(0x01);
+        }
+        public void MoveTo(Point position)
+        {
+            if (position.X < _MargingLeftRight) position.X = _MargingLeftRight;
+            if (position.Y < _MargingTopBottom) position.Y = _MargingTopBottom;
+
+            if (_moveFirstClick)
+            {
+                UpdateMoveStartPoint();
+            }
+
+            var distance_from_start_x = position.X - _moveStartX;
+            var distance_from_start_y = position.Y - _moveStartY;
+
+            var move_transform = base.RenderTransform as TranslateTransform;
+
+            move_transform!.X = distance_from_start_x;
+            move_transform!.Y = distance_from_start_y;
         }
     }
 }
