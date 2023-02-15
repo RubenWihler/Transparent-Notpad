@@ -1,7 +1,7 @@
 ﻿TransparentNotePad
 1.0.0.0
 
-exe
+winexe
 C#
 .cs
 C:\Users\Admin\Documents\GitHub\Transparent-Notpad\solution\TransparentNotePad\obj\Release\net6.0-windows\
@@ -10,11 +10,11 @@ none
 false
 TRACE;RELEASE;NET;NET6_0;NETCOREAPP
 C:\Users\Admin\Documents\GitHub\Transparent-Notpad\solution\TransparentNotePad\App.xaml
-3738310531
+51424419587
 1679540316
-26-197313239
+3950223012
 201-152476778
-MainWindow.xaml;OptionsWindow.xaml;Postit.xaml;
+CustomControls\ImageBoxStyle.xaml;MainWindow.xaml;OptionsWindow.xaml;Postit.xaml;Themes\Generic.xaml;
 
-True
+False
 

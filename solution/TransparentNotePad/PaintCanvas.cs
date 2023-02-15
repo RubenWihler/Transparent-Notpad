@@ -604,10 +604,12 @@ namespace TransparentNotePad
                 try
                 {
                     if (foundControls[i] != this 
-                        && !((UIElement)foundControls[i]).Uid.Contains("DO_NOT_REMOVE"))
+                        && !((UIElement)foundControls[i]).Uid.Contains("DO_NOT_REMOVE")
+                        && ((UIElement)foundControls[i]).Visibility != Visibility.Hidden)
                     {
                         //dic_futureUndoElements.Add((UIElement)foundControls[i], false);
                         //this._commandManager.AddCommand(new HideUiElementCommand(foundControls[i]));
+                        ((UIElement)foundControls[i]).Visibility = Visibility.Hidden;
                         this._pendingHideCommandElements.Add((UIElement)foundControls[i]);
                         //this.Children.Remove((UIElement)foundControls[i]);
                     }

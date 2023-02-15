@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Windows.Documents;
 
 namespace TransparentNotePad.SaveSystem
 {
@@ -18,6 +19,8 @@ namespace TransparentNotePad.SaveSystem
         public const string THEMES_DIRECTORY_NAME = "Themes";
         public const string OPTIONS_FILE_NAME = "options.json";
         public const string THEME_FILE_EXTENSION = ".json";
+
+        private static bool _fileChecked;
 
         #region PATHS
 
@@ -82,6 +85,8 @@ namespace TransparentNotePad.SaveSystem
         /// </summary>
         public static void CheckFiles()
         {
+            if (_fileChecked) return;
+
             if (!Directory.Exists(AppDataPath))
             {
                 Directory.CreateDirectory(AppDataPath);
@@ -90,6 +95,11 @@ namespace TransparentNotePad.SaveSystem
             if (!Directory.Exists(ThemesPath))
             {
                 Directory.CreateDirectory(ThemesPath);
+                GenerateDefaultThemes();
+            }
+
+            if (GetAllThemeFromFiles(false).Count == 0)
+            {
                 GenerateDefaultThemes();
             }
 
@@ -107,6 +117,8 @@ namespace TransparentNotePad.SaveSystem
             {
                 OptionsManager.CurrentOptionFile = GenerateDefaultOptionFile();
             }
+
+            _fileChecked = true;
         }
 
         /// <summary>
@@ -116,10 +128,11 @@ namespace TransparentNotePad.SaveSystem
         /// <param name="t">object</param>
         /// <param name="path">the file path</param>
         /// <returns>the result of the opperation</returns>
-        public static bool TrySaveToJsonFile<T>(T t, string path) where T : new()
+        public static bool TrySaveToJsonFile<T>(T t, string path, bool fileCheck = true) where T : new()
         {
             try
             {
+                if (fileCheck) CheckFiles();
                 var json_serialize_options = new JsonSerializerOptions();
                 json_serialize_options.WriteIndented = true;
                 string json = JsonSerializer.Serialize<T>(t, json_serialize_options);
@@ -140,12 +153,13 @@ namespace TransparentNotePad.SaveSystem
         /// <param name="path">the json file path to get the object from</param>
         /// <param name="t">the object</param>
         /// <returns>the result of the opperation</returns>
-        public static bool TryGetJsonFile<T>(string path, out T t) where T : new()
+        public static bool TryGetJsonFile<T>(string path, out T t, bool checkFile = true) where T : new()
         {
             if (File.Exists(path))
             {
                 try
                 {
+                    if (checkFile) CheckFiles();
                     string json = File.ReadAllText(path);
                     t = JsonSerializer.Deserialize<T>(json)!;
                     return true;
@@ -266,6 +280,7 @@ namespace TransparentNotePad.SaveSystem
         /// <returns></returns>
         public static List<TextFile> GetAllTemporaryTextFile()
         {
+            CheckFiles();
             var default_file_founded = false;
             var empty_files = new List<string>();
             var text_files = new List<TextFile>();
@@ -311,15 +326,15 @@ namespace TransparentNotePad.SaveSystem
         /// Return all theme from appdata file [<see cref="ThemesPath"/>]
         /// </summary>
         /// <returns></returns>
-        public static List<Theme> GetAllThemeFromFiles()
+        public static List<Theme> GetAllThemeFromFiles(bool checkFile = true)
         {
-            CheckFiles();
+            if (checkFile) CheckFiles();
             var themeList = new List<Theme>();
             var paths = Directory.GetFiles(ThemesPath);
 
             for (int i = 0; i < paths.Length; i++)
             {
-                if (TryGetJsonFile<Theme>(paths[i], out var theme))
+                if (TryGetJsonFile<Theme>(paths[i], out var theme, false))
                 {
                     themeList.Add(theme);
                 }
@@ -370,7 +385,7 @@ namespace TransparentNotePad.SaveSystem
         private static OptionFile GenerateDefaultOptionFile()
         {
             var defaultStoredDataFile = OptionFile.GetDefault();
-            _ = TrySaveToJsonFile(defaultStoredDataFile, OptionsFilePath);
+            _ = TrySaveToJsonFile(defaultStoredDataFile, OptionsFilePath, false);
             return defaultStoredDataFile;
         }
         /// <summary>
@@ -383,7 +398,7 @@ namespace TransparentNotePad.SaveSystem
             foreach (Theme theme in default_themes)
             {
                 var path = Path.Combine(ThemesPath, $"{theme.ThemeName}.json");
-                _ = TrySaveToJsonFile(theme, path);
+                _ = TrySaveToJsonFile(theme, path, false);
             }
         }
     }

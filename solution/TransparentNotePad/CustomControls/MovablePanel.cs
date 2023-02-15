@@ -132,6 +132,8 @@ namespace TransparentNotePad.CustomControls
             _panel_leave_timer = new DispatcherTimer();
             _panel_leave_timer.Interval = TimeSpan.FromSeconds(0.1);
             _panel_leave_timer.Tick += MouseLeaveAttemptCall;
+
+            this.Cursor = Cursors.SizeAll;
         }
 
         private void OnStartMoving()

@@ -672,7 +672,8 @@ namespace TransparentNotePad
                 btn_top_Click(this, null);
             }
             if (e.Key == Key.N
-                && Keyboard.IsKeyDown(Key.LeftCtrl))
+                && Keyboard.IsKeyDown(Key.LeftCtrl)
+                && currentMode != AppMode.DesktopMode)
             {
                 btn_note_Click_1(this, null);
             }

@@ -179,6 +179,7 @@ namespace TransparentNotePad.CustomControls
             this.MouseLeave += OnMouseLeave;
             this._button_remove.Click += _button_remove_Click;
             this._button_open_image.Click += _button_open_image_Click;
+            this.IsVisibleChanged += OnVisibilityChanged;
 
             var current_theme = ThemeManager.CurrentTheme;
             var bg_color = current_theme.GlobalTextColor;
@@ -191,7 +192,18 @@ namespace TransparentNotePad.CustomControls
             _border.Background = new SolidColorBrush(
                 System.Windows.Media.Color.FromArgb(50, bg_color.R, bg_color.G, bg_color.B));
 
+            this.Cursor = Cursors.SizeAll;
+
             base.OnApplyTemplate();
+        }
+
+        private void OnVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((Visibility)e.NewValue == Visibility.Hidden && _resizeAdorner != null)
+            {
+                var element = this.Parent as Visual;
+                AdornerLayer.GetAdornerLayer(element)?.Remove(_resizeAdorner);
+            }
         }
 
         private void MainWindow_onWindowResize()
