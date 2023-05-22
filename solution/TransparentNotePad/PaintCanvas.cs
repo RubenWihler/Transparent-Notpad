@@ -178,6 +178,22 @@ namespace TransparentNotePad
             {
                 selectedBrush = value;
 
+                switch (selectedBrush)
+                {
+                    case PaintBrush.Pen:
+                        this.Cursor = Cursors.Pen;
+                        break;
+                    case PaintBrush.Eraser:
+                        this.Cursor = Cursors.None;
+                        break;
+                    case PaintBrush.ImageBox:
+                        this.Cursor = Cursors.SizeNESW;
+                        break;
+                    default:
+                        this.Cursor = Cursors.Cross;
+                        break;
+                }
+                
                 if (erase_cursor_preview != null)
                 {
                     erase_cursor_preview!.Visibility =
@@ -663,6 +679,7 @@ namespace TransparentNotePad
             if (currentDrawingTbox != null) currentDrawingTbox = null;
             if (currentDrawingImagebox != null)
             {
+                Manager.InstanceOfMainWindow.SetCurrentDMTool(MainWindow.DMTools.Cursor);
                 currentDrawingImagebox.UnHighlight();
                 currentDrawingImagebox.UpdateSize();
                 currentDrawingImagebox.Focus();

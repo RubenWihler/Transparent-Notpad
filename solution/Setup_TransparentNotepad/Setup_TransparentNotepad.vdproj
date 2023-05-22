@@ -213,7 +213,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:TransparentNotepad"
         "ProductCode" = "8:{93D64C33-314C-4321-A51F-B46ADA019C7F}"
-        "PackageCode" = "8:{3C139F21-1E74-43F2-B95C-22904D37D6E5}"
+        "PackageCode" = "8:{7682534D-B276-44FA-B28A-62A307EC6E42}"
         "UpgradeCode" = "8:{1C61B24E-4306-4327-951B-97067E9B7FD3}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -230,7 +230,7 @@
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"
-        "ARPPRODUCTICON" = "8:"
+        "ARPPRODUCTICON" = "8:_BFE70E3C4C174F6C90265F266216560E"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
@@ -762,7 +762,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_BEA6306CC2EF4ACDABBE7333E4F0EBA4"
             {
-            "SourcePath" = "8:..\\TransparentNotePad\\obj\\Debug\\net6.0-windows\\apphost.exe"
+            "SourcePath" = "8:..\\TransparentNotePad\\obj\\Release\\net6.0-windows\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_72C408092D024F33AFB15B44AED3FB46"

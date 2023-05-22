@@ -14,18 +14,20 @@ namespace TransparentNotePad
             string font,
             double text_zoom,
             string lastSaveDirectory,
+            string temporaryTextFilePath,
             bool tntxtFileInited,
             int noteWin_Default_WindowOpacity,
             string noteWin_Default_Font)
         {
-            LastTextFileSaved = lastText_Saved;
-            SelectedTheme = selected_Theme;
-            EditorFont = font;
-            EditorZoom = text_zoom;
-            FileSavePath = lastSaveDirectory;
-            TntxtFileInitialized = tntxtFileInited;
-            NoteWin_Default_WindowOpacity = noteWin_Default_WindowOpacity;
-            NoteWin_Default_Font = noteWin_Default_Font;
+            this.LastTextFileSaved = lastText_Saved;
+            this.SelectedTheme = selected_Theme;
+            this.EditorFont = font;
+            this.EditorZoom = text_zoom;
+            this.FileSavePath = lastSaveDirectory;
+            this.TemporaryTextFilePath = temporaryTextFilePath;
+            this.TntxtFileInitialized = tntxtFileInited;
+            this.NoteWin_Default_WindowOpacity = noteWin_Default_WindowOpacity;
+            this.NoteWin_Default_Font = noteWin_Default_Font;
         }
         /// <summary>
         /// The path of the last none-saved text in appdata file
@@ -48,6 +50,10 @@ namespace TransparentNotePad
         /// The default path when saving a file
         /// </summary>
         public string FileSavePath { get; set; }
+        /// <summary>
+        /// Path that is used for store temporary text file by <see cref="SaveSystem.SaveManager"/>
+        /// </summary>
+        public string TemporaryTextFilePath { get; set; }
         /// <summary>
         /// If the icon text file as been initialized
         /// </summary>
@@ -75,6 +81,7 @@ namespace TransparentNotePad
                 EditorFont = "poppins",
                 EditorZoom = 24,
                 FileSavePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                TemporaryTextFilePath = SaveSystem.SaveManager.DefaultTemporaryTextDirectoryPath,
                 TntxtFileInitialized = false,
                 NoteWin_Default_WindowOpacity = 200,
                 NoteWin_Default_Font = "Cascadia Code"

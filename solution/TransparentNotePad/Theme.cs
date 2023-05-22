@@ -220,6 +220,12 @@ namespace TransparentNotePad
         public static Theme[] GetDefaultThemes()
         {
             ThemeColor tcolor_clear         = new ThemeColor(0x00, 0x00, 0x00, 0x00);
+            ThemeColor tcolor_pur_white     = new ThemeColor(0xff, 0xff, 0xff, 0xFF);
+            ThemeColor tcolor_white_01      = new ThemeColor(246, 246, 246, 0xFF);
+            ThemeColor tcolor_white_02      = new ThemeColor(236, 236, 236, 0xFF);
+            ThemeColor tcolor_white_03      = new ThemeColor(224, 224, 224, 0xFF);
+            ThemeColor tcolor_white_04      = new ThemeColor(195, 195, 195, 0xFF);
+
             ThemeColor tcolor_light_black   = new ThemeColor(0x13, 0x13, 0x13, 0xFF);
             ThemeColor tcolor_light_grey    = new ThemeColor(0xA5, 0xA5, 0xA5, 0xFF);
             ThemeColor tcolor_grey          = new ThemeColor(0x55, 0x55, 0x55, 0xFF);
@@ -230,7 +236,9 @@ namespace TransparentNotePad
             ThemeColor tcolor_dark_grey_02  = new ThemeColor(0x45, 0x45, 0x45, 0xFF);
             ThemeColor tcolor_dark_grey_03  = new ThemeColor(0x40, 0x40, 0x40, 0xFF);
             ThemeColor tcolor_dark_grey_04  = new ThemeColor(0x38, 0x38, 0x38, 0xFF);
+            
             ThemeColor tcolor_mat_orange    = new ThemeColor(0xFD, 0x7E, 0x44, 0xFF);
+            ThemeColor tcolor_dark_orange   = new ThemeColor(255, 154, 19, 0xFF);
             ThemeColor tcolor_mat_green     = new ThemeColor(0x75, 0xFF, 0x56, 0xFF);
             ThemeColor tcolor_mat_red       = new ThemeColor(0xfd, 0x44, 0x44, 0xFF);
             ThemeColor tcolor_mat_blue      = new ThemeColor(0x44, 0x89, 0xFD, 0xFF);
@@ -1615,6 +1623,179 @@ namespace TransparentNotePad
                         HeaderForegroundColor = tcolor_mat_cyan,
                         TabBackgroundColor = tcolor_dark_grey_03,
                         TabForegroundColor = tcolor_mat_cyan
+                    },
+                },
+                
+                /*Light-Blue*/
+                new Theme()
+                {
+                    ThemeName = "Light-Blue",
+                    GlobalTextFont = "poppins",
+                    GlobalTextColor = tcolor_dark_grey_04,
+                    PrimaryColor = tcolor_mat_blue,
+                    SecondaryColor = tcolor_mat_blue,
+                    TertiaryColor = tcolor_mat_blue,
+                    ValidateColor = tcolor_mat_green,
+                    WarningColor = tcolor_mat_orange,
+                    AlertColor = tcolor_mat_red,
+                    TopBarBackgroundColor = tcolor_white_03,
+                    TopBarButtonClose = new ButtonGroupThemeSettings()
+                    {
+                        BackgroundColor = tcolor_mat_red,
+                        HoverColor = new ThemeColor(0xFF, 0x59, 0x59, 0xFF),
+                        BorderColor = tcolor_clear,
+                        BorderThickness = 0,
+                        ContentColor = tcolor_white_02,
+                        GlowColor = tcolor_clear,
+                        GlowOpacity = 0
+                    },
+                    TopBarButtonMinimise = new ButtonGroupThemeSettings()
+                    {
+                        BackgroundColor = tcolor_mat_blue,
+                        HoverColor = new ThemeColor(0x59, 0x97, 0xFF, 0xFF),
+                        BorderColor = tcolor_clear,
+                        BorderThickness = 0,
+                        ContentColor = tcolor_white_02,
+                        GlowColor = tcolor_clear,
+                        GlowOpacity = 0
+                    },
+                    TopBarButtonMaximise = new ButtonGroupThemeSettings()
+                    {
+                        BackgroundColor = tcolor_mat_blue,
+                        HoverColor = new ThemeColor(0x59, 0x97, 0xFF, 0xFF),
+                        BorderColor = tcolor_clear,
+                        BorderThickness = 0,
+                        ContentColor = tcolor_white_02,
+                        GlowColor = tcolor_clear,
+                        GlowOpacity = 0
+                    },
+                    TopBarButtonHidePanel = new ButtonGroupThemeSettings()
+                    {
+                        BackgroundColor = tcolor_white_02,
+                        HoverColor = tcolor_white_01,
+                        BorderColor = tcolor_clear,
+                        BorderThickness = 0,
+                        ContentColor = tcolor_mat_blue,
+                        GlowColor = tcolor_clear,
+                        GlowOpacity = 0
+                    },
+                    TopBarButtonTop = new ButtonGroupThemeSettings()
+                    {
+                        BackgroundColor = tcolor_white_02,
+                        HoverColor = tcolor_white_01,
+                        BorderColor = tcolor_clear,
+                        BorderThickness = 0,
+                        ContentColor = tcolor_mat_blue,
+                        GlowColor = tcolor_clear,
+                        GlowOpacity = 0
+                    },
+                    PanelBackgroundColor = tcolor_white_03,
+                    PanelTextColor = tcolor_mat_blue,
+                    PanelButtonTextColor = tcolor_mat_blue,
+                    PanelButtons = new ButtonGroupThemeSettings()
+                    {
+                        BackgroundColor = tcolor_white_02,
+                        HoverColor = tcolor_white_01,
+                        BorderColor = tcolor_clear,
+                        BorderThickness = 0,
+                        ContentColor = tcolor_mat_blue,
+                        GlowColor = tcolor_clear,
+                        GlowOpacity = 0
+                    },
+                    PanelColorPicker = new ColorPickerThemeSettings()
+                    {
+                        BackgroundColor = tcolor_white_02,
+                        BorderColor = tcolor_clear,
+                        BorderThickness = 0,
+                        DropDownBackgroundColor= tcolor_grey,
+                        DropDownBorderColor = tcolor_clear,
+                        GlowColor = tcolor_clear,
+                        GlowOpacity = 0,
+                        HeaderBackgroundColor = tcolor_dark_grey_03,
+                        HeaderForegroundColor = tcolor_mat_blue,
+                        TabBackgroundColor = tcolor_dark_grey_03,
+                        TabForegroundColor = tcolor_mat_blue
+                    },
+                    PanelControllerColor = tcolor_white_04,
+                    PanelBrushButtonIcon = new VariableThemeColor()
+                    {
+                        Variants = new ThemeColor[]
+                        {
+                            tcolor_grey_02,
+                            tcolor_mat_blue
+                        }
+                    },
+                    EditorBackgroundColor = tcolor_white_04,
+                    DesktopModePanelBackgroundColor = tcolor_white_03,
+                    DesktopModePanelTextColor = tcolor_mat_blue,
+                    DesktopModePanelButtons = new ButtonGroupThemeSettings()
+                    {
+                        BackgroundColor = tcolor_white_02,
+                        HoverColor = tcolor_white_01,
+                        BorderColor = tcolor_clear,
+                        BorderThickness = 0,
+                        ContentColor = tcolor_mat_blue,
+                        GlowColor = tcolor_clear,
+                        GlowOpacity = 0
+                    },
+                    DesktopModePanelCloseButton = new ButtonGroupThemeSettings()
+                    {
+                        BackgroundColor = tcolor_mat_red,
+                        HoverColor = new ThemeColor(0xFF, 0x59, 0x59, 0xFF),
+                        BorderColor = tcolor_clear,
+                        BorderThickness = 0,
+                        ContentColor = tcolor_light_black,
+                        GlowColor = tcolor_clear,
+                        GlowOpacity = 0
+                    },
+                    DesktopModePanelColorPicker = new ColorPickerThemeSettings()
+                    {
+                        BackgroundColor = tcolor_grey,
+                        BorderColor = tcolor_clear,
+                        BorderThickness = 0,
+                        DropDownBackgroundColor= tcolor_grey_02,
+                        DropDownBorderColor = tcolor_clear,
+                        GlowColor = tcolor_clear,
+                        GlowOpacity = 0,
+                        HeaderBackgroundColor = tcolor_dark_grey_03,
+                        HeaderForegroundColor = tcolor_mat_blue,
+                        TabBackgroundColor = tcolor_dark_grey_03,
+                        TabForegroundColor = tcolor_mat_blue
+                    },
+                    DesktopModePanelToolButtonIcon = new VariableThemeColor()
+                    {
+                        Variants = new ThemeColor[]
+                        {
+                            tcolor_light_grey,
+                            tcolor_mat_blue
+                        }
+                    },
+                    NoteEditorBackgroundColor = tcolor_white_04,
+                    NoteHeaderBackgroundColor = tcolor_white_03,
+                    NoteHeaderTextColor = tcolor_mat_blue,
+                    NoteHeaderButtons = new ButtonGroupThemeSettings()
+                    {
+                        BackgroundColor = tcolor_white_02,
+                        HoverColor = tcolor_white_01,
+                        BorderColor = tcolor_clear,
+                        BorderThickness = 0,
+                        ContentColor = tcolor_mat_blue,
+                        GlowColor = tcolor_clear,
+                        GlowOpacity = 0
+                    },
+                    NotePanelColorPicker = new ColorPickerThemeSettings()
+                    {
+                        BackgroundColor = tcolor_grey,
+                        BorderColor = tcolor_clear,
+                        BorderThickness = 0,
+                        DropDownBackgroundColor= tcolor_grey,
+                        DropDownBorderColor = tcolor_clear,
+                        GlowColor = tcolor_clear,
+                        GlowOpacity = 0,
+                        HeaderBackgroundColor = tcolor_dark_grey_03,
+                        HeaderForegroundColor = tcolor_mat_blue,
+                        TabBackgroundColor = tcolor_dark_grey_03,
+                        TabForegroundColor = tcolor_mat_blue
                     },
                 },
             };

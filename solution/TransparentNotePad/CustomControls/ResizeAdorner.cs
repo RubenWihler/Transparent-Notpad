@@ -35,7 +35,7 @@ namespace TransparentNotePad.CustomControls
             const int thumbs_width = 10;
             const int thumbs_height = 10;
 
-            var current_theme_tcolor = ThemeManager.CurrentTheme.GlobalTextColor;
+            var current_theme_tcolor = ThemeManager.CurrentTheme.PrimaryColor;
             var bg_brush = current_theme_tcolor.ToBrush();
             var stroke_brush = new SolidColorBrush(Color.FromArgb(200,
                 current_theme_tcolor.R, current_theme_tcolor.G, current_theme_tcolor.B));
@@ -82,7 +82,7 @@ namespace TransparentNotePad.CustomControls
 
         public void ApplyTheme(Theme theme)
         {
-            var current_theme_tcolor = theme.GlobalTextColor;
+            var current_theme_tcolor = theme.PrimaryColor;
             var bg_brush = current_theme_tcolor.ToBrush();
             var stroke_brush = new SolidColorBrush(Color.FromArgb(200,
                 current_theme_tcolor.R, current_theme_tcolor.G, current_theme_tcolor.B));
@@ -145,6 +145,7 @@ namespace TransparentNotePad.CustomControls
                 var scaleWidth = (float)result_width / (float)target.Width;
                 float scale = Math.Min(scaleHeight, scaleWidth);
 
+                if (scale <= 0) return;
                 target.Height *= scale;
                 target.Width *= scale;
 

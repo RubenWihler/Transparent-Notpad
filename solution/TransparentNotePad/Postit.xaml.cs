@@ -255,6 +255,8 @@ namespace TransparentNotePad
                     if (Keyboard.IsKeyDown(Key.LeftShift)) SaveAs();
                     else Save();
                 }
+
+                e.Handled = true;
             }
         }
     }

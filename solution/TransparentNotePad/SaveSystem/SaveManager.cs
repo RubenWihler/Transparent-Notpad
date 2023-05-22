@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
-using System.Windows.Documents;
 
 namespace TransparentNotePad.SaveSystem
 {
@@ -21,8 +20,17 @@ namespace TransparentNotePad.SaveSystem
         public const string THEME_FILE_EXTENSION = ".json";
 
         private static bool _fileChecked;
+        private static string _customTextTemporaryFilePath = string.Empty;
 
         #region PATHS
+
+        public static string DefaultTemporaryTextDirectoryPath
+        {
+            get
+            {
+                return System.IO.Path.Combine(TemporaryDirectoryPath, TEMPORARY_TEXT_DIRECTORY_NAME);
+            }
+        }
 
         /// <summary>
         /// return appdata/roaming path
@@ -68,17 +76,28 @@ namespace TransparentNotePad.SaveSystem
             }
         }
         /// <summary>
-        /// return appdata/roaming/TEMPORARY_DIRECTORY_NAME/TEMPORARY_TEXT_DIRECTORY_NAME
+        /// return by default appdata/roaming/TEMPORARY_DIRECTORY_NAME/TEMPORARY_TEXT_DIRECTORY_NAME.
+        /// But if there is a custom path in the current <see cref="OptionFile"/> it going to use <see cref="OptionFile.TemporaryTextFilePath"/>
         /// </summary>
-        private static string TemporaryTextDirectoryPath
+        public static string TemporaryTextDirectoryPath
         {
             get
             {
-                return System.IO.Path.Combine(TemporaryDirectoryPath, TEMPORARY_TEXT_DIRECTORY_NAME);
+                if (Directory.Exists(OptionsManager.CurrentOptionFile.TemporaryTextFilePath))
+                {
+                    return OptionsManager.CurrentOptionFile.TemporaryTextFilePath;
+                }
+
+                return Path.Combine(TemporaryDirectoryPath, TEMPORARY_TEXT_DIRECTORY_NAME);
             }
         }
 
         #endregion
+
+        public static void SetCustomTextTemporaryFilePath(string newPath)
+        {
+            _customTextTemporaryFilePath = newPath;
+        }
 
         /// <summary>
         /// Check all necessary files and create it if they not exists
@@ -108,9 +127,9 @@ namespace TransparentNotePad.SaveSystem
                 Directory.CreateDirectory(TemporaryDirectoryPath);
             }
 
-            if (!Directory.Exists(TemporaryTextDirectoryPath))
+            if (!Directory.Exists(DefaultTemporaryTextDirectoryPath))
             {
-                Directory.CreateDirectory(TemporaryTextDirectoryPath);
+                Directory.CreateDirectory(DefaultTemporaryTextDirectoryPath);
             }
 
             if (!File.Exists(OptionsFilePath))
@@ -141,7 +160,7 @@ namespace TransparentNotePad.SaveSystem
             }
             catch (Exception e)
             {
-                $"Error while trying save an object of type: {t?.GetType()} in a json file with path: {path}!\r\nerror: {e}".LogError();   
+                //$"Error while trying save an object of type: {t?.GetType()} in a json file with path: {path}!\r\nerror: {e}".LogError();   
             }
 
             return false;
@@ -211,6 +230,7 @@ namespace TransparentNotePad.SaveSystem
             string filename = $"DEFAULTOPEN_tmp_text_file__{DateTime.Now.Day}_{DateTime.Now.Month}_{DateTime.Now.Hour}h_{DateTime.Now.Minute}m_{DateTime.Now.Second}s.tntxt";
             string path = Path.Combine(TemporaryTextDirectoryPath, filename);
 
+            Console.WriteLine(path);
             File.WriteAllText(path, text, encoding);
         }
 
@@ -227,7 +247,7 @@ namespace TransparentNotePad.SaveSystem
 
             try
             {
-                File.WriteAllText(text, path, encoding);
+                File.WriteAllText(path, text, encoding);
                 return true;
             }
             catch (Exception e)
@@ -252,8 +272,12 @@ namespace TransparentNotePad.SaveSystem
             string title = "Save text to a file", string defaultExtension = "tntxt",
             string filter = "Text Files(*.txt)|*.txt|All(*.*)|*.tntxt|transparent notepad file(*.tntxt*)|*")
         {
+
+            var file_name = text.Split('\n')[0];
+
             dialog = new SaveFileDialog
             {
+                FileName = file_name,
                 InitialDirectory = OptionsManager.CurrentOptionFile.FileSavePath,
                 Title = title,
 

@@ -16,14 +16,14 @@
         Background="#00000000" 
         WindowStartupLocation="CenterScreen" 
         MinHeight="385" 
-        MinWidth="315" 
+        MinWidth="485" 
         IsTabStop="False" 
         PreviewMouseWheel="Window_PreviewMouseWheel"
         Drop="On_DropOnWindow"
         DragOver="On_WinDrop"
         SizeChanged="OnWinResize"
         AllowDrop="True"
-        ResizeMode="CanResizeWithGrip" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp" 
+        ResizeMode="CanResizeWithGrip" KeyDown="Window_KeyDown" KeyUp="Window_KeyUp"
         PreviewKeyDown="PreviewKeyDow" MouseUp="Window_MouseUp">
     <Window.Resources>
         <CollectionViewSource 
@@ -492,8 +492,7 @@
                     x:Name="dm_PaintCanvas"
                     Background="#01FFFFFF"
                     IsHitTestVisible="False"
-                    AllowDrop="True"
-                    Drop="DM_canvas_Drop">
+                    AllowDrop="True">
 
                     <customcontrols:MovablePanel 
                         x:Name="brd_DesktopModePanel"

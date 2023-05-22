@@ -1,6 +1,12 @@
-﻿using System.Windows;
+﻿using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
+using TransparentNotePad.SaveSystem;
 
 namespace TransparentNotePad
 {
@@ -27,6 +33,7 @@ namespace TransparentNotePad
         private void Init()
         {
             Init_Theme();
+            tbox_tempTextPath.Text = SaveManager.TemporaryTextDirectoryPath;
         }
         private void Init_Theme()
         {
@@ -62,15 +69,47 @@ namespace TransparentNotePad
             Init_Theme();
             Topmost = Manager.InstanceOfMainWindow.Topmost;
         }
-
+        
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
             base.OnMouseLeftButtonDown(e);
             this.DragMove();
         }
 
+        private bool SaveOptions(out string error)
+        {
+            var error_msg_builder = new StringBuilder();
+            var selected_theme = ((ThemeBtn)cmbbox_Theme.SelectedItem).theme;
+            var selected_temp_path = tbox_tempTextPath.Text;
+            
+            //saving theme
+            if (!ThemeManager.SetSelectedTheme(selected_theme, true))
+            {
+                error_msg_builder.Append("Unable to save selected theme!\r\n");
+            }
+            
+            //saving temporary text file path
+            if (!Directory.Exists(selected_temp_path) || !OptionsManager.SetTemporaryTextFileSaveEmplacement(selected_temp_path))
+            {
+                error_msg_builder.Append("The location of the temporary files is invalid!\r\n");
+            }
+            
+            error = error_msg_builder.ToString();
+            return error.Length == 0;
+        }
+        
         private void btn_back_Click(object sender, RoutedEventArgs e)
         {
+            if (!SaveOptions(out var error_msg))
+            {
+                MessageBox.Show(this,
+                    error_msg,
+                    "Error while applying settings",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return;
+            }
+            
             Manager.TryCloseWindow<OptionWindow>(this);
         }
 
@@ -86,11 +125,15 @@ namespace TransparentNotePad
 
         private void cmbbox_Theme_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (theme_initialized)
-            {
-                var theme = ((ThemeBtn)cmbbox_Theme.SelectedItem).theme;
-                ThemeManager.SetSelectedTheme(theme, true);
-            }
+            //preview selected theme
+            if (!theme_initialized) return;
+            var theme = ((ThemeBtn)cmbbox_Theme.SelectedItem).theme;
+            ThemeManager.LoadTheme(theme);
+        }
+
+        private void tbox_tempTextPath_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // OptionsManager.SetTemporaryTextFileSaveEmplacement(tbox_tempTextPath.Text);
         }
     }
 }

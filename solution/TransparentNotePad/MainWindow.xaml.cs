@@ -213,9 +213,20 @@ namespace TransparentNotePad
                     tbox_mainText.Text = File.ReadAllText(args[1]);
                     currentTextDocPath = args[1];
                     fileSaved = true;
+                    return;
                 }
             }
             catch (Exception) { }
+
+            //load last opened temporary text file
+            var temporary_text_files = SaveManager.GetAllTemporaryTextFile();
+            if (temporary_text_files.Count > 0)
+            {
+                this.tbox_mainText.Text = temporary_text_files[0].Content;
+            }
+
+            SetWindowOpacity(255);
+            DisplayPanel(false);
         }
         private void Init_Field()
         {
@@ -258,6 +269,7 @@ namespace TransparentNotePad
 
             Canvas.SetLeft(brd_DesktopModePanel, SystemParameters.PrimaryScreenWidth - 130);
             Canvas.SetTop(brd_DesktopModePanel, (SystemParameters.PrimaryScreenHeight / 2) - (brd_DesktopModePanel.Height / 2));
+            ThemeManager.ReloadCurrentTheme();
         }
 
         private void Init_FontBox()
@@ -423,8 +435,12 @@ namespace TransparentNotePad
             upBar.IsHitTestVisible = true;
             upBar.Opacity = 1;
 
-            this.WindowState = lastWinStateBeforeDM;
-            SetWindowOpacity(lastWinOpacityBeforeDM, true);
+            if (lastAppModeBeforeCurrent == AppMode.DesktopMode)
+            {
+                this.WindowState = lastWinStateBeforeDM;
+                SetWindowOpacity(lastWinOpacityBeforeDM, true);
+            }
+            
             DisplayPanel(true);
         }
 
@@ -645,18 +661,21 @@ namespace TransparentNotePad
             {
                 if (Keyboard.IsKeyDown(Key.LeftShift)) btn_TextSaveAs_Click(this, null);
                 else btn_TextSave_Click(this, null);
+                e.Handled = true;
             }
             else if (e.Key == Key.S
                 && Keyboard.IsKeyDown(Key.LeftCtrl)
                 && currentMode == AppMode.Draw)
             {
                 ExportToPng(paint_area);
+                e.Handled = true;
             }
             else if (e.Key == Key.S
                 && Keyboard.IsKeyDown(Key.LeftCtrl)
                 && currentMode == AppMode.DesktopMode)
             {
                 ExportScreenToPng();
+                e.Handled = true;
             }
 
             if (e.Key == Key.P
@@ -664,18 +683,21 @@ namespace TransparentNotePad
                 && currentMode != AppMode.DesktopMode)
             {
                 btn_DisplayPanel_Click(this, null);
+                e.Handled = true;
             }
             if (e.Key == Key.T
                 && Keyboard.IsKeyDown(Key.LeftCtrl)
                 && currentMode != AppMode.DesktopMode)
             {
                 btn_top_Click(this, null);
+                e.Handled = true;
             }
             if (e.Key == Key.N
                 && Keyboard.IsKeyDown(Key.LeftCtrl)
                 && currentMode != AppMode.DesktopMode)
             {
                 btn_note_Click_1(this, null);
+                e.Handled = true;
             }
             if (e.Key == Key.Add
                 && Keyboard.IsKeyDown(Key.LeftCtrl)
@@ -683,6 +705,7 @@ namespace TransparentNotePad
             {
                 byte new_value = Convert.ToByte(Math.Clamp(slider_winOpacity.Value + 10, 0, 255));
                 SetWindowOpacity(new_value, true);
+                e.Handled = true;
             }
             if (e.Key == Key.Subtract
                 && Keyboard.IsKeyDown(Key.LeftCtrl)
@@ -690,6 +713,7 @@ namespace TransparentNotePad
             {
                 byte new_value = Convert.ToByte(Math.Clamp(slider_winOpacity.Value - 10, 0, 255));
                 SetWindowOpacity(new_value, true);
+                e.Handled = true;
             }
             if (e.Key == Key.D0
                 && Keyboard.IsKeyDown(Key.LeftCtrl)
@@ -697,6 +721,7 @@ namespace TransparentNotePad
             {
                 byte new_value = 0;
                 SetWindowOpacity(new_value, true);
+                e.Handled = true;
             }
             if (e.Key == Key.D1
                 && Keyboard.IsKeyDown(Key.LeftCtrl)
@@ -704,6 +729,7 @@ namespace TransparentNotePad
             {
                 byte new_value = 1;
                 SetWindowOpacity(new_value, true);
+                e.Handled = true;
             }
             if (e.Key == Key.D2
                 && Keyboard.IsKeyDown(Key.LeftCtrl)
@@ -711,6 +737,7 @@ namespace TransparentNotePad
             {
                 byte new_value = 44;
                 SetWindowOpacity(new_value, true);
+                e.Handled = true;
             }
             if (e.Key == Key.D3
                 && Keyboard.IsKeyDown(Key.LeftCtrl)
@@ -718,6 +745,7 @@ namespace TransparentNotePad
             {
                 byte new_value = 60;
                 SetWindowOpacity(new_value, true);
+                e.Handled = true;
             }
             if (e.Key == Key.D4
                 && Keyboard.IsKeyDown(Key.LeftCtrl)
@@ -725,6 +753,7 @@ namespace TransparentNotePad
             {
                 byte new_value = 80;
                 SetWindowOpacity(new_value, true);
+                e.Handled = true;
             }
             if (e.Key == Key.D5
                 && Keyboard.IsKeyDown(Key.LeftCtrl)
@@ -732,6 +761,7 @@ namespace TransparentNotePad
             {
                 byte new_value = 100;
                 SetWindowOpacity(new_value, true);
+                e.Handled = true;
             }
             if (e.Key == Key.D6
                 && Keyboard.IsKeyDown(Key.LeftCtrl)
@@ -739,6 +769,7 @@ namespace TransparentNotePad
             {
                 byte new_value = 130;
                 SetWindowOpacity(new_value, true);
+                e.Handled = true;
             }
             if (e.Key == Key.D7
                 && Keyboard.IsKeyDown(Key.LeftCtrl)
@@ -746,6 +777,7 @@ namespace TransparentNotePad
             {
                 byte new_value = 160;
                 SetWindowOpacity(new_value, true);
+                e.Handled = true;
             }
             if (e.Key == Key.D8
                 && Keyboard.IsKeyDown(Key.LeftCtrl)
@@ -753,6 +785,7 @@ namespace TransparentNotePad
             {
                 byte new_value = 200;
                 SetWindowOpacity(new_value, true);
+                e.Handled = true;
             }
             if (e.Key == Key.D9
                 && Keyboard.IsKeyDown(Key.LeftCtrl)
@@ -760,6 +793,7 @@ namespace TransparentNotePad
             {
                 byte new_value = 0xff;
                 SetWindowOpacity(new_value, true);
+                e.Handled = true;
             }
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -870,24 +904,7 @@ namespace TransparentNotePad
                     display_panel.Margin.Right,
                     display_panel.Margin.Bottom);
             }
-
-            //if (panel.Margin.Left < 480 + addedSize)
-            //{
-            //    panel.Margin = new Thickness(
-            //        460 + addedSize,
-            //        panel.Margin.Top,
-            //        panel.Margin.Right,
-            //        panel.Margin.Bottom);
-            //}
-            //if (display_panel.Margin.Left < 473 + addedSize)
-            //{
-            //    display_panel.Margin = new Thickness(
-            //        455 + addedSize,
-            //        display_panel.Margin.Top,
-            //        display_panel.Margin.Right,
-            //        display_panel.Margin.Bottom);
-            //}
-
+            
             if (display_panel.Margin.Left > this.Width - 25)
             {
                 display_panel.Margin = new Thickness(
@@ -1279,39 +1296,6 @@ namespace TransparentNotePad
             currentDMTools = tool;
         }
         
-        private void DMP_Snaping(object sender, EventArgs args)
-        {
-            //dmp_snappingTimer.Stop();
-            //const int SNAP_FORCE = 150;
-
-            //double top = Canvas.GetTop(brd_DesktopModePanel);
-            //double left = Canvas.GetLeft(brd_DesktopModePanel);
-
-            ////right middle snap
-            //double right_middle_x = SystemParameters.PrimaryScreenWidth - 130;
-            //double right_middle_y = (SystemParameters.PrimaryScreenHeight / 2) - (brd_DesktopModePanel.Height / 2);
-
-            ////left middle snap
-            //double left_middle_x = 30;
-
-
-            //if (left >= right_middle_x - SNAP_FORCE
-            //    && left <= right_middle_x + SNAP_FORCE
-            //    && top >= right_middle_y - SNAP_FORCE
-            //    && top <= right_middle_y + SNAP_FORCE)
-            //{
-            //    Canvas.SetLeft(brd_DesktopModePanel, right_middle_x);
-            //    Canvas.SetTop(brd_DesktopModePanel, right_middle_y);
-            //}
-            //else if (left >= left_middle_x - SNAP_FORCE
-            //    && left <= left_middle_x + SNAP_FORCE
-            //    && top >= right_middle_y - SNAP_FORCE
-            //    && top <= right_middle_y + SNAP_FORCE)
-            //{
-            //    Canvas.SetLeft(brd_DesktopModePanel, left_middle_x);
-            //    Canvas.SetTop(brd_DesktopModePanel, right_middle_y);
-            //}
-        }
         private void SetDMPExtended(bool value)
         {
             const int MOVE_X_PANEL = 244;
@@ -1352,16 +1336,6 @@ namespace TransparentNotePad
                 //Console.WriteLine($"Oui brd_DesktopModePanel > 300\r\n   {brd_DesktopModePanel.Position}");
             }
         }
-        private void DM_canvas_Drop(object sender, DragEventArgs e)
-        {
-            dmp_snappingTimer = new DispatcherTimer();
-            dmp_snappingTimer.Interval = TimeSpan.FromMilliseconds(10);
-            dmp_snappingTimer.Tick += DMP_Snaping;
-            dmp_snappingTimer.Start();
-
-            //dm_PaintCanvas.Background = lastWinOpacityBeforeDMPDrag;
-            //lastWinOpacityBeforeDMPFrag_Saved = false;
-        }
 
         private void btn_desktopMode_Click(object sender, RoutedEventArgs e)
         {
@@ -1370,14 +1344,14 @@ namespace TransparentNotePad
 
         private void DMP_Close_Click(object sender, RoutedEventArgs e)
         {
-            AppMode toOpen = AppMode.Text;
+            AppMode to_open = AppMode.Text;
             
             if (lastAppModeBeforeCurrent != AppMode.DesktopMode)
             {
-                toOpen = lastAppModeBeforeCurrent;
+                to_open = lastAppModeBeforeCurrent;
             }
 
-            SetMode(toOpen);
+            SetMode(to_open);
         }
 
         private void DMP_btn_Extend_Click(object sender, RoutedEventArgs e)
@@ -1385,7 +1359,7 @@ namespace TransparentNotePad
             SetDMPExtended(!dmp_extended);
         }
 
-        private void SetCurrentDMTool(DMTools tool)
+        public void SetCurrentDMTool(DMTools tool)
         {
             switch (tool)
             {

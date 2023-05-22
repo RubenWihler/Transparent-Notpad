@@ -20,7 +20,9 @@ namespace TransparentNotePad
             public bool Result { get; set; } = false;
             public bool OpenLastText { get; set; }
             public OptionFile OptionFile { get; set; }
+
             private CancellationTokenSource? _cancellationTokenSource;
+            private DispatcherTimer _dispatcherTimer;
 
             public OptionLoadOperation(){}
 
@@ -29,11 +31,16 @@ namespace TransparentNotePad
                 this.Pending = true;
                 this.Result = false;
                 _cancellationTokenSource = new CancellationTokenSource();
-                var task = Task.Run(() => Operation = ExecuteTask(_cancellationTokenSource.Token));
+                _dispatcherTimer = new DispatcherTimer();
+                _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(100);
+                _dispatcherTimer.Tick += (object sender, EventArgs args) => Operation = ExecuteTask(_cancellationTokenSource.Token);
+                _dispatcherTimer.Start();
 
+#if false
                 Console.WriteLine($"New Options Loading Operation Exetuting -> {this}");
                 Console.WriteLine($"Cancellation Token : {_cancellationTokenSource.Token}");
                 Console.WriteLine($"Task id : {task.Id}");
+#endif
             }
             public void Cancel()
             {
@@ -43,6 +50,7 @@ namespace TransparentNotePad
 
             private async Task<bool> ExecuteTask(CancellationToken cancellationToken)
             {
+                _dispatcherTimer.Stop();
                 while (Pending)
                 {
                     if (cancellationToken.IsCancellationRequested)
@@ -58,6 +66,7 @@ namespace TransparentNotePad
                     {
                         Result = true;
                         Pending = false;
+                        Console.WriteLine("Executed");
                         break;
                     }
                 }
@@ -90,6 +99,9 @@ namespace TransparentNotePad
                     _ = Manager.TryOpenTextFromFile(option_file.LastTextFileSaved);
                 }
 
+                SaveManager.SetCustomTextTemporaryFilePath(option_file.TemporaryTextFilePath);
+                Console.WriteLine($"SAVE {option_file.TemporaryTextFilePath}");
+                Console.WriteLine("Finished");
                 return true;
             }
         }
@@ -124,7 +136,12 @@ namespace TransparentNotePad
         /// <param name="openLastText">open the <see cref="OptionFile.LastTextFileSaved"/> in the main window</param>
         public static void LoadOptions(OptionFile optionFile, bool openLastText = false)
         {
-            _currentOperation?.Cancel();
+            
+            if (_currentOperation != null && _currentOperation.Pending)
+            {
+                _currentOperation.Cancel();
+            }
+            
             _currentOperation = new OptionLoadOperation()
             {
                 OptionFile = optionFile,
@@ -132,7 +149,6 @@ namespace TransparentNotePad
             };
 
             _currentOperation.Execute();
-
             _currentOptionFile = optionFile;
         }
         /// <summary>
@@ -152,10 +168,20 @@ namespace TransparentNotePad
             option_file.FileSavePath = path;
             return SaveManager.SaveOptionFile(option_file);
         }
+        public static bool SetTemporaryTextFileSaveEmplacement(string path)
+        {
+            var option_file = CurrentOptionFile;
+            option_file.TemporaryTextFilePath = path;
+            
+            LoadOptions(option_file);
+            return SaveManager.SaveOptionFile(option_file);
+        }
         public static bool SetSelectedTheme(Theme theme)
         {
             var option_file = CurrentOptionFile;
             option_file.SelectedTheme = theme.ThemeName;
+            
+            LoadOptions(option_file);
             return SaveManager.SaveOptionFile(option_file);
         }
         public static bool SetDefaultFont(string fontName)

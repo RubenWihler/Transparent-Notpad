@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -182,7 +184,7 @@ namespace TransparentNotePad.CustomControls
             this.IsVisibleChanged += OnVisibilityChanged;
 
             var current_theme = ThemeManager.CurrentTheme;
-            var bg_color = current_theme.GlobalTextColor;
+            var bg_color = current_theme.PrimaryColor;
 
             _button_open_image.ApplyTheme(current_theme);
             _button_remove.ApplyTheme(current_theme);
@@ -199,7 +201,7 @@ namespace TransparentNotePad.CustomControls
 
         private void OnVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if ((Visibility)e.NewValue == Visibility.Hidden && _resizeAdorner != null)
+            if (!(bool)e.NewValue && _resizeAdorner != null)
             {
                 var element = this.Parent as Visual;
                 AdornerLayer.GetAdornerLayer(element)?.Remove(_resizeAdorner);
@@ -351,11 +353,15 @@ namespace TransparentNotePad.CustomControls
         }
         private void _button_open_image_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == true)
+            var open_file_dialog = new OpenFileDialog()
+            {
+                Title = "Import image from file",
+                Filter = GetImageFilter()
+            };
+            if (open_file_dialog.ShowDialog() == true)
             {
                 //Uri fileUri = new Uri();
-                Bitmap = new Bitmap(openFileDialog.FileName);
+                Bitmap = new Bitmap(open_file_dialog.FileName);
             }
         }
         private void UpdateMarging()
@@ -400,7 +406,7 @@ namespace TransparentNotePad.CustomControls
         }
         public void Highlight(byte opacity = 0x64)
         {
-            SetBackgroundOpacity(opacity, ThemeManager.CurrentTheme.GlobalTextColor.ToColor());
+            SetBackgroundOpacity(opacity, ThemeManager.CurrentTheme.PrimaryColor.ToColor());
             Highlighted = true;
         }
         public void UnHighlight()
@@ -409,7 +415,7 @@ namespace TransparentNotePad.CustomControls
 
             if (_bitmap == null)
             {
-                SetBackgroundOpacity(0x32, ThemeManager.CurrentTheme.GlobalTextColor.ToColor());
+                SetBackgroundOpacity(0x32, ThemeManager.CurrentTheme.PrimaryColor.ToColor());
                 return;
             }
 
@@ -432,6 +438,39 @@ namespace TransparentNotePad.CustomControls
 
             move_transform!.X = distance_from_start_x;
             move_transform!.Y = distance_from_start_y;
+        }
+        
+        /// <summary>
+        /// Get the Filter string for all supported image types.
+        /// This can be used directly to the FileDialog class Filter Property.
+        /// from : https://www.codeproject.com/Tips/255626/A-FileDialog-Filter-generator-for-all-supported-im
+        /// </summary>
+        /// <returns></returns>
+        public static string GetImageFilter()
+        {
+            StringBuilder all_image_extensions = new StringBuilder();
+            string separator = "";
+            ImageCodecInfo[] codecs = ImageCodecInfo.GetImageEncoders();
+            Dictionary<string, string> images = new Dictionary<string, string>();
+            foreach (ImageCodecInfo codec in codecs)
+            {
+                all_image_extensions.Append(separator);
+                all_image_extensions.Append(codec.FilenameExtension);
+                separator = ";";
+                images.Add(string.Format("{0} Files: ({1})", codec.FormatDescription, codec.FilenameExtension),
+                    codec.FilenameExtension);
+            }
+            StringBuilder sb = new StringBuilder();
+            if (all_image_extensions.Length > 0)
+            {
+                sb.AppendFormat("{0}|{1}", "All Images", all_image_extensions.ToString());
+            }
+            images.Add("All Files", "*.*");
+            foreach (KeyValuePair<string, string> image in images)
+            {
+                sb.AppendFormat("|{0}|{1}", image.Key, image.Value);
+            }
+            return sb.ToString();
         }
     }
 }

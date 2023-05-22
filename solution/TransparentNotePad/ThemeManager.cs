@@ -25,7 +25,12 @@ namespace TransparentNotePad
                 if (_currentTheme == null)
                 {
                     var theme_name = SaveManager.GetOptionFileFromFile().SelectedTheme;
-                    _currentTheme = DicThemeName[theme_name];
+                    if (!DicThemeName.TryGetValue(theme_name, out var founded_theme))
+                    {
+                        founded_theme = DicThemeName[OptionFile.GetDefault().SelectedTheme];
+                    }
+                    
+                    _currentTheme = founded_theme;
                 }
                 return _currentTheme!.Value;
             }
@@ -85,6 +90,16 @@ namespace TransparentNotePad
 
             return false;
         }
+        /// <summary>
+        /// Reload the current theme. 
+        /// If current theme is null make nothing.
+        /// <seealso cref="LoadTheme(Theme)"/>
+        /// </summary>
+        public static void ReloadCurrentTheme()
+        {
+            if (_currentTheme == null) return;
+            LoadTheme(_currentTheme.Value);
+        }
         
         /// <summary>
         /// Save a <see cref="Theme"/> as selected in Option
@@ -94,17 +109,9 @@ namespace TransparentNotePad
         /// <returns>result of the operation</returns>
         public static bool SetSelectedTheme(Theme theme, bool loadTheme)
         {
-            if (OptionsManager.SetSelectedTheme(theme))
-            {
-                if (loadTheme)
-                {
-                    LoadTheme(theme);
-                }
-
-                return true;
-            }
-
-            return false;
+            if (!OptionsManager.SetSelectedTheme(theme)) return false;
+            if (loadTheme) LoadTheme(theme);
+            return true;
         }
         /// <summary>
         /// Create a new Theme and save it into a files

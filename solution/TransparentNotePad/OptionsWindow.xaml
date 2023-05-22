@@ -4,10 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TransparentNotePad"
+        xmlns:customcontrols="clr-namespace:TransparentNotePad.CustomControls"
         mc:Ignorable="d"
         AllowsTransparency="True" 
         Background="#00000000" WindowStyle="None"
-        ResizeMode="CanResizeWithGrip"
+        ResizeMode="NoResize"
         Title="Window1" Height="450" Width="517">
     <Window.Resources>
         <Style x:Key="GridItemsStyle"
@@ -36,37 +37,36 @@
             <Setter Property="Background" Value="#FF9C9C9C"></Setter>
         </Style>
     </Window.Resources>
-    <Border Background="#FFD8D8D8" CornerRadius="10" ClipToBounds="True">
+    <customcontrols:CustomBorder Background="#FFD8D8D8" CornerRadius="10" ClipToBounds="True" themeColorType="PanelBackground">
         <Grid Background="#00000000" ClipToBounds="True">
             <Grid Height="46" VerticalAlignment="Top">
-                <Border Background="#FF949494" CornerRadius="10,10,0,0">
+                <customcontrols:CustomBorder Background="#FF949494" CornerRadius="10,10,0,0" themeColorType="TopBarBackground">
                     <Border.Effect>
                         <DropShadowEffect BlurRadius="30" Opacity="0.2" Direction="-89.8"/>
                     </Border.Effect>
-                    <Label Content="Options" FontFamily="Poppins" FontWeight="Bold" FontSize="28" Foreground="#FFF7F7F7" Margin="0,-5,0,0" HorizontalAlignment="Center" Width="126"/>
-                </Border>
+                    <customcontrols:CustomLabel Content="Options" FontFamily="Poppins" FontWeight="Bold" FontSize="28" Foreground="#FFF7F7F7" Margin="0,-5,0,0" HorizontalAlignment="Center" Width="126"/>
+                </customcontrols:CustomBorder>
             </Grid>
             <Grid Margin="0,46,0,0">
                 <ItemsControl Style="{StaticResource GridItemsStyle}">
-                    <Label Grid.Column="0" Grid.Row="0" Content="Theme :" Width="151" FontFamily="Poppins" FontSize="20" Height="37" HorizontalContentAlignment="Center"/>
-                    <ComboBox x:Name="cmbbox_Theme" Grid.Column="2" Grid.Row="0" Width="190" Height="31" DataContextChanged="cmbbox_Theme_DataContextChanged" ContextMenuClosing="cmbbox_Theme_ContextMenuClosing" SelectionChanged="cmbbox_Theme_SelectionChanged">
-                    </ComboBox>
+                    <customcontrols:CustomLabel Grid.Column="0" Grid.Row="0" Content="Theme :" Width="151" FontFamily="Poppins" FontSize="20" Height="37" HorizontalContentAlignment="Center"/>
+                    <customcontrols:CustomComboBox x:Name="cmbbox_Theme" Grid.Column="2" Grid.Row="0" Width="190" Height="31" DataContextChanged="cmbbox_Theme_DataContextChanged" ContextMenuClosing="cmbbox_Theme_ContextMenuClosing" SelectionChanged="cmbbox_Theme_SelectionChanged" Background="#FFFF3131"/>
+
+                    <customcontrols:CustomLabel Grid.Column="0" Grid.Row="1" Content="Temporary files path:" Width="191" FontFamily="Poppins" FontSize="17" Height="37" HorizontalContentAlignment="Center"/>
+                    <customcontrols:CustomTextBox x:Name="tbox_tempTextPath" Grid.Column="1" Grid.Row="1" Width="190" Height="31" FontFamily="Poppins" Text="path" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" InputScope="Default" ScrollViewer.CanContentScroll="True" TextChanged="tbox_tempTextPath_TextChanged" />
                 </ItemsControl>
-                <Button x:Name="btn_back" Content="back" Margin="196,366,197,10" Background="#FFEAEAEA" FontSize="16" Foreground="#FF2D2D2D" BorderBrush="#FF3C3C3C" BorderThickness="1,1,1,1" FontWeight="Bold" VerticalAlignment="Bottom" Click="btn_back_Click">
+                <customcontrols:CustomButton x:Name="btn_back" buttonGroupType="Panel" Content="back" Margin="196,366,197,10" Background="#FFEAEAEA" FontSize="16" Foreground="#FF2D2D2D" BorderBrush="#FF3C3C3C" BorderThickness="1,1,1,1" FontWeight="Bold" VerticalAlignment="Bottom" Click="btn_back_Click">
                     <Button.Resources>
                         <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="10"></Setter>
+                            <Setter Property="CornerRadius" Value="5"></Setter>
                         </Style>
                     </Button.Resources>
-                    <Button.Effect>
-                        <DropShadowEffect BlurRadius="10" Opacity="0.2" Direction="-89.8"/>
-                    </Button.Effect>
-                </Button>
+                </customcontrols:CustomButton>
             </Grid>
-            
-            
+
+
 
         </Grid>
-    </Border>
+    </customcontrols:CustomBorder>
 
 </Window>
